@@ -11,7 +11,7 @@ class ProcessPaymentRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return auth()->check() && auth()->user()->can('make_payments');
+        return auth()->check();
     }
 
     /**

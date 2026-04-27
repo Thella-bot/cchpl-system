@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Services\PaymentService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 class PaymentServiceTest extends TestCase
@@ -169,10 +170,10 @@ class PaymentServiceTest extends TestCase
 
     private function createMembership(): Membership
     {
-        $user = User::query()->create([
+$user = User::query()->create([
             'name' => 'Test Member',
             'email' => 'member-'.uniqid()."@example.test",
-            'password' => bcrypt('password'),
+            'password' => Hash::make('password'),
         ]);
 
         $category = MembershipCategory::query()->create([

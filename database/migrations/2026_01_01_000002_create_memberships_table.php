@@ -9,7 +9,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('category_id')->constrained('membership_categories')->onDelete('restrict');
-            $table->enum('status', ['pending', 'approved', 'rejected', 'suspended', 'expired'])->default('pending');
+            $table->enum('status', ['pending', 'approved', 'rejected', 'suspended', 'expired', 'resigned'])->default('pending');
             $table->date('expiry_date')->nullable();
             $table->timestamps();
         });

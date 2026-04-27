@@ -22,14 +22,19 @@ return new class extends Migration
         // ── 1. Extend payments.status enum ───────────────────────────────
         // Raw SQL required because Laravel's enum() migration helper
         // replaces, rather than appends, values in MySQL.
-        if (DB::getDriverName() === 'mysql') {
+        $driver = DB::getDriverName();
+
+        if ($driver === 'mysql') {
             DB::statement("
                 ALTER TABLE payments
                 MODIFY COLUMN status
                 ENUM('pending','verified','rejected','voided')
                 NOT NULL DEFAULT 'pending'
             ");
+        } elseif ($driver === 'pgsql') {
+            DB::statement("ALTER TYPE payments_status_enum ADD VALUE IF NOT EXISTS 'voided'");
         }
+        // SQLite stores enums as TEXT — no schema change needed.
 
         // ── 2. Resignations table ─────────────────────────────────────────
         Schema::create('resignations', function (Blueprint $table) {
@@ -85,7 +90,9 @@ return new class extends Migration
     {
         Schema::dropIfExists('resignations');
 
-        if (DB::getDriverName() === 'mysql') {
+        $driver = DB::getDriverName();
+
+        if ($driver === 'mysql') {
             DB::table('payments')->where('status','voided')->update(['status' => 'rejected']);
             
             DB::statement("
@@ -94,6 +101,10 @@ return new class extends Migration
                 ENUM('pending','verified','rejected')
                 NOT NULL DEFAULT 'pending'
             ");
+        } elseif ($driver === 'pgsql') {
+            // PostgreSQL does not support removing enum values directly.
+            // Leave voided values as-is; they will be handled by application logic.
         }
+        // SQLite: no enum constraint to revert.
     }
 };

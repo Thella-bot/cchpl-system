@@ -26,7 +26,8 @@ class StatusPresenter
             Payment::STATUS_VERIFIED => 'bg-success',
             Payment::STATUS_REJECTED => 'bg-danger',
             Payment::STATUS_VOIDED   => 'bg-secondary',
-            default               => 'bg-warning text-dark',
+            Payment::STATUS_PENDING  => 'bg-warning text-dark',
+            default                  => 'bg-warning text-dark',
         };
     }
 

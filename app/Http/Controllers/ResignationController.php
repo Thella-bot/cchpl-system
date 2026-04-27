@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\AuditLog;
 use App\Models\Membership;
 use App\Models\Resignation;
-use App\Notifications\ResignationAcknowledgementNotification;
+use App\Services\MembershipService;
 use Illuminate\Http\Request;
 
 class ResignationController extends Controller
@@ -36,18 +36,9 @@ class ResignationController extends Controller
                 ->with('error', 'You already have a pending resignation on file. Please contact the Secretary if you wish to withdraw it.');
         }
 
-        // Calculate any balance outstanding (overdue fees)
-        $balance = 0.0;
-        if ($membership->isExpired() || $membership->status === 'suspended') {
-            $balance = (float) $membership->category->annual_fee;
-            if ($membership->isPenaltyApplicable()) {
-                $balance += $balance * 0.10;
-            }
-        }
-
         return view('member.resign', [
             'membership'   => $membership,
-            'balance'      => $balance,
+            'balance'      => MembershipService::calculateOutstandingBalance($membership),
             'reasonCodes'  => Resignation::REASON_CODES,
         ]);
     }
@@ -76,15 +67,6 @@ class ResignationController extends Controller
             'confirm.accepted'              => 'You must confirm that you understand membership benefits will cease.',
         ]);
 
-        // Calculate outstanding balance at submission time
-        $balance = 0.0;
-        if ($membership->isExpired() || $membership->status === 'suspended') {
-            $balance = (float) $membership->category->annual_fee;
-            if ($membership->isPenaltyApplicable()) {
-                $balance += $balance * 0.10;
-            }
-        }
-
         $resignation = Resignation::create([
             'user_id'             => auth()->id(),
             'membership_id'       => $membership->id,
@@ -92,7 +74,7 @@ class ResignationController extends Controller
             'effective_date'      => $validated['effective_date'],
             'reason_code'         => $validated['reason_code'] ?? null,
             'reason_notes'        => $validated['reason_notes'] ?? null,
-            'balance_outstanding' => $balance,
+            'balance_outstanding' => MembershipService::calculateOutstandingBalance($membership),
         ]);
 
         AuditLog::create([
@@ -109,4 +91,3 @@ class ResignationController extends Controller
             ->with('success', '✅ Your resignation has been submitted. The Secretary will acknowledge it within 14 days per the CCHPL Bylaws.');
     }
 }
-

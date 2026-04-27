@@ -66,6 +66,8 @@ class DocumentController extends Controller
             abort_unless($membership->user_id === auth()->id(), 403);
         }
 
+        abort_unless($membership->status === 'approved', 403, 'Welcome pack not available until membership is approved.');
+
         $name = strtolower(str_replace(' ', '-', $membership->user->name));
 
         return DocumentService::welcomePack($membership)

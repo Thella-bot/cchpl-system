@@ -48,6 +48,21 @@ class MembershipService
         return now()->greaterThan($dueDate);
     }
 
+    /**
+     * Calculate outstanding balance for a membership including penalty.
+     */
+    public static function calculateOutstandingBalance(Membership $membership): float
+    {
+        $balance = 0.0;
+        if ($membership->isExpired() || $membership->status === 'suspended') {
+            $balance = (float) $membership->category->annual_fee;
+            if ($membership->isPenaltyApplicable()) {
+                $balance += $balance * 0.10;
+            }
+        }
+        return $balance;
+    }
+
     public static function categoryCode(string $categoryName): string
     {
         return match (true) {

@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->unsignedBigInteger('auditable_id')->nullable();
             $table->json('old_values')->nullable();
             $table->json('new_values')->nullable();
-            $table->text('meta')->nullable();
+            $table->json('meta')->nullable();
             $table->timestamps();
 
             $table->index(['auditable_type', 'auditable_id']);

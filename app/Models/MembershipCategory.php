@@ -10,6 +10,7 @@ class MembershipCategory extends Model
     protected $fillable = [
         'name',
         'annual_fee',
+        'joining_fee',
         'voting_rights',
         'eligibility_criteria',
         'other_notes',

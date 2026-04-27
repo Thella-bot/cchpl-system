@@ -84,7 +84,9 @@ class AdminService
      */
     public static function getAdminsByRole(string $roleName): Collection
     {
-        return User::whereHas('roles', fn($query) => $query->where('name', $roleName))->get();
+        return User::where('is_admin', true)
+            ->whereHas('roles', fn($query) => $query->where('name', $roleName))
+            ->get();
     }
 
     /**

@@ -43,13 +43,6 @@ class RouteServiceProvider extends ServiceProvider
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
         });
 
-        RateLimiter::for('payments', function (Request $request) {
-            return Limit::perMinute(5)->by($request->user()?->id ?: $request->ip())
-                ->response(function () {
-                    return response()->json([
-                        'message' => 'Too many payment attempts, please try again later'
-                    ], 429);
-                });
-        });
+
     }
 }

@@ -8,12 +8,15 @@ class MemberDashboardController extends Controller
 {
     public function index()
     {
-        // Load the user's most recent membership with all related data
-        $membership = Membership::where('user_id', auth()->id())
+        // Load all of the user's memberships with related data
+        $memberships = Membership::where('user_id', auth()->id())
             ->with(['category', 'payments' => fn ($q) => $q->orderBy('created_at', 'desc'), 'documents'])
             ->latest()
-            ->first();
+            ->get();
 
-        return view('member.dashboard', compact('membership'));
+        // Primary membership is the most recent one (for backward-compatible view usage)
+        $membership = $memberships->first();
+
+        return view('member.dashboard', compact('memberships', 'membership'));
     }
 }

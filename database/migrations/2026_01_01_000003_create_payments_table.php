@@ -12,7 +12,7 @@ return new class extends Migration {
             $table->enum('provider', ['mpesa', 'ecocash']);
             $table->string('transaction_reference')->unique();
             $table->string('proof_file')->nullable();
-            $table->enum('status', ['pending', 'verified', 'rejected'])->default('pending');
+            $table->enum('status', ['pending', 'verified', 'rejected', 'voided'])->default('pending');
             $table->text('verification_notes')->nullable();
             $table->timestamp('verified_at')->nullable();
             $table->timestamps();

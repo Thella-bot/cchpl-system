@@ -7,9 +7,12 @@ use App\Models\Payment;
 use App\Notifications\PaymentReceivedNotification;
 use App\Services\PaymentService;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class InitiatePayment extends Component
 {
+    use WithFileUploads;
+
     public $amount;
     public $provider;
     public $purpose;
@@ -18,12 +21,14 @@ class InitiatePayment extends Component
     public $showInstructions = false;
     public $membershipId;
     public $memberships;
+    public $proofFile;
 
     protected $rules = [
         'amount' => 'required|numeric|min:0.01',
         'provider' => 'required|in:mpesa,ecocash',
         'purpose' => 'required|string|max:255',
         'membershipId' => 'required|exists:memberships,id',
+        'proofFile' => 'required|file|mimes:jpg,jpeg,png|max:5120',
     ];
 
     public array $purposeOptions = [
@@ -81,18 +86,21 @@ class InitiatePayment extends Component
             $this->generateInstructions();
         }
 
+$proofPath = $this->proofFile->store('payment-proofs', 'public');
+
         $payment = Payment::create([
             'membership_id' => $this->membershipId,
             'amount' => $this->amount,
             'provider' => $this->provider,
             'purpose' => $this->purpose,
             'transaction_reference' => $this->reference,
+            'proof_file' => $proofPath,
             'status' => 'pending',
         ]);
 
         auth()->user()->notify(new PaymentReceivedNotification($payment));
 
-        return redirect()->route('member.dashboard')->with('success', 'Payment initiated successfully. Please follow the instructions to complete the payment.');
+        return redirect()->route('member.dashboard')->with('success', 'Payment submitted successfully. It will be reviewed by the finance team.');
     }
 
     public function render()

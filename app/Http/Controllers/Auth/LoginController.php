@@ -37,10 +37,19 @@ class LoginController extends Controller
     {
         $user = auth()->user();
 
-        if ($user && $user->isAdmin()) {
+if ($user && $user->isAdmin()) {
             return '/admin/dashboard';
         }
 
         return '/member/dashboard';
+    }
+
+    /**
+     * The user has been authenticated.
+     * Update last_login_at timestamp for audit and reporting.
+     */
+    protected function authenticated($request, $user)
+    {
+        $user->update(['last_login_at' => now()]);
     }
 }

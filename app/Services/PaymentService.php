@@ -3,6 +3,7 @@ namespace App\Services;
 
 use App\Models\Payment;
 use App\Models\Membership;
+use App\Models\ReceiptSequence;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -19,8 +20,8 @@ class PaymentService
     {
         if ($approved) {
             return DB::transaction(function () use ($payment) {
-                // Generate receipt number with a lock to prevent race conditions
-                $receiptNumber = self::generateReceiptNumber(true);
+                // Generate receipt number with atomic counter to prevent race conditions
+                $receiptNumber = self::generateReceiptNumber();
 
                 $payment->update([
                     'status'               => 'verified',
@@ -85,8 +86,10 @@ class PaymentService
      * The financial year used is the one that ends on 31 March.
      * Payments made Apr–Dec belong to the year starting that calendar year.
      * Payments made Jan–Mar belong to the year starting the previous calendar year.
+     *
+     * Uses an atomic counter table (receipt_sequences) to prevent race conditions.
      */
-    public static function generateReceiptNumber(bool $lock = false): string
+    public static function generateReceiptNumber(): string
     {
         $now = now();
         // Financial year label: the year in which 1 April falls.
@@ -94,22 +97,19 @@ class PaymentService
 
         $prefix = "RCPT-{$fyYear}-";
 
-        // Count existing verified payments in this financial year and increment.
-        $startOfFY = Carbon::create($fyYear, 4, 1, 0, 0, 0);
-        $endOfFY   = Carbon::create($fyYear + 1, 3, 31, 23, 59, 59);
+        return DB::transaction(function () use ($fyYear, $prefix) {
+            $sequence = ReceiptSequence::lockForUpdate()
+                ->firstOrCreate(
+                    ['financial_year' => (string) $fyYear],
+                    ['last_sequence' => 0]
+                );
 
-        $query = Payment::where('status', 'verified')
-            ->whereBetween('verified_at', [$startOfFY, $endOfFY]);
+            $sequence->increment('last_sequence');
 
-        if ($lock) {
-            $query->lockForUpdate();
-        }
+            $sequenceNumber = str_pad($sequence->last_sequence, 4, '0', STR_PAD_LEFT);
 
-        $count = $query->count();
-
-        $sequence = str_pad($count + 1, 4, '0', STR_PAD_LEFT);
-
-        return $prefix . $sequence;
+            return $prefix . $sequenceNumber;
+        });
     }
 
     /**

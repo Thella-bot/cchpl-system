@@ -1,5 +1,10 @@
 .env
 .env.*
+auth.json
+.env.backup
+.env.production
+.env.local
+.env.testing
 !.env.example
 
 
@@ -8,6 +13,7 @@
 
 /public/hot
 /public/storage
+/public/build
 
 /storage/*.key
 /storage/logs
@@ -20,6 +26,8 @@
 /storage/framework/views
 /storage/framework/views/*
 /storage/app/public
+/storage/app/livewire-tmp/*
+/storage/debugbar/
 
 /bootstrap/cache
 /bootstrap/cache/*
@@ -28,10 +36,30 @@ phpunit.xml
 .phpunit.xml.dist
 .phpunit.cache
 .phpunit.result.cache
+/coverage
+
 Homestead.json
 Homestead.yaml
+docker-compose.override.yml
 npm-debug.log
 yarn-error.log
+pnpm-debug.log
+
+composer.phar
+.php-cs-fixer.cache
+
+# IDE Helper
+_ide_helper.php
+_ide_helper_models.php
+_ide_helper_models.json
+.phpstorm.meta.php
+
 /.idea
 /.fleet
 /.vscode
+.DS_Store
+Thumbs.db
+.psyexp
+
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*

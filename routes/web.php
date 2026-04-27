@@ -1,4 +1,5 @@
 <?php
+
 use App\Http\Controllers\Admin\AgmNoticeController;
 use App\Http\Controllers\Admin\DocumentReviewController;
 use App\Http\Controllers\Admin\EcMinutesController;
@@ -47,7 +48,6 @@ Route::middleware('auth')->group(function () {
         ->middleware('throttle:5,1');
 
     // Membership application — requires verified email + rate limiting
-    // FIX: 'verified' ensures the email address actually belongs to the applicant
     Route::get('/membership/apply', ApplicationForm::class)
         ->middleware(['verified', 'throttle:5,1'])
         ->name('membership.apply');
@@ -94,9 +94,11 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         ->prefix('memberships')
         ->name('memberships.')
         ->group(function () {
-            Route::get('/pending',  [MembershipAdminController::class, 'index'])->name('index');
-            Route::post('/bulk',    [MembershipAdminController::class, 'bulkAction'])->name('bulk');
-            Route::get('/export',   [MembershipAdminController::class, 'export'])->name('export');
+            Route::get('/pending',       [MembershipAdminController::class, 'index'])->name('index');
+            Route::get('/list/all',      [MembershipAdminController::class, 'listMembers'])->name('list');
+            Route::get('/list/rejected', [MembershipAdminController::class, 'listRejected'])->name('rejected');
+            Route::post('/bulk',         [MembershipAdminController::class, 'bulkAction'])->name('bulk');
+            Route::get('/export',        [MembershipAdminController::class, 'export'])->name('export');
 
             Route::get('/{membership}',          [MembershipAdminController::class, 'show'])->name('show');
             Route::post('/{membership}/approve', [MembershipAdminController::class, 'approve'])->name('approve');
@@ -104,9 +106,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
             Route::post('/{membership}/documents/{document}/review',
                 [MembershipAdminController::class, 'reviewDocument'])->name('document.review');
-
-            Route::get('/list/all',      [MembershipAdminController::class, 'listMembers'])->name('list');
-            Route::get('/list/rejected', [MembershipAdminController::class, 'listRejected'])->name('rejected');
         });
 
     // Finance admin only

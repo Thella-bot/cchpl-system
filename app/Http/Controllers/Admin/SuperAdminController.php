@@ -7,7 +7,9 @@ use App\Models\Role;
 use App\Models\Membership;
 use App\Models\Payment;
 use App\Models\AuditLog;
+use App\Services\AdminService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class SuperAdminController extends Controller {
     /**
@@ -70,7 +72,7 @@ class SuperAdminController extends Controller {
         return view('admin.super-admin.show-admin', compact('user', 'roles'));
     }
 
-    /**
+/**
      * Create new admin account
      */
     public function createAdmin(Request $request) {
@@ -83,16 +85,17 @@ class SuperAdminController extends Controller {
             'roles.*' => 'exists:roles,id'
         ]);
 
-        $user = User::create([
+        $user = AdminService::createAdmin([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => bcrypt($request->password),
+            'password' => $request->password,
             'phone' => $request->phone,
-            'is_admin' => true
+            'roles' => $request->roles,
         ]);
 
-        // Assign roles
-        $user->roles()->sync($request->roles);
+        if (!$user) {
+            return back()->with('error', 'Failed to create admin account. Please check the logs.');
+        }
 
         return back()->with('success', "✅ Admin account created for {$user->name}");
     }

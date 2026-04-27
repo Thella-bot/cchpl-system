@@ -11,31 +11,38 @@ return new class extends Migration
 {
     public function up(): void
     {
-        if (DB::getDriverName() !== 'mysql') {
-            return;
-        }
+        $driver = DB::getDriverName();
 
-        DB::statement("
-            ALTER TABLE memberships
-            MODIFY COLUMN status
-            ENUM('pending','approved','rejected','suspended','expired','resigned')
-            NOT NULL DEFAULT 'pending'
-        ");
+        if ($driver === 'mysql') {
+            DB::statement("
+                ALTER TABLE memberships
+                MODIFY COLUMN status
+                ENUM('pending','approved','rejected','suspended','expired','resigned')
+                NOT NULL DEFAULT 'pending'
+            ");
+        } elseif ($driver === 'pgsql') {
+            DB::statement("ALTER TYPE memberships_status_enum ADD VALUE IF NOT EXISTS 'resigned'");
+        }
+        // SQLite stores enums as TEXT — no schema change needed.
     }
 
     public function down(): void
     {
         DB::statement("UPDATE memberships SET status = 'rejected' WHERE status = 'resigned'");
 
-        if (DB::getDriverName() !== 'mysql') {
-            return;
-        }
+        $driver = DB::getDriverName();
 
-        DB::statement("
-            ALTER TABLE memberships
-            MODIFY COLUMN status
-            ENUM('pending','approved','rejected','suspended','expired')
-            NOT NULL DEFAULT 'pending'
-        ");
+        if ($driver === 'mysql') {
+            DB::statement("
+                ALTER TABLE memberships
+                MODIFY COLUMN status
+                ENUM('pending','approved','rejected','suspended','expired')
+                NOT NULL DEFAULT 'pending'
+            ");
+        } elseif ($driver === 'pgsql') {
+            // PostgreSQL does not support removing enum values directly.
+            // Reverted rows above are sufficient.
+        }
+        // SQLite: no enum constraint to revert.
     }
 };

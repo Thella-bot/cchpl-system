@@ -138,6 +138,14 @@
                             @error('purpose')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
                         </div>
 
+                        <div>
+                            <label for="proofFile" class="form-label fw-semibold small text-muted">Payment Proof</label>
+                            <input id="proofFile" type="file" accept="image/jpeg,image/png"
+                                   wire:model="proofFile" class="form-control form-control-lg @error('proofFile') is-invalid @enderror">
+                            <div class="form-text small text-muted">Upload a screenshot or photo of your payment confirmation (JPG/PNG, max 5 MB).</div>
+                            @error('proofFile')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
+                        </div>
+
                         <div class="pt-2">
                             <button type="button" wire:click="generateInstructions" class="btn btn-outline-primary btn-lg px-4">
                                 <i class="fas fa-list-ol me-2"></i>Generate Payment Instructions
@@ -173,3 +181,4 @@
         </div>
     </div>
 </div>
+
