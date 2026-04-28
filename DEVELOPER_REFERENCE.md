@@ -1,663 +1,382 @@
-# CCHPL System - Developer Reference Guide
+# 💻 CCHPL Developer Reference
 
-Technical reference and code examples for extending and maintaining the CCHPL System.
-
-## Table of Contents
-1. [Database Schema](#database-schema)
-2. [Model Reference](#model-reference)
-3. [Livewire Components](#livewire-components)
-4. [Service Classes](#service-classes)
-5. [Request/Response Examples](#request-response-examples)
-6. [Common Tasks](#common-tasks)
-7. [Extending the System](#extending-the-system)
+Code examples and patterns for developers working on the CCHPL system.
 
 ---
 
-## Database Schema
+## 📂 Working with Models
 
-### Users Table
-```sql
-CREATE TABLE users (
-    id BIGINT PRIMARY KEY,
-    name VARCHAR(255),
-    email VARCHAR(255) UNIQUE,
-    email_verified_at TIMESTAMP NULL,
-    password VARCHAR(255),
-    phone VARCHAR(20),
-    organization VARCHAR(255),
-    remember_token VARCHAR(100),
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
-);
-```
-
-### Membership Categories Table
-```sql
-CREATE TABLE membership_categories (
-    id BIGINT PRIMARY KEY,
-    name VARCHAR(255) UNIQUE,
-    annual_fee DECIMAL(10, 2),
-    voting_rights BOOLEAN,
-    eligibility_criteria TEXT,
-    other_notes TEXT,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
-);
-```
-
-### Memberships Table
-```sql
-CREATE TABLE memberships (
-    id BIGINT PRIMARY KEY,
-    user_id BIGINT FOREIGN KEY (users.id),
-    category_id BIGINT FOREIGN KEY (membership_categories.id),
-    status ENUM('pending', 'approved', 'rejected', 'suspended', 'expired'),
-    expiry_date DATE,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
-);
-```
-
-### Payments Table
-```sql
-CREATE TABLE payments (
-    id BIGINT PRIMARY KEY,
-    membership_id BIGINT FOREIGN KEY (memberships.id),
-    amount DECIMAL(10, 2),
-    provider ENUM('mpesa', 'ecocash'),
-    transaction_reference VARCHAR(255) UNIQUE,
-    proof_file VARCHAR(255),
-    status ENUM('pending', 'verified', 'rejected'),
-    verification_notes TEXT,
-    verified_at TIMESTAMP,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
-);
-```
-
-### Membership Documents Table
-```sql
-CREATE TABLE membership_documents (
-    id BIGINT PRIMARY KEY,
-    membership_id BIGINT FOREIGN KEY (memberships.id),
-    document_type VARCHAR(255),
-    file_path VARCHAR(255),
-    original_name VARCHAR(255),
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
-);
-```
-
----
-
-## Model Reference
-
-### User Model
+### Users
 
 ```php
 use App\Models\User;
 
-// Create user
+// Create a regular member
 $user = User::create([
     'name' => 'John Doe',
     'email' => 'john@example.com',
-    'password' => bcrypt('password'),
+    'password' => Hash::make('password'),
     'phone' => '+266 12345678',
-    'organization' => 'CCHPL'
 ]);
 
-// Get user's memberships
-$memberships = $user->memberships; // Collection of Membership models
-$activeMembership = $user->memberships()->where('status', 'approved')->first();
+// Get all memberships for a user
+$memberships = $user->memberships;
 
-// Check if user has active membership
-if ($user->memberships()->where('status', 'approved')->exists()) {
-    // User is a member
-}
+// Check if user has an active membership
+$hasActive = $user->memberships()
+    ->where('status', 'approved')
+    ->exists();
 ```
 
-### Membership Model
+### Memberships
 
 ```php
 use App\Models\Membership;
 
-// Create membership
+// Create a membership application
 $membership = Membership::create([
     'user_id' => $user->id,
     'category_id' => $category->id,
     'status' => 'pending',
-    'expiry_date' => now()->addYear()
 ]);
 
-// Access relationships
-echo $membership->user->name;           // Get user name
-echo $membership->category->name;       // Get category
-echo $membership->category->annual_fee; // Get fee
+// Approve a membership
+$membership->update(['status' => 'approved']);
+$membership->generateMemberId(); // Creates CCHPL-PRO-2025-001
 
-// Get membership documents
-foreach ($membership->documents as $doc) {
-    echo $doc->document_type;  // "CV", "Certificate", etc
-    echo $doc->file_path;      // Path in storage
-}
+// Check membership status
+if ($membership->isActive()) { ... }
+if ($membership->isExpired()) { ... }
+if ($membership->isExpiringSoon(30)) { ... }
 
-// Get payments
-foreach ($membership->payments as $payment) {
-    echo $payment->status;               // "pending", "verified", "rejected"
-    echo $payment->transaction_reference; // "CCHPL-20240115-1234"
-}
-
-// Query examples
-$pendingMemberships = Membership::where('status', 'pending')->get();
-$expiredMemberships = Membership::where('expiry_date', '<', now())->get();
-$professionalMembers = Membership::whereHas('category', function($q) {
-    $q->where('name', 'Professional');
-})->where('status', 'approved')->get();
+// Get related data
+$membership->user;       // The member
+$membership->category;   // Membership category
+$membership->payments;   // All payments
+$membership->documents;  // Uploaded documents
 ```
 
-### MembershipCategory Model
-
-```php
-use App\Models\MembershipCategory;
-
-// Get all categories
-$categories = MembershipCategory::all();
-
-// Get category with members
-$category = MembershipCategory::find(1);
-$memberCount = $category->memberships()->where('status', 'approved')->count();
-$totalFees = $category->memberships()
-    ->where('status', 'approved')
-    ->count() * $category->annual_fee;
-
-// Find category by name
-$professional = MembershipCategory::where('name', 'Professional')->first();
-```
-
-### Payment Model
+### Payments
 
 ```php
 use App\Models\Payment;
+use App\Services\PaymentService;
 
-// Create payment
+// Create a payment record
 $payment = Payment::create([
     'membership_id' => $membership->id,
-    'amount' => 400,
+    'amount' => 400.00,
     'provider' => 'mpesa',
-    'transaction_reference' => 'CCHPL-20240115-1234',
-    'status' => 'pending'
+    'transaction_reference' => 'CCHPL-20250115-0001',
+    'status' => 'pending',
 ]);
 
-// Verify payment
-$payment->update([
-    'status' => 'verified',
-    'proof_file' => 'proofs/screenshot.jpg',
-    'verified_at' => now(),
-    'verification_notes' => 'Verified against M-Pesa records'
-]);
+// Verify a payment (extends membership expiry)
+PaymentService::verifyPayment($payment, true);
 
-// Access membership
-echo $payment->membership->user->name; // Get payer name
-
-// Query examples
-$pendingPayments = Payment::where('status', 'pending')
-    ->orderBy('created_at', 'asc')
-    ->get();
-
-$mpesaPayments = Payment::where('provider', 'mpesa')
-    ->where('status', 'verified')
-    ->sum('amount');
-```
-
-### MembershipDocument Model
-
-```php
-use App\Models\MembershipDocument;
-
-// Create document record
-$doc = MembershipDocument::create([
-    'membership_id' => $membership->id,
-    'document_type' => 'CV',
-    'file_path' => 'applications/user_1_cv.pdf',
-    'original_name' => 'John_CV.pdf'
-]);
-
-// Query documents by type
-$certs = MembershipDocument::where('document_type', 'Certificate')->get();
-
-// Delete document (and file if needed)
-$doc->delete();
+// Check payment status
+if ($payment->isVerified()) { ... }
+if ($payment->isPending()) { ... }
 ```
 
 ---
 
-## Livewire Components
-
-### ApplicationForm Component
-
-```php
-namespace App\Livewire\Membership;
-
-class ApplicationForm extends Component {
-    // Properties
-    public $selected_category_id = '';
-    public $cv_file = null;
-    public $certificates_file = null;
-    public $employment_letter_file = null;
-
-    // Validation rules (Livewire v3 syntax)
-    #[Validate('required')]
-    public $field = '';
-
-    // Methods
-    public function updated($propertyName) {
-        // Runs when any property changes
-        $this->validateOnly($propertyName);
-    }
-
-    public function submit() {
-        // Handle form submission
-        $this->validate();
-        // ... create membership, store files
-    }
-
-    public function render() {
-        return view('livewire.membership.application-form');
-    }
-}
-```
-
-### InitiatePayment Component
-
-```php
-namespace App\Livewire\Payment;
-
-class InitiatePayment extends Component {
-    // Two-step workflow
-    public $step = 1; // 1: payment details, 2: proof upload
-
-    // Step 1 properties
-    public $selected_membership_id = '';
-    public $payment_amount = '';
-    public $payment_provider = 'mpesa';
-
-    // Step 2 properties
-    public $reference_code = '';
-    public $proof = null;
-    public $instructions = '';
-
-    public function initiatePayment() {
-        // Generate reference and display instructions
-    }
-
-    public function submitProof() {
-        // Upload proof and create payment record
-    }
-
-    public function render() {
-        return view('livewire.payment.initiate-payment');
-    }
-}
-```
-
----
-
-## Service Classes
+## 🧰 Using Services
 
 ### PaymentService
 
 ```php
-namespace App\Services;
-
-use App\Models\Payment;
-
-class PaymentService {
-    /**
-     * Verify a payment
-     * @param Payment $payment
-     * @param bool $approved
-     * @return bool
-     */
-    public static function verifyPayment(Payment $payment, bool $approved = true): bool {
-        if ($approved) {
-            $payment->update([
-                'status' => 'verified',
-                'verified_at' => now(),
-                'verification_notes' => 'Payment verified by administrator'
-            ]);
-            $payment->membership->update(['status' => 'approved']);
-            return true;
-        } else {
-            $payment->update([
-                'status' => 'rejected',
-                'verification_notes' => 'Payment proof rejected'
-            ]);
-            return false;
-        }
-    }
-
-    /**
-     * Generate reference code
-     * @return string
-     */
-    public static function generateReference(): string {
-        return 'CCHPL-' . now()->format('Ymd') . '-' . str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT);
-    }
-
-    /**
-     * Get payment instructions
-     * @param string $provider
-     * @param string $amount
-     * @param string $reference
-     * @return string
-     */
-    public static function getPaymentInstructions(string $provider, string $amount, string $reference): string {
-        // Returns formatted instructions
-    }
-}
-```
-
-Usage:
-```php
 use App\Services\PaymentService;
 
-// Generate reference
+// Generate a unique payment reference
 $ref = PaymentService::generateReference();
+// Result: CCHPL-20250115-4521
 
-// Verify payment
-$success = PaymentService::verifyPayment($payment, true);
+// Get payment instructions text
+$instructions = PaymentService::getPaymentInstructions(
+    'mpesa',
+    '400.00',
+    $ref
+);
 
-// Get instructions
-$instructions = PaymentService::getPaymentInstructions('mpesa', '400', $ref);
+// Calculate late payment penalty (10%)
+$penalty = PaymentService::calculatePenalty(400.00);
+// Result: 40.00
+
+// Check if membership is overdue for suspension
+$shouldSuspend = PaymentService::isOverdueForSuspension($membership);
+
+// Calculate next March expiry date
+$expiry = PaymentService::nextMarchExpiry($membership->expiry_date);
+```
+
+### MembershipService
+
+```php
+use App\Services\MembershipService;
+
+// Generate a member ID
+$service = new MembershipService();
+$memberId = $service->generateMemberId($membership);
+// Result: CCHPL-PRO-2025-001
+
+// Check if penalty applies
+$penaltyApplies = $service->isPenaltyApplicable($membership);
+
+// Get category code
+$code = MembershipService::categoryCode('Professional Chef');
+// Result: PRO
+```
+
+### DocumentService
+
+```php
+use App\Services\DocumentService;
+
+// Generate a PDF certificate
+$pdf = DocumentService::membershipCertificate($membership);
+$pdf->download('certificate.pdf');
+
+// Generate a receipt
+$pdf = DocumentService::officialReceipt($payment);
+$pdf->download('receipt.pdf');
+
+// Generate welcome pack
+$pdf = DocumentService::welcomePack($membership);
+$pdf->download('welcome-pack.pdf');
+
+// Email a document directly
+DocumentService::sendToMember(
+    $membership,
+    'certificate',
+    payment: null,
+    subject: 'Your CCHPL Certificate'
+);
+```
+
+### AdminService
+
+```php
+use App\Services\AdminService;
+
+// Create admin
+$admin = AdminService::createAdmin([
+    'name' => 'Jane Smith',
+    'email' => 'jane@cchpl.ls',
+    'password' => 'SecurePass123!',
+    'roles' => [2] // membership_admin
+]);
+
+// Create super admin
+$super = AdminService::createSuperAdmin([
+    'name' => 'Boss',
+    'email' => 'boss@cchpl.ls',
+    'password' => 'SuperSecure123!'
+]);
+
+// Get all admins
+$admins = AdminService::getAllAdmins();
+
+// Get admins by specific role
+$paymentAdmins = AdminService::getAdminsByRole('payment_admin');
+
+// Revoke admin access
+AdminService::revokeAdminAccess($user);
 ```
 
 ---
 
-## Request/Response Examples
+## 📝 Audit Logging
 
-### Create Membership Application
+Always log important actions:
 
-**Request Data:**
 ```php
-$data = [
-    'selected_category_id' => 1,
-    'cv_file' => UploadedFile $instance,
-    'certificates_file' => UploadedFile $instance,
-    'employment_letter_file' => UploadedFile $instance
-];
-```
+use App\Models\AuditLog;
 
-**Response:**
-```php
-// Success
-session()->flash('message', '✅ Application submitted successfully!');
-redirect('/dashboard');
-
-// Error
-session()->flash('error', '❌ Error submitting application');
-```
-
-### Initiate Payment
-
-**Request Data (Step 1):**
-```php
-$data = [
-    'selected_membership_id' => 5,
-    'payment_amount' => 400,
-    'payment_provider' => 'mpesa'
-];
-```
-
-**Response (Step 1):**
-```php
-// Payment record created
-// Reference code generated: CCHPL-20240115-4567
-// Instructions displayed to user
-// UI updates to Step 2
-```
-
-**Request Data (Step 2):**
-```php
-$data = [
-    'proof' => UploadedFile $instance // JPG/PNG image
-];
-```
-
-**Response (Step 2):**
-```php
-// Proof stored in storage/app/public/proofs/
-// Payment record updated with proof_file path
-session()->flash('message', '✅ Payment proof uploaded successfully!');
-redirect('/dashboard');
+AuditLog::create([
+    'user_id' => auth()->id(),
+    'action' => 'membership.approved',
+    'auditable_type' => Membership::class,
+    'auditable_id' => $membership->id,
+    'old_values' => ['status' => 'pending'],
+    'new_values' => ['status' => 'approved'],
+    'meta' => ['approved_by' => auth()->user()->email],
+]);
 ```
 
 ---
 
-## Common Tasks
+## 🎨 Status Badges
 
-### Approve a Membership Application
+Use the StatusPresenter for consistent UI colors:
 
 ```php
-use App\Models\Membership;
+use App\Presenters\StatusPresenter;
 
-$membership = Membership::findOrFail($id);
-$membership->update(['status' => 'approved']);
+// In Blade views
+<span class="badge {{ StatusPresenter::membershipStatusBadge($membership->status) }}">
+    {{ ucfirst($membership->status) }}
+</span>
 
-// Send notification email
-// $membership->user->notify(new ApplicationApproved($membership));
+// Available methods
+StatusPresenter::membershipStatusBadge('approved');   // bg-success
+StatusPresenter::membershipStatusBadge('pending');    // bg-warning text-dark
+StatusPresenter::membershipStatusBadge('suspended');  // bg-danger
+StatusPresenter::membershipStatusBadge('expired');    // bg-warning text-dark
+StatusPresenter::membershipStatusBadge('rejected');   // bg-secondary
+StatusPresenter::membershipStatusBadge('resigned');   // bg-secondary
+
+StatusPresenter::paymentStatusBadge('verified');      // bg-success
+StatusPresenter::paymentStatusBadge('pending');       // bg-warning text-dark
+StatusPresenter::paymentStatusBadge('rejected');      // bg-danger
+StatusPresenter::paymentStatusBadge('voided');        // bg-secondary
+
+StatusPresenter::resignationStatusBadge('acknowledged'); // bg-green-100
+StatusPresenter::resignationStatusBadge('cancelled');    // bg-gray-100
+StatusPresenter::resignationStatusBadge('pending');      // bg-yellow-100
 ```
 
-### Verify and Activate Payment
+---
+
+## 🔄 Livewire Components
+
+### ApplicationForm
+
+Handles membership applications with file uploads:
 
 ```php
-use App\Models\Payment;
-use App\Services\PaymentService;
+// Component location
+App\Livewire\Membership\ApplicationForm
 
-$payment = Payment::findOrFail($id);
-PaymentService::verifyPayment($payment, true);
-
-// Membership now has status 'approved'
-// Send confirmation email
-// $payment->membership->user->notify(new PaymentVerified($payment));
+// Route
+Route::get('/membership/apply', ApplicationForm::class)
+    ->middleware(['verified', 'throttle:5,1']);
 ```
 
-### Get Dashboard Statistics
+### InitiatePayment
+
+Two-step payment workflow:
 
 ```php
-// Total applications
-$pendingCount = Membership::where('status', 'pending')->count();
-$approvedCount = Membership::where('status', 'approved')->count();
+// Component location
+App\Livewire\Payment\InitiatePayment
 
-// Revenue
-$totalRevenue = Payment::where('status', 'verified')->sum('amount');
+// Route
+Route::get('/payment/initiate', InitiatePayment::class)
+    ->middleware(['verified', 'throttle:10,1']);
+```
 
-// By category
-$categoryStats = MembershipCategory::with('memberships')
-    ->get()
-    ->map(fn($cat) => [
-        'category' => $cat->name,
-        'members' => $cat->memberships()->where('status', 'approved')->count()
-    ]);
+---
 
-// Expiring soon
-$expiringMemberships = Membership::where('expiry_date', '>=', now())
+## 🛡️ Middleware in Routes
+
+```php
+// Basic admin check
+Route::middleware('admin')->group(function () {
+    // Any admin can access
+});
+
+// Super admin only
+Route::middleware('super-admin')->group(function () {
+    // Only Super Admins
+});
+
+// Specific role
+Route::middleware('role:membership_admin')->group(function () {
+    // Only Membership Admins
+});
+
+// Multiple roles (ANY match)
+Route::middleware('role:membership_admin,payment_admin')->group(function () {
+    // Membership OR Payment Admins
+});
+
+// Combined protection
+Route::middleware(['auth', 'admin', 'role:payment_admin,super_admin'])
+    ->group(function () {
+        // Must be: logged in + admin + (payment_admin OR super_admin)
+    });
+```
+
+---
+
+## 📊 Common Queries
+
+### Dashboard Statistics
+
+```php
+// Count pending applications
+$pendingApps = Membership::where('status', 'pending')->count();
+
+// Count active members
+$activeMembers = Membership::where('status', 'approved')
+    ->where('expiry_date', '>', now())
+    ->count();
+
+// Total revenue
+$revenue = Payment::where('status', 'verified')->sum('amount');
+
+// Pending payments
+$pendingPayments = Payment::where('status', 'pending')->count();
+
+// Expiring soon (next 30 days)
+$expiringSoon = Membership::where('status', 'approved')
     ->where('expiry_date', '<=', now()->addDays(30))
+    ->where('expiry_date', '>=', now())
     ->count();
 ```
 
-### Export Member List
+### Member Exports
 
 ```php
 $members = Membership::where('status', 'approved')
-    ->with('user', 'category')
+    ->with(['user', 'category'])
     ->get()
     ->map(fn($m) => [
         'name' => $m->user->name,
         'email' => $m->user->email,
+        'phone' => $m->user->phone,
         'category' => $m->category->name,
-        'expiry' => $m->expiry_date,
-        'phone' => $m->user->phone
+        'member_id' => $m->member_id,
+        'expiry' => $m->expiry_date?->format('Y-m-d'),
     ]);
-
-// Convert to CSV or Excel
-```
-
-### Send Renewal Reminder
-
-```php
-$expiringMemberships = Membership::where('expiry_date', '<=', now()->addDays(14))
-    ->where('expiry_date', '>=', now())
-    ->get();
-
-foreach ($expiringMemberships as $membership) {
-    // $membership->user->notify(new MembershipExpiringReminder($membership));
-}
 ```
 
 ---
 
-## Extending the System
-
-### Add Payment Gateway Integration
-
-1. Create new Payment Provider class:
-
-```php
-namespace App\Payment;
-
-interface PaymentProviderInterface {
-    public function initiate(Payment $payment): array;
-    public function verify(string $transactionId): bool;
-}
-
-class MpesaProvider implements PaymentProviderInterface {
-    public function initiate(Payment $payment): array {
-        // Call M-Pesa API
-        return ['redirect_url' => '...'];
-    }
-
-    public function verify(string $transactionId): bool {
-        // Verify with M-Pesa API
-        return true;
-    }
-}
-```
-
-2. Update Payment model:
-
-```php
-public function getProvider() {
-    if ($this->provider === 'mpesa') {
-        return new MpesaProvider();
-    }
-    // ... other providers
-}
-```
-
-### Add Email Notifications
+## 🧪 Testing
 
 ```bash
-php artisan make:notification ApplicationApproved
-```
+# Run all tests
+php artisan test
 
-Create notification class:
+# Run specific test file
+php artisan test tests/Unit/Services/PaymentServiceTest.php
 
-```php
-namespace App\Notifications;
-
-use Illuminate\Notifications\Notification;
-use Illuminate\Notifications\Messages\MailMessage;
-use App\Models\Membership;
-
-class ApplicationApproved extends Notification {
-    public $membership;
-
-    public function __construct(Membership $membership) {
-        $this->membership = $membership;
-    }
-
-    public function via($notifiable) {
-        return ['mail'];
-    }
-
-    public function toMail($notifiable) {
-        return (new MailMessage)
-            ->subject('Your CCHPL Membership Application Approved')
-            ->greeting('Hello ' . $notifiable->name)
-            ->line('Your membership application has been approved!')
-            ->action('Login to Dashboard', url('/dashboard'))
-            ->line('Welcome to CCHPL!');
-    }
-}
-```
-
-### Add New Membership Category
-
-```php
-// Programmatically
-MembershipCategory::create([
-    'name' => 'Partner',
-    'annual_fee' => 1500,
-    'voting_rights' => false,
-    'eligibility_criteria' => 'Commercial partners and suppliers',
-    'other_notes' => 'Special pricing available'
-]);
-```
-
-### Add Members Table Export
-
-```php
-Route::get('/admin/members/export', function() {
-    $members = Membership::where('status', 'approved')->with('user', 'category')->get();
-    
-    $csv = "Name,Email,Phone,Category,Expiry Date\n";
-    foreach ($members as $m) {
-        $csv .= "{$m->user->name},{$m->user->email},{$m->user->phone},{$m->category->name},{$m->expiry_date}\n";
-    }
-    
-    return response($csv, 200, [
-        'Content-Type' => 'text/csv',
-        'Content-Disposition' => 'attachment; filename="members.csv"'
-    ]);
-});
+# Run with coverage
+php artisan test --coverage
 ```
 
 ---
 
-## Troubleshooting Guide
+## 🎨 Code Style
 
-### Livewire File Upload Not Working
+```bash
+# Check code style
+./vendor/bin/pint
 
-Check:
-1. `WithFileUploads` trait is used
-2. `temporary` disk configured in `config/filesystems.php`
-3. Storage permissions correct (755)
-4. File size limits in `php.ini`
-5. Form uses `wire:model` for file inputs
-
-### Validation Errors Not Showing
-
-1. Ensure `#[Validate(...)]` attributes used (Livewire v3)
-2. Or use `public function rules()`
-3. Check that `wire:model` names match property names
-4. Use `@error('field')` in view to display
-
-### Missing Files in Storage
-
-1. Check `php artisan storage:link` was run
-2. Verify `storage/app/public` directory exists
-3. Set correct permissions: `chmod -R 755 storage`
-4. Check upload was successful (check validation)
-
-### Admin Routes Not Accessible
-
-1. Create admin middleware
-2. Register in `app/Http/Kernel.php`
-3. Implement role checking (use Spatie roles if needed)
-4. Verify authenticated user passes admin check
+# Fix code style automatically
+./vendor/bin/pint --fix
+```
 
 ---
 
-**For more help, refer to:**
-- Laravel Documentation: https://laravel.com/docs
-- Livewire Documentation: https://livewire.laravel.com
-- Application logs: `storage/logs/laravel.log`
+## 📚 Related Documentation
+
+| Document | Purpose |
+|----------|---------|
+| [ADMIN_ROLES_GUIDE.md](ADMIN_ROLES_GUIDE.md) | Admin role explanations |
+| [ADMIN_QUICK_REFERENCE.md](ADMIN_QUICK_REFERENCE.md) | Quick commands |
+| [ADMIN_SYSTEM_REFACTORING.md](ADMIN_SYSTEM_REFACTORING.md) | System architecture |
+| [KERNEL_CONFIGURATION.md](KERNEL_CONFIGURATION.md) | Middleware details |
+
