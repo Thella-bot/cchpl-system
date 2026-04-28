@@ -24,7 +24,7 @@
 </head>
 <body>
     <div class="header">
-        <div class="logo">Council for Culinary and<br>Hospitality Professionals Lesotho</div>
+        <img src="{{ public_path('images/logo/cchpl-official-logo.png') }}" alt="CCHPL Logo" style="max-height: 70px; margin-bottom: 10px;">
         <div class="title">New Member Welcome Pack</div>
     </div>
 

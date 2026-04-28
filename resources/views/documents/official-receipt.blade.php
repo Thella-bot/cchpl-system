@@ -171,7 +171,7 @@
     <tr>
       <td class="header-left">
         <span class="receipt-badge">OFFICIAL RECEIPT</span>
-        <span class="org-name">Council for Culinary and Hospitality Professionals Lesotho</span>
+        <img src="{{ public_path('images/logo/cchpl-official-logo.png') }}" alt="CCHPL Logo" style="max-height: 35px; margin-bottom: 1mm;">
         <span class="org-sub">CCHPL &nbsp;|&nbsp; Maseru, Lesotho</span>
       </td>
       <td class="header-right">

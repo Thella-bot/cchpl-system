@@ -27,7 +27,7 @@
     <table class="header-table">
         <tr>
             <td valign="top">
-                <div class="company-name">Council for Culinary and<br>Hospitality Professionals<br>Lesotho</div>
+                <img src="{{ public_path('images/logo/cchpl-official-logo.png') }}" alt="CCHPL Logo" style="max-height: 50px; margin-bottom: 5px;">
                 <div style="margin-top: 5px; font-size: 12px;">Maseru, Lesotho<br>finance@cchpl.org.ls</div>
             </td>
             <td valign="top" class="text-right">

@@ -1,0 +1,5 @@
+# Place CCHPL logo files in this directory
+# Recommended files:
+# - cchpl-logo.png         (primary colored logo for light backgrounds)
+# - cchpl-logo-light.png   (white/light version for dark backgrounds like admin topbar)
+

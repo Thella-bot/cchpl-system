@@ -46,8 +46,7 @@
     <div class="border-pattern">
         <div class="inner-border">
             <div class="header">
-                <div class="logo">Council for Culinary and Hospitality Professionals</div>
-                <div class="sub-logo">Lesotho</div>
+                <img src="{{ public_path('images/logo/cchpl-official-logo.png') }}" alt="CCHPL Logo" style="max-height: 70px; margin-bottom: 10px;">
             </div>
 
             <div class="title">Certificate of Membership</div>

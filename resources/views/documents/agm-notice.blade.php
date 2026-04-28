@@ -23,7 +23,7 @@
 </head>
 <body>
     <div class="header">
-        <div class="org-name">Council for Culinary and Hospitality<br>Professionals Lesotho</div>
+        <img src="{{ public_path('images/logo/cchpl-official-logo.png') }}" alt="CCHPL Logo" style="max-height: 60px; margin-bottom: 10px;">
         <div class="notice-title">NOTICE OF ANNUAL GENERAL MEETING</div>
         <div>Notice is hereby given that the {{ $data['agmYear'] ?? now()->year }} Annual General Meeting of the members will be held as follows:</div>
     </div>

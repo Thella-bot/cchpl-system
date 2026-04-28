@@ -27,6 +27,7 @@
 </head>
 <body>
     <div class="header">
+        <img src="{{ public_path('images/logo/cchpl-official-logo.png') }}" alt="CCHPL Logo" style="max-height: 50px; margin-bottom: 5px;">
         <div class="org">Council for Culinary and Hospitality Professionals Lesotho</div>
         <div class="title">MINUTES OF THE EXECUTIVE COMMITTEE MEETING</div>
     </div>

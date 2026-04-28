@@ -23,7 +23,7 @@
     <nav class="navbar navbar-expand-lg bg-white shadow-sm nav-topbar">
         <div class="container">
             <a class="navbar-brand navbar-brand-cchpl" href="{{ url('/') }}">
-                <i class="fas fa-utensils me-2"></i>CCHPL
+                <img src="{{ asset('images/logo/cchpl-alt-logo.png') }}" alt="CCHPL Logo" height="36" class="d-inline-block align-top">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">

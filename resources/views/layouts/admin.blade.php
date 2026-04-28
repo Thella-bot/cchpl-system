@@ -126,15 +126,12 @@
                 <i class="fas fa-bars"></i>
             </button>
             <a href="{{ route('admin.dashboard') }}" class="fw-bold text-decoration-none admin-topbar-brand d-flex align-items-center">
-            <span class="admin-topbar-badge me-3">
-                <i class="fas fa-utensils"></i>
-            </span>
-            <span>
-                CCHPL Admin
-                <span class="d-block small fw-normal" style="color: rgba(255, 255, 255, 0.68);">
-                    Operations and oversight panel
+                <img src="{{ asset('images/logo/cchpl-alt-logo-light.png') }}" alt="CCHPL Logo" height="40" class="d-inline-block align-top me-3">
+                <span>
+                    <span class="d-block small fw-normal" style="color: rgba(255, 255, 255, 0.68);">
+                        Operations and oversight panel
+                    </span>
                 </span>
-            </span>
             </a>
         </div>
         <div class="d-flex align-items-center gap-3">

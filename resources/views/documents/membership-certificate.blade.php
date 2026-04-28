@@ -222,7 +222,7 @@
 
 <div class="certificate">
 
-  <div class="org-header">Council for Culinary and Hospitality Professionals Lesotho</div>
+  <img src="{{ public_path('images/logo/cchpl-official-logo.png') }}" alt="CCHPL Logo" style="max-height: 60px; margin-bottom: 3mm;">
   <div class="org-header" style="font-size:8pt; letter-spacing:3px; color:#8B6914;">CCHPL &nbsp;|&nbsp; Maseru, Kingdom of Lesotho</div>
 
   <div class="divider-gold"></div>
