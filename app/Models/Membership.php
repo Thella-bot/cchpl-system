@@ -88,6 +88,19 @@ class Membership extends Model
         return (int) now()->diffInDays($this->expiry_date, false);
     }
 
+    public function statusBadgeClass(): string
+    {
+        return match ($this->status) {
+            self::STATUS_APPROVED  => 'bg-success',
+            self::STATUS_PENDING   => 'bg-warning text-dark',
+            self::STATUS_REJECTED  => 'bg-danger',
+            self::STATUS_SUSPENDED => 'bg-secondary',
+            self::STATUS_EXPIRED   => 'bg-dark',
+            self::STATUS_RESIGNED  => 'bg-info text-dark',
+            default                => 'bg-light text-dark',
+        };
+    }
+
     /**
      * Generate and persist the CCHPL member ID.
      * Called once when an application is approved.

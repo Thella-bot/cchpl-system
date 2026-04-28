@@ -78,7 +78,7 @@
         </div>
     </div>
 @else
-    <!-- Bulk Actions Bar -->
+    <!-- Bulk Actions Bar (separate form, ids linked via form attribute) -->
     <form id="bulk-form" method="POST" action="{{ route('admin.memberships.bulk') }}">
         @csrf
         <div class="card border-0 shadow-sm mb-3">
@@ -102,97 +102,98 @@
                 </div>
             </div>
         </div>
+    </form>
 
-        <!-- Application Cards -->
-        <div class="d-flex flex-column gap-3">
-            @foreach ($memberships as $membership)
-                <div class="card border-0 shadow-sm">
-                    <div class="card-body">
-                        <div class="d-flex align-items-start gap-3 mb-3">
-                            <input type="checkbox" name="ids[]" value="{{ $membership->id }}"
-                                   class="bulk-checkbox form-check-input mt-1 flex-shrink-0">
-                            <div class="flex-grow-1">
-                                <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
-                                    <div>
-                                        <h5 class="mb-1 fw-semibold">{{ $membership->user->name }}</h5>
-                                        <p class="text-muted mb-0 small">
-                                            <i class="fas fa-envelope me-1"></i>{{ $membership->user->email }}
-                                            &nbsp;·&nbsp;
-                                            <i class="fas fa-calendar me-1"></i>Applied {{ $membership->created_at->format('M d, Y') }}
-                                        </p>
-                                    </div>
-                                    <span class="badge bg-warning text-dark">Pending</span>
+    <!-- Application Cards (outside bulk form so individual forms don't nest) -->
+    <div class="d-flex flex-column gap-3">
+        @foreach ($memberships as $membership)
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-start gap-3 mb-3">
+                        <input type="checkbox" name="ids[]" value="{{ $membership->id }}"
+                               class="bulk-checkbox form-check-input mt-1 flex-shrink-0"
+                               form="bulk-form">
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                                <div>
+                                    <h5 class="mb-1 fw-semibold">{{ $membership->user->name }}</h5>
+                                    <p class="text-muted mb-0 small">
+                                        <i class="fas fa-envelope me-1"></i>{{ $membership->user->email }}
+                                        &nbsp;·&nbsp;
+                                        <i class="fas fa-calendar me-1"></i>Applied {{ $membership->created_at->format('M d, Y') }}
+                                    </p>
                                 </div>
+                                <span class="badge bg-warning text-dark">Pending</span>
                             </div>
-                        </div>
-
-                        <div class="row g-3 mb-3">
-                            <div class="col-sm-4">
-                                <small class="text-muted">Category</small>
-                                <p class="fw-semibold mb-0">{{ $membership->category->name }}</p>
-                            </div>
-                            <div class="col-sm-4">
-                                <small class="text-muted">Annual Fee</small>
-                                <p class="fw-semibold mb-0">M{{ number_format($membership->category->annual_fee, 2) }}</p>
-                            </div>
-                            <div class="col-sm-4">
-                                <small class="text-muted">Documents</small>
-                                <p class="fw-semibold mb-0">{{ $membership->documents->count() }} uploaded</p>
-                            </div>
-                        </div>
-
-                        @if($membership->documents->isNotEmpty())
-                            <div class="mb-3">
-                                <small class="text-muted">Uploaded Documents:</small>
-                                <div class="d-flex flex-wrap gap-2 mt-1">
-                                    @foreach ($membership->documents as $doc)
-                                        <a href="{{ asset('storage/' . $doc->file_path) }}" target="_blank"
-                                           class="badge bg-light text-dark border text-decoration-none">
-                                            <i class="fas fa-file me-1"></i>{{ $doc->document_type }}
-                                        </a>
-                                    @endforeach
-                                </div>
-                            </div>
-                        @endif
-
-                        <div class="d-flex gap-2 flex-wrap">
-                            <a href="{{ route('admin.memberships.show', $membership->id) }}"
-                               class="btn btn-sm btn-outline-primary">
-                                <i class="fas fa-eye me-1"></i>View Details
-                            </a>
-                            <form action="{{ route('admin.memberships.approve', $membership->id) }}" method="POST" class="d-inline">
-                                @csrf
-                                <button type="submit" class="btn btn-sm btn-success"
-                                        onclick="return confirm('Approve application for {{ addslashes($membership->user->name) }}?')">
-                                    <i class="fas fa-check me-1"></i>Approve
-                                </button>
-                            </form>
-                            <!-- Reject with reason (inline collapsed form) -->
-                            <button class="btn btn-sm btn-danger" type="button"
-                                    data-bs-toggle="collapse" data-bs-target="#reject-{{ $membership->id }}">
-                                <i class="fas fa-times me-1"></i>Reject
-                            </button>
-                        </div>
-
-                        <div class="collapse mt-3" id="reject-{{ $membership->id }}">
-                            <form action="{{ route('admin.memberships.reject', $membership->id) }}" method="POST">
-                                @csrf
-                                <div class="input-group">
-                                    <input type="text" name="reason" class="form-control form-control-sm"
-                                           placeholder="Reason for rejection (required, min 10 chars)…" required minlength="10">
-                                    <button type="submit" class="btn btn-sm btn-danger">
-                                        Confirm Reject
-                                    </button>
-                                </div>
-                            </form>
                         </div>
                     </div>
-                </div>
-            @endforeach
-        </div>
 
-        <div class="mt-4">{{ $memberships->links() }}</div>
-    </form>
+                    <div class="row g-3 mb-3">
+                        <div class="col-sm-4">
+                            <small class="text-muted">Category</small>
+                            <p class="fw-semibold mb-0">{{ $membership->category->name }}</p>
+                        </div>
+                        <div class="col-sm-4">
+                            <small class="text-muted">Annual Fee</small>
+                            <p class="fw-semibold mb-0">M{{ number_format($membership->category->annual_fee, 2) }}</p>
+                        </div>
+                        <div class="col-sm-4">
+                            <small class="text-muted">Documents</small>
+                            <p class="fw-semibold mb-0">{{ $membership->documents->count() }} uploaded</p>
+                        </div>
+                    </div>
+
+                    @if($membership->documents->isNotEmpty())
+                        <div class="mb-3">
+                            <small class="text-muted">Uploaded Documents:</small>
+                            <div class="d-flex flex-wrap gap-2 mt-1">
+                                @foreach ($membership->documents as $doc)
+                                    <a href="{{ asset('storage/' . $doc->file_path) }}" target="_blank"
+                                       class="badge bg-light text-dark border text-decoration-none">
+                                        <i class="fas fa-file me-1"></i>{{ $doc->document_type }}
+                                    </a>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+
+                    <div class="d-flex gap-2 flex-wrap">
+                        <a href="{{ route('admin.memberships.show', $membership->id) }}"
+                           class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-eye me-1"></i>View Details
+                        </a>
+                        <form action="{{ route('admin.memberships.approve', $membership->id) }}" method="POST" class="d-inline">
+                            @csrf
+                            <button type="submit" class="btn btn-sm btn-success"
+                                    onclick="return confirm('Approve application for {{ addslashes($membership->user->name) }}?')">
+                                <i class="fas fa-check me-1"></i>Approve
+                            </button>
+                        </form>
+                        <!-- Reject with reason (inline collapsed form) -->
+                        <button class="btn btn-sm btn-danger" type="button"
+                                data-bs-toggle="collapse" data-bs-target="#reject-{{ $membership->id }}">
+                            <i class="fas fa-times me-1"></i>Reject
+                        </button>
+                    </div>
+
+                    <div class="collapse mt-3" id="reject-{{ $membership->id }}">
+                        <form action="{{ route('admin.memberships.reject', $membership->id) }}" method="POST">
+                            @csrf
+                            <div class="input-group">
+                                <input type="text" name="reason" class="form-control form-control-sm"
+                                       placeholder="Reason for rejection (required, min 10 chars)…" required minlength="10">
+                                <button type="submit" class="btn btn-sm btn-danger">
+                                    Confirm Reject
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        @endforeach
+    </div>
+
+    <div class="mt-4">{{ $memberships->links() }}</div>
 @endif
 
 @push('scripts')

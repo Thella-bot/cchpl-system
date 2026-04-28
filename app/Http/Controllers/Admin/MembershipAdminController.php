@@ -78,20 +78,7 @@ class MembershipAdminController extends Controller
         );
 
         // Auto-send membership certificate PDF
-        DocumentService::sendToMember(
-            DocumentReview::TYPE_CERTIFICATE,
-            [
-                'memberName' => strtoupper($membership->user->name),
-                'category'   => strtoupper($membership->category->name) . ' MEMBER',
-                'memberId'   => $memberId,
-                'validFrom'  => now()->format('d F Y'),
-                'validUntil' => '31 March ' . now()->addYear()->year,
-                'dateIssued' => now()->format('d F Y'),
-            ],
-            $membership->user->email,
-            $membership->user->name,
-            auth()->id()
-        );
+        DocumentService::sendToMember($membership, DocumentReview::TYPE_CERTIFICATE);
 
         return back()->with(
             'success',
@@ -136,7 +123,9 @@ class MembershipAdminController extends Controller
             'ids'    => 'required|array|min:1',
             'ids.*'  => 'exists:memberships,id',
             'action' => 'required|in:approve,reject',
-            'reason' => 'required_if:action,reject|string|min:10',
+            'reason' => $request->action === 'reject'
+                ? 'required|string|min:10'
+                : 'nullable|string|min:10',
         ]);
 
         $memberships = Membership::whereIn('id', $request->ids)
@@ -155,21 +144,7 @@ class MembershipAdminController extends Controller
             if ($newStatus === Membership::STATUS_APPROVED) {
                 // FIX: generate member ID and send certificate for every bulk-approved member
                 $memberId = $membership->generateMemberId();
-
-                DocumentService::sendToMember(
-                    DocumentReview::TYPE_CERTIFICATE,
-                    [
-                        'memberName' => strtoupper($membership->user->name),
-                        'category'   => strtoupper($membership->category->name) . ' MEMBER',
-                        'memberId'   => $memberId,
-                        'validFrom'  => now()->format('d F Y'),
-                        'validUntil' => '31 March ' . now()->addYear()->year,
-                        'dateIssued' => now()->format('d F Y'),
-                    ],
-                    $membership->user->email,
-                    $membership->user->name,
-                    auth()->id()
-                );
+                DocumentService::sendToMember($membership, DocumentReview::TYPE_CERTIFICATE);
             }
 
             AuditLog::create([
