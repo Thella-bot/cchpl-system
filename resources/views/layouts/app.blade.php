@@ -57,7 +57,7 @@
                         </li>
                         @if (Auth::user()->isAdmin())
                             <li class="nav-item">
-                                <a class="nav-link text-success fw-semibold" href="{{ route('admin.dashboard') }}">
+                                <a class="nav-link text-success fw-semibold" href="{{ auth()->user()->adminHome() }}">
                                     <i class="fas fa-cog me-1"></i>Admin Panel
                                 </a>
                             </li>

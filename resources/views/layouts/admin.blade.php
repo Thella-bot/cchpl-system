@@ -125,7 +125,7 @@
             <button type="button" class="btn btn-sm admin-topbar-action admin-menu-toggle" id="admin-menu-toggle" aria-label="Toggle admin menu" aria-expanded="false" aria-controls="admin-sidebar">
                 <i class="fas fa-bars"></i>
             </button>
-            <a href="{{ route('admin.dashboard') }}" class="fw-bold text-decoration-none admin-topbar-brand d-flex align-items-center">
+            <a href="{{ auth()->user()->adminHome() }}" class="fw-bold text-decoration-none admin-topbar-brand d-flex align-items-center">
 <img src="{{ asset('images/logo/cchpl-official-logo.png') }}" alt="CCHPL Logo" height="40" class="d-inline-block align-top me-3">
                 <span>
                     <span class="d-block small fw-normal" style="color: rgba(255, 255, 255, 0.68);">

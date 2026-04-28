@@ -45,6 +45,35 @@ class User extends Authenticatable {
     public function isAdmin() {
         return $this->is_admin;
     }
+
+    /**
+     * Get the appropriate admin home route based on user roles.
+     * Prevents non-super admins from being redirected to the super-admin-only dashboard.
+     */
+    public function adminHome() {
+        if ($this->isSuperAdmin()) {
+            return route('admin.dashboard');
+        }
+
+        if ($this->hasRole('membership_admin')) {
+            return route('admin.memberships.index');
+        }
+
+        if ($this->hasRole('payment_admin')) {
+            return route('admin.payments.index');
+        }
+
+        if ($this->hasRole('finance_admin')) {
+            return route('admin.memberships.categories.index');
+        }
+
+        if ($this->hasRole('reports_admin')) {
+            return route('admin.reports.index');
+        }
+
+        // Fallback for any admin without specific roles
+        return route('member.dashboard');
+    }
     
     /**
      * Assign role to user

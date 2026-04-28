@@ -37,8 +37,8 @@ class LoginController extends Controller
     {
         $user = auth()->user();
 
-if ($user && $user->isAdmin()) {
-            return '/admin/dashboard';
+        if ($user && $user->isAdmin()) {
+            return $user->adminHome();
         }
 
         return '/member/dashboard';
