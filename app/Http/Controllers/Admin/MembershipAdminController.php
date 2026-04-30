@@ -78,12 +78,22 @@ class MembershipAdminController extends Controller
         );
 
         // Auto-send membership certificate PDF
-        DocumentService::sendToMember($membership, DocumentReview::TYPE_CERTIFICATE);
+        $certError = null;
+        try {
+            DocumentService::sendToMember($membership, DocumentReview::TYPE_CERTIFICATE);
+        } catch (\Exception $e) {
+            $certError = $e->getMessage();
+            \Log::warning("Certificate email failed for membership #{$membership->id}: {$certError}");
+        }
 
-        return back()->with(
-            'success',
-            "✅ Application for {$membership->user->name} approved. Member ID: {$memberId}. Certificate emailed."
-        );
+        $message = "✅ Application for {$membership->user->name} approved. Member ID: {$memberId}.";
+        if ($certError) {
+$message .= " Certificate could not be emailed due to a technical issue (full details logged). Check logs if needed.";
+        } else {
+            $message .= ' Certificate emailed.';
+        }
+
+        return back()->with('success', $message);
     }
 
     // ── Reject ─────────────────────────────────────────────────────────────
@@ -133,6 +143,8 @@ class MembershipAdminController extends Controller
             ->with('user', 'category')
             ->get();
 
+        $certFailures = [];
+
         foreach ($memberships as $membership) {
             $oldValues = $membership->only(['status']);
             $newStatus = $request->action === 'approve' ? Membership::STATUS_APPROVED : Membership::STATUS_REJECTED;
@@ -144,7 +156,13 @@ class MembershipAdminController extends Controller
             if ($newStatus === Membership::STATUS_APPROVED) {
                 // FIX: generate member ID and send certificate for every bulk-approved member
                 $memberId = $membership->generateMemberId();
-                DocumentService::sendToMember($membership, DocumentReview::TYPE_CERTIFICATE);
+
+                try {
+                    DocumentService::sendToMember($membership, DocumentReview::TYPE_CERTIFICATE);
+                } catch (\Exception $e) {
+                    $certFailures[] = $membership->user->name;
+                    \Log::warning("Certificate email failed for membership #{$membership->id}: {$e->getMessage()}");
+                }
             }
 
             AuditLog::create([
@@ -166,10 +184,18 @@ class MembershipAdminController extends Controller
             );
         }
 
-        $count   = $memberships->count();
-        $message = $request->action === 'approve'
-            ? "✅ Approved {$count} application(s). Certificates emailed."
-            : "❌ Rejected {$count} application(s).";
+        $count = $memberships->count();
+
+        if ($request->action === 'approve') {
+            $message = "✅ Approved {$count} application(s).";
+            if (!empty($certFailures)) {
+                $message .= ' Certificate emails could not be sent for some members due to technical issues (full details logged).';
+            } else {
+                $message .= ' Certificates emailed.';
+            }
+        } else {
+            $message = "❌ Rejected {$count} application(s).";
+        }
 
         return back()->with('success', $message);
     }
@@ -341,3 +367,4 @@ class MembershipAdminController extends Controller
             ->with('success', "✅ '{$category->name}' updated successfully.");
     }
 }
+

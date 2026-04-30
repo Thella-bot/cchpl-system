@@ -28,7 +28,19 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/member/dashboard';
+    /**
+     * Get the post-login redirect path for the user.
+     */
+    protected function redirectTo(): string
+    {
+        $user = auth()->user();
+
+        if ($user && $user->isAdmin()) {
+            return $user->adminHome();
+        }
+
+        return '/member/dashboard';
+    }
 
     /**
      * Create a new controller instance.

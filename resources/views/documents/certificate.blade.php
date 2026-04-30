@@ -46,7 +46,7 @@
     <div class="border-pattern">
         <div class="inner-border">
             <div class="header">
-                <img src="{{ public_path('images/logo/cchpl-official-logo.png') }}" alt="CCHPL Logo" style="max-height: 70px; margin-bottom: 10px;">
+                <img src="{{ public_path('images/logo/cchpl-official-logo.png') }}" alt="CCHPL Logo" style="max-height: 90px; margin-bottom: 10px;">
             </div>
 
             <div class="title">Certificate of Membership</div>

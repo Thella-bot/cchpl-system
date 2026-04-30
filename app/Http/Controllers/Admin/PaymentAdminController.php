@@ -69,28 +69,8 @@ class PaymentAdminController extends Controller
             ? $payment->verified_at->year
             : $payment->verified_at->year - 1;
 
-        // ── Auto-send receipt PDF ─────────────────────────────────────────
-        // All data is derived from verified system records — no review needed.
-        DocumentService::sendToMember(
-            DocumentReview::TYPE_RECEIPT,
-            [
-                'receiptNo'      => $payment->receipt_number,
-                'date'           => $payment->verified_at->format('d F Y'),
-                'receivedFrom'   => $user->name,
-                'memberId'       => $membership->member_id ?? '—',
-                'contact'        => $user->phone ?? '—',
-                'paymentFor'     => $membership->category->name . ' Membership Fee',
-                'paymentPeriod'  => 'Membership Year ' . $fyYear . '/' . ($fyYear + 1),
-                'paymentMethod'  => ucfirst($payment->provider) . ' (Mobile Money)',
-                'transactionRef' => $payment->transaction_reference,
-                'amount'         => number_format((float) $payment->amount, 2),
-                'amountWords'    => DocumentService::amountInWords((float) $payment->amount),
-                'balance'        => '0.00',
-            ],
-            $user->email,
-            $user->name,
-            auth()->id()
-        );
+// ── Auto-send receipt PDF ─────────────────────────────────────────
+DocumentService::sendToMember($membership, DocumentReview::TYPE_RECEIPT, $payment);
 
         // ── Auto-send welcome pack on first verified payment ──────────────
         $isFirstPayment = $membership->payments()
@@ -99,24 +79,7 @@ class PaymentAdminController extends Controller
 
         if ($isFirstPayment) {
             $expiry = $membership->expiry_date;
-            DocumentService::sendToMember(
-                DocumentReview::TYPE_WELCOME_PACK,
-                [
-                    'memberName'   => $user->name,
-                    'memberId'     => $membership->member_id ?? '—',
-                    'category'     => $membership->category->name,
-                    'annualFee'    => 'M' . number_format($membership->category->annual_fee, 2),
-                    'votingRights' => $membership->category->voting_rights ? 'Yes' : 'No',
-                    'validUntil'   => $expiry
-                                        ? '31 March ' . $expiry->year
-                                        : '31 March ' . now()->addYear()->year,
-                    'dateJoined'   => now()->format('d F Y'),
-                    'dateIssued'   => now()->format('d F Y'),
-                ],
-                $user->email,
-                $user->name,
-                auth()->id()
-            );
+            DocumentService::sendToMember($membership, DocumentReview::TYPE_WELCOME_PACK);
         }
 
         $extra = $isFirstPayment ? ' Receipt and Welcome Pack emailed.' : ' Receipt emailed.';
