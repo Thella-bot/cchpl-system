@@ -11,9 +11,9 @@ class ReceiptSequence extends Model
         'last_sequence',
     ];
 
-    protected $casts = [
+protected $casts = [
         'last_sequence' => 'integer',
     ];
 
-    public $timestamps = true;
+public $timestamps = true;
 }

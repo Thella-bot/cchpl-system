@@ -23,7 +23,7 @@
         </div>
     </div>
 
-    <div class="col-12 col-lg-10">
+<div class="col-12 col-lg-10">
         <div class="row g-4">
             <div class="col-md-5">
                 <div class="card border-0 shadow-sm h-100">
@@ -36,7 +36,7 @@
                             <div class="fw-semibold">We’ll email you a password reset link for your account.</div>
                         </div>
 
-                        <div class="alert alert-info py-2 mt-3 mb-0 small">
+<div class="alert alert-info py-2 mt-3 mb-0 small">
                             <i class="fas fa-circle-info me-1"></i>
                             Use the same email address you registered with in the system.
                         </div>
@@ -44,7 +44,7 @@
                 </div>
             </div>
 
-            <div class="col-md-7">
+<div class="col-md-7">
                 <div class="card border-0 shadow-sm h-100">
                     <div class="card-header bg-white fw-semibold d-flex align-items-center justify-content-between">
                         <span><i class="fas fa-envelope text-muted me-2"></i>Send Reset Link</span>
@@ -57,10 +57,10 @@
                             </div>
                         @endif
 
-                        <form method="POST" action="{{ route('password.email') }}" class="d-flex flex-column gap-3">
+<form method="POST" action="{{ route('password.email') }}" class="d-flex flex-column gap-3">
                             @csrf
 
-                            <div>
+<div>
                                 <label for="email" class="form-label fw-semibold small text-muted">Email Address</label>
                                 <input id="email" type="email"
                                        class="form-control form-control-lg @error('email') is-invalid @enderror"
@@ -71,7 +71,7 @@
                                 @enderror
                             </div>
 
-                            <div class="d-flex flex-column flex-sm-row gap-2 pt-2">
+<div class="d-flex flex-column flex-sm-row gap-2 pt-2">
                                 <button type="submit" class="btn btn-success btn-lg px-4">
                                     <i class="fas fa-paper-plane me-2"></i>Send Password Reset Link
                                 </button>

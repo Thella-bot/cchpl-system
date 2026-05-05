@@ -13,10 +13,10 @@
 </div>
 
 <div class="row g-4">
-    <!-- Left: Details & Deactivation -->
-    <div class="col-lg-4">
-        <!-- Details Card -->
-        <div class="card border-0 shadow-sm mb-4">
+
+<div class="col-lg-4">
+
+<div class="card border-0 shadow-sm mb-4">
             <div class="card-header bg-white fw-semibold">
                 <i class="fas fa-id-card text-muted me-2"></i>Admin Details
             </div>
@@ -38,8 +38,7 @@
             </div>
         </div>
 
-        <!-- Current Roles -->
-        <div class="card border-0 shadow-sm mb-4">
+<div class="card border-0 shadow-sm mb-4">
             <div class="card-header bg-white fw-semibold">
                 <i class="fas fa-tags text-muted me-2"></i>Current Roles
             </div>
@@ -52,8 +51,7 @@
             </div>
         </div>
 
-        <!-- Danger Zone -->
-        @if(Auth::id() !== $user->id)
+@if(Auth::id() !== $user->id)
             <div class="card border-0 shadow-sm border-danger">
                 <div class="card-header bg-danger text-white fw-semibold">
                     <i class="fas fa-exclamation-triangle me-2"></i>Danger Zone
@@ -68,8 +66,7 @@
         @endif
     </div>
 
-    <!-- Right: Role Management -->
-    <div class="col-lg-8">
+<div class="col-lg-8">
         <div class="card border-0 shadow-sm">
             <div class="card-header bg-white fw-semibold">
                 <i class="fas fa-user-shield text-muted me-2"></i>Manage Roles
@@ -114,7 +111,6 @@
     </div>
 </div>
 
-<!-- Deactivation Modal -->
 <div class="modal fade" id="deactivateModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">

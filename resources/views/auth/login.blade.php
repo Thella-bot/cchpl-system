@@ -23,7 +23,7 @@
         </div>
     </div>
 
-    <div class="col-12 col-lg-10">
+<div class="col-12 col-lg-10">
         <div class="row g-4">
             <div class="col-md-5">
                 <div class="card border-0 shadow-sm h-100">
@@ -36,7 +36,7 @@
                             <div class="fw-semibold">Manage membership, payments, documents, and your profile.</div>
                         </div>
 
-                        <div class="d-flex flex-column gap-2">
+<div class="d-flex flex-column gap-2">
                             <div class="p-3 bg-light rounded d-flex align-items-center gap-3">
                                 <div class="rounded-circle bg-success bg-opacity-10 d-flex align-items-center justify-content-center"
                                      style="width: 42px; height: 42px;">
@@ -69,7 +69,7 @@
                             </div>
                         </div>
 
-                        <div class="alert alert-success py-2 mt-3 mb-0 small">
+<div class="alert alert-success py-2 mt-3 mb-0 small">
                             <i class="fas fa-circle-info me-1"></i>
                             New to the system? Use the registration page to create your member account first.
                         </div>
@@ -77,7 +77,7 @@
                 </div>
             </div>
 
-            <div class="col-md-7">
+<div class="col-md-7">
                 <div class="card border-0 shadow-sm h-100">
                     <div class="card-header bg-white fw-semibold d-flex align-items-center justify-content-between">
                         <span><i class="fas fa-user-lock text-muted me-2"></i>Login Details</span>
@@ -87,7 +87,7 @@
                         <form method="POST" action="{{ route('login') }}" class="d-flex flex-column gap-3">
                             @csrf
 
-                            <div>
+<div>
                                 <label for="email" class="form-label fw-semibold small text-muted">Email Address</label>
                                 <input id="email" type="email"
                                        class="form-control form-control-lg @error('email') is-invalid @enderror"
@@ -100,7 +100,7 @@
                                 @enderror
                             </div>
 
-                            <div>
+<div>
                                 <label for="password" class="form-label fw-semibold small text-muted">Password</label>
                                 <input id="password" type="password"
                                        class="form-control form-control-lg @error('password') is-invalid @enderror"
@@ -113,7 +113,7 @@
                                 @enderror
                             </div>
 
-                            <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-2">
+<div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-2">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
                                     <label class="form-check-label small" for="remember">
@@ -121,14 +121,14 @@
                                     </label>
                                 </div>
 
-                                @if (Route::has('password.request'))
+@if (Route::has('password.request'))
                                     <a class="small text-decoration-none" href="{{ route('password.request') }}">
                                         Forgot Your Password?
                                     </a>
                                 @endif
                             </div>
 
-                            <div class="d-flex flex-column flex-sm-row gap-2 pt-2">
+<div class="d-flex flex-column flex-sm-row gap-2 pt-2">
                                 <button type="submit" class="btn btn-success btn-lg px-4">
                                     <i class="fas fa-right-to-bracket me-2"></i>Login
                                 </button>

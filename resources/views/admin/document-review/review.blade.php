@@ -5,7 +5,7 @@
 @section('content')
 <div class="container mx-auto px-4 py-8">
 
-  {{-- Header --}}
+{{-- Header --}}
   <div class="mb-6 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
     <div>
       <a href="{{ route('admin.documents.queue') }}" class="text-sm text-blue-600 hover:underline">&larr; Back to queue</a>
@@ -21,16 +21,16 @@
     </span>
   </div>
 
-  @if (session('success'))
+@if (session('success'))
     <div class="mb-5 p-4 bg-green-50 border-l-4 border-green-600 text-green-700 rounded">{{ session('success') }}</div>
   @endif
   @if (session('error'))
     <div class="mb-5 p-4 bg-red-50 border-l-4 border-red-600 text-red-700 rounded">{{ session('error') }}</div>
   @endif
 
-  <div class="grid lg:grid-cols-2 gap-8">
+<div class="grid lg:grid-cols-2 gap-8">
 
-    {{-- LEFT: Edit fields --}}
+{{-- LEFT: Edit fields --}}
     <div>
       <div class="bg-white rounded shadow p-6 mb-6">
         <div class="flex items-center justify-between mb-4">
@@ -40,7 +40,7 @@
           @endif
         </div>
 
-        @if ($review->isSent() || $review->isCancelled())
+@if ($review->isSent() || $review->isCancelled())
           {{-- Read-only view --}}
           <div class="space-y-3">
             @foreach ($review->data as $key => $value)
@@ -74,7 +74,7 @@
                 @endif
               @endforeach
 
-              <div>
+<div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Reviewer notes (internal only)</label>
                 <textarea name="reviewer_notes" rows="2"
                   class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
@@ -95,7 +95,7 @@
         @endif
       </div>
 
-      {{-- Recipient info --}}
+{{-- Recipient info --}}
       <div class="bg-white rounded shadow p-6 mb-6">
         <h2 class="text-lg font-semibold text-gray-800 mb-3">Recipient</h2>
         <div class="text-sm space-y-1">
@@ -110,12 +110,12 @@
         </div>
       </div>
 
-      {{-- Action buttons --}}
+{{-- Action buttons --}}
       @if (!$review->isSent() && !$review->isCancelled())
       <div class="bg-white rounded shadow p-6 space-y-4">
         <h2 class="text-lg font-semibold text-gray-800 mb-2">Actions</h2>
 
-        {{-- Approve --}}
+{{-- Approve --}}
         @if ($review->isPendingReview())
         <form method="POST" action="{{ route('admin.documents.approve', $review) }}">
           @csrf
@@ -130,7 +130,7 @@
         </form>
         @endif
 
-        {{-- Send --}}
+{{-- Send --}}
         <form method="POST" action="{{ route('admin.documents.send', $review) }}"
               onsubmit="return confirm('Send this document to {{ addslashes($review->recipient_name ?? $review->recipient_type) }}? This cannot be undone.')">
           @csrf
@@ -150,7 +150,7 @@
           </button>
         </form>
 
-        {{-- Cancel --}}
+{{-- Cancel --}}
         <details class="mt-2">
           <summary class="text-sm text-red-600 cursor-pointer hover:underline">Cancel this document</summary>
           <form method="POST" action="{{ route('admin.documents.cancel', $review) }}" class="mt-3">
@@ -168,7 +168,7 @@
       </div>
       @endif
 
-      @if ($review->isSent())
+@if ($review->isSent())
       <div class="bg-green-50 border border-green-200 rounded p-5">
         <div class="font-semibold text-green-800 mb-1">Document sent</div>
         <div class="text-sm text-green-700">
@@ -178,16 +178,16 @@
       </div>
       @endif
 
-      @if ($review->isCancelled())
+@if ($review->isCancelled())
       <div class="bg-red-50 border border-red-200 rounded p-5">
         <div class="font-semibold text-red-800 mb-1">Document cancelled</div>
         <div class="text-sm text-red-700">{{ $review->cancellation_reason }}</div>
       </div>
       @endif
 
-    </div>
+</div>
 
-    {{-- RIGHT: PDF Preview --}}
+{{-- RIGHT: PDF Preview --}}
     <div>
       <div class="bg-white rounded shadow overflow-hidden sticky top-6">
         <div class="px-5 py-3 border-b border-gray-200 flex items-center justify-between bg-gray-50">
@@ -204,7 +204,7 @@
           </div>
         </div>
 
-        <div id="preview-container" class="relative" style="height: 700px;">
+<div id="preview-container" class="relative" style="height: 700px;">
           <div id="preview-loading"
             class="absolute inset-0 flex items-center justify-center text-gray-400 text-sm bg-white z-10"
             style="display:none!important">
@@ -218,13 +218,13 @@
           </iframe>
         </div>
 
-        <div class="px-5 py-3 border-t border-gray-200 bg-gray-50 text-xs text-gray-400">
+<div class="px-5 py-3 border-t border-gray-200 bg-gray-50 text-xs text-gray-400">
           This is a live preview. Save your changes then click Refresh to see the updated PDF.
         </div>
       </div>
     </div>
 
-  </div>
+</div>
 </div>
 
 <script>
@@ -235,7 +235,7 @@ function refreshPreview() {
     if (submitBtn) submitBtn.click();
   }
 
-  const frame = document.getElementById('preview-frame');
+const frame = document.getElementById('preview-frame');
   if (frame) {
     const loading = document.getElementById('preview-loading');
     if (loading) loading.style.display = 'flex';

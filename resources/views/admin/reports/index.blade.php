@@ -8,7 +8,6 @@
     <p class="text-muted mb-0">Overview of membership and financial data.</p>
 </div>
 
-<!-- Summary Cards -->
 <div class="row g-3 mb-4">
     <div class="col-xl-4 col-md-6">
         <div class="card border-0 shadow-sm">
@@ -52,8 +51,8 @@
 </div>
 
 <div class="row g-4">
-    <!-- Detailed Reports Links -->
-    <div class="col-lg-6">
+
+<div class="col-lg-6">
         <div class="card border-0 shadow-sm mb-4">
             <div class="card-header bg-white fw-semibold">
                 <i class="fas fa-chart-bar text-muted me-2"></i>Detailed Reports
@@ -72,8 +71,7 @@
         </div>
     </div>
 
-    <!-- Category Breakdown -->
-    <div class="col-lg-6">
+<div class="col-lg-6">
         <div class="card border-0 shadow-sm mb-4">
             <div class="card-header bg-white fw-semibold">
                 <i class="fas fa-chart-pie text-muted me-2"></i>Active Members by Category

@@ -5,16 +5,16 @@
 @section('content')
 <div class="container mx-auto px-4 py-8 max-w-3xl">
 
-  <a href="{{ route('admin.documents.queue') }}" class="text-sm text-blue-600 hover:underline">&larr; Back to queue</a>
+<a href="{{ route('admin.documents.queue') }}" class="text-sm text-blue-600 hover:underline">&larr; Back to queue</a>
 
-  <h1 class="text-3xl font-bold text-gray-800 mt-2 mb-2">Compose AGM Notice & Agenda</h1>
+<h1 class="text-3xl font-bold text-gray-800 mt-2 mb-2">Compose AGM Notice & Agenda</h1>
   <p class="text-gray-500 text-sm mb-6">
     Fill in all details below. Use <strong>Preview</strong> to check the PDF before saving.
     After saving, you can edit further in the review screen before sending.
     <br>Reference: CCHPL-OPS-001 &nbsp;|&nbsp; Per Constitution Clause 9.1 &amp; 9.3 and Bylaws Clause 3.
   </p>
 
-  @if ($errors->any())
+@if ($errors->any())
     <div class="mb-5 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 rounded text-sm">
       <strong>Please fix the following errors:</strong>
       <ul class="mt-1 list-disc list-inside">
@@ -25,13 +25,13 @@
     </div>
   @endif
 
-  <form method="POST" action="{{ route('admin.documents.store.agm') }}" id="agm-form">
+<form method="POST" action="{{ route('admin.documents.store.agm') }}" id="agm-form">
     @csrf
     <div class="bg-white rounded shadow p-6 space-y-5">
 
-      <h2 class="text-base font-semibold text-gray-700 border-b pb-2">Meeting details</h2>
+<h2 class="text-base font-semibold text-gray-700 border-b pb-2">Meeting details</h2>
 
-      <div class="grid sm:grid-cols-2 gap-5">
+<div class="grid sm:grid-cols-2 gap-5">
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">AGM Year *</label>
           <input type="number" name="agm_year" value="{{ old('agm_year', date('Y')) }}" required
@@ -61,23 +61,23 @@
         </div>
       </div>
 
-      <div>
+<div>
         <label class="block text-sm font-medium text-gray-700 mb-1">Venue (full name and address) *</label>
         <input type="text" name="venue" value="{{ old('venue') }}" required
           class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
           placeholder="e.g. LNDC Conference Centre, Kingsway, Maseru 100, Lesotho">
       </div>
 
-      <div>
+<div>
         <label class="block text-sm font-medium text-gray-700 mb-1">Online link (if applicable)</label>
         <input type="text" name="online_link" value="{{ old('online_link') }}"
           class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
           placeholder="Zoom / Teams / Google Meet link and access code">
       </div>
 
-      <h2 class="text-base font-semibold text-gray-700 border-b pb-2 pt-2">Notice details</h2>
+<h2 class="text-base font-semibold text-gray-700 border-b pb-2 pt-2">Notice details</h2>
 
-      <div class="grid sm:grid-cols-2 gap-5">
+<div class="grid sm:grid-cols-2 gap-5">
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Notice issued date *</label>
           <input type="text" name="notice_date" value="{{ old('notice_date', now()->format('d F Y')) }}" required
@@ -91,9 +91,9 @@
         </div>
       </div>
 
-      <h2 class="text-base font-semibold text-gray-700 border-b pb-2 pt-2">Contact & deadlines</h2>
+<h2 class="text-base font-semibold text-gray-700 border-b pb-2 pt-2">Contact & deadlines</h2>
 
-      <div class="grid sm:grid-cols-3 gap-5">
+<div class="grid sm:grid-cols-3 gap-5">
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Contact name *</label>
           <input type="text" name="contact_name" value="{{ old('contact_name', auth()->user()->name) }}" required
@@ -112,7 +112,7 @@
         </div>
       </div>
 
-      <div class="grid sm:grid-cols-3 gap-5">
+<div class="grid sm:grid-cols-3 gap-5">
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Paid-up deadline (voting eligibility) *</label>
           <input type="text" name="paid_up_deadline" value="{{ old('paid_up_deadline', '31 March ' . date('Y')) }}" required
@@ -132,9 +132,9 @@
         </div>
       </div>
 
-    </div>
+</div>
 
-    <div class="mt-6 flex flex-wrap gap-3 items-center">
+<div class="mt-6 flex flex-wrap gap-3 items-center">
       <button type="button" onclick="previewDraft()"
         class="px-6 py-2.5 bg-blue-600 text-white rounded hover:bg-blue-700 font-medium">
         Preview PDF
@@ -191,30 +191,30 @@ function previewDraft() {
     }
   };
 
-  const form = document.createElement('form');
+const form = document.createElement('form');
   form.method = 'POST';
   form.action = '{{ route("admin.documents.preview-draft") }}';
   form.target = 'preview-frame';
 
-  const csrf = document.createElement('input');
+const csrf = document.createElement('input');
   csrf.type = 'hidden'; csrf.name = '_token'; csrf.value = '{{ csrf_token() }}';
   form.appendChild(csrf);
 
-  const typeInput = document.createElement('input');
+const typeInput = document.createElement('input');
   typeInput.type = 'hidden'; typeInput.name = 'type'; typeInput.value = payload.type;
   form.appendChild(typeInput);
 
-  Object.entries(payload.data).forEach(([k, v]) => {
+Object.entries(payload.data).forEach(([k, v]) => {
     const i = document.createElement('input');
     i.type = 'hidden'; i.name = 'data[' + k + ']'; i.value = v ?? '';
     form.appendChild(i);
   });
 
-  document.body.appendChild(form);
+document.body.appendChild(form);
   form.submit();
   document.body.removeChild(form);
 
-  document.getElementById('preview-modal').style.display = 'flex';
+document.getElementById('preview-modal').style.display = 'flex';
 }
 
 function closePreview() {

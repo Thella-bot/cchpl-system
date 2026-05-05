@@ -18,11 +18,11 @@ return new class extends Migration {
             $table->json('meta')->nullable();
             $table->timestamps();
 
-            $table->index(['auditable_type', 'auditable_id']);
+$table->index(['auditable_type', 'auditable_id']);
         });
     }
 
-    public function down(): void
+public function down(): void
     {
         Schema::dropIfExists('audit_logs');
     }

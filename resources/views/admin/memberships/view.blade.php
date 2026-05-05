@@ -31,7 +31,7 @@
         </div>
     </div>
 
-    <div class="col-md-6">
+<div class="col-md-6">
         <div class="card border-0 shadow-sm h-100">
             <div class="card-header bg-white fw-semibold">
                 <i class="fas fa-id-card text-muted me-2"></i>Membership Details

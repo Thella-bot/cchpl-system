@@ -12,15 +12,15 @@ class PaymentReceivedNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public function __construct(protected Payment $payment)
+public function __construct(protected Payment $payment)
     {}
 
-    public function via($notifiable): array
+public function via($notifiable): array
     {
         return ['mail'];
     }
 
-    public function toMail($notifiable): MailMessage
+public function toMail($notifiable): MailMessage
     {
         return (new MailMessage)
             ->subject('CCHPL — Payment Received')

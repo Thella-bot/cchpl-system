@@ -23,7 +23,7 @@
         </div>
     </div>
 
-    <div class="col-md-4">
+<div class="col-md-4">
         <div class="card border-0 shadow-sm h-100">
             <div class="card-header bg-white fw-semibold">
                 <i class="fas fa-users text-muted me-2"></i>User Overview
@@ -36,12 +36,12 @@
                     </span>
                 </div>
 
-                <div class="p-3 bg-light rounded mb-3">
+<div class="p-3 bg-light rounded mb-3">
                     <small class="text-muted">Administrator Accounts</small>
                     <p class="fw-bold mb-0 fs-5">{{ number_format($stats['total_admins'] ?? 0) }}</p>
                 </div>
 
-                <div class="alert alert-info py-2 mt-3 mb-0 small">
+<div class="alert alert-info py-2 mt-3 mb-0 small">
                     <i class="fas fa-info-circle me-1"></i>
                     Monitor access roles and keep administrative accounts up to date.
                 </div>
@@ -49,7 +49,7 @@
         </div>
     </div>
 
-    <div class="col-md-4">
+<div class="col-md-4">
         <div class="card border-0 shadow-sm h-100">
             <div class="card-header bg-white fw-semibold">
                 <i class="fas fa-id-card text-muted me-2"></i>Membership Status
@@ -62,14 +62,14 @@
                     </span>
                 </div>
 
-                <div class="d-flex align-items-center justify-content-between mb-3">
+<div class="d-flex align-items-center justify-content-between mb-3">
                     <span class="fs-6 fw-semibold">Pending Applications</span>
                     <span class="badge bg-warning text-dark px-3 py-2 fs-6">
                         {{ number_format($stats['pending_applications'] ?? 0) }}
                     </span>
                 </div>
 
-                <div class="alert alert-success py-2 mt-3 mb-0 small">
+<div class="alert alert-success py-2 mt-3 mb-0 small">
                     <i class="fas fa-check-circle me-1"></i>
                     Review pending applications promptly to keep member onboarding moving.
                 </div>
@@ -77,7 +77,7 @@
         </div>
     </div>
 
-    <div class="col-md-4">
+<div class="col-md-4">
         <div class="card border-0 shadow-sm h-100">
             <div class="card-header bg-white fw-semibold">
                 <i class="fas fa-credit-card text-muted me-2"></i>Payment Snapshot
@@ -90,14 +90,14 @@
                     </span>
                 </div>
 
-                <div class="d-flex align-items-center justify-content-between mb-3">
+<div class="d-flex align-items-center justify-content-between mb-3">
                     <span class="fs-6 fw-semibold">Pending Payments</span>
                     <span class="badge bg-warning text-dark px-3 py-2 fs-6">
                         {{ number_format($stats['pending_payments'] ?? 0) }}
                     </span>
                 </div>
 
-                <div class="p-3 bg-light rounded">
+<div class="p-3 bg-light rounded">
                     <small class="text-muted">Revenue Collected</small>
                     <p class="fw-bold mb-0 fs-5">M{{ number_format($stats['total_revenue'] ?? 0, 2) }}</p>
                 </div>
@@ -105,7 +105,7 @@
         </div>
     </div>
 
-    <div class="col-md-6">
+<div class="col-md-6">
         <div class="card border-0 shadow-sm h-100">
             <div class="card-header bg-white fw-semibold d-flex align-items-center justify-content-between">
                 <span><i class="fas fa-file-signature text-muted me-2"></i>Recent Membership Applications</span>
@@ -141,7 +141,7 @@
         </div>
     </div>
 
-    <div class="col-md-6">
+<div class="col-md-6">
         <div class="card border-0 shadow-sm h-100">
             <div class="card-header bg-white fw-semibold d-flex align-items-center justify-content-between">
                 <span><i class="fas fa-wallet text-muted me-2"></i>Recent Payments</span>
@@ -177,7 +177,7 @@
         </div>
     </div>
 
-    <div class="col-12">
+<div class="col-12">
         <div class="card border-0 shadow-sm">
             <div class="card-header bg-white fw-semibold">
                 <i class="fas fa-bolt text-muted me-2"></i>Quick Actions

@@ -12,18 +12,18 @@ class NewAdminCreatedNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public function __construct(
+public function __construct(
         protected User $user,
         protected string $plainPassword
     ) {
     }
 
-    public function via($notifiable): array
+public function via($notifiable): array
     {
         return ['mail'];
     }
 
-    public function toMail($notifiable): MailMessage
+public function toMail($notifiable): MailMessage
     {
         return (new MailMessage)
             ->subject('Your CCHPL Admin Account Has Been Created')

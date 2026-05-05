@@ -8,17 +8,17 @@
         .header { text-align: center; margin-bottom: 30px; }
         .org-name { font-weight: bold; font-size: 14pt; text-transform: uppercase; }
         .notice-title { font-weight: bold; font-size: 16pt; margin: 20px 0; text-decoration: underline; }
-        
-        .details-table { width: 100%; border: 1px solid #000; margin-bottom: 20px; }
+
+.details-table { width: 100%; border: 1px solid #000; margin-bottom: 20px; }
         .details-table td { padding: 10px; border: 1px solid #000; vertical-align: top; }
         .label { font-weight: bold; background-color: #f0f0f0; width: 120px; }
-        
-        .section-title { font-weight: bold; margin-top: 20px; margin-bottom: 10px; text-transform: uppercase; font-size: 12pt; }
-        
-        ol { margin-left: 0; padding-left: 20px; }
+
+.section-title { font-weight: bold; margin-top: 20px; margin-bottom: 10px; text-transform: uppercase; font-size: 12pt; }
+
+ol { margin-left: 0; padding-left: 20px; }
         li { margin-bottom: 5px; }
-        
-        .footer { margin-top: 50px; font-size: 10pt; border-top: 1px solid #000; padding-top: 10px; }
+
+.footer { margin-top: 50px; font-size: 10pt; border-top: 1px solid #000; padding-top: 10px; }
     </style>
 </head>
 <body>
@@ -28,7 +28,7 @@
         <div>Notice is hereby given that the {{ $data['agmYear'] ?? now()->year }} Annual General Meeting of the members will be held as follows:</div>
     </div>
 
-    <table class="details-table" cellspacing="0">
+<table class="details-table" cellspacing="0">
         <tr>
             <td class="label">DATE:</td>
             <td>{{ $data['date'] ?? 'TBD' }}</td>
@@ -52,7 +52,7 @@
         </tr>
     </table>
 
-    <div class="section-title">Agenda</div>
+<div class="section-title">Agenda</div>
     <ol>
         @if(!empty($data['agendaItems']))
             @foreach($data['agendaItems'] as $item)
@@ -71,7 +71,7 @@
         @endif
     </ol>
 
-    <div class="section-title">Important Notes</div>
+<div class="section-title">Important Notes</div>
     <ul>
         <li><strong>Paid Up Members:</strong> Only members in good standing (paid up by {{ $data['paidUpDeadline'] ?? 'N/A' }}) are eligible to vote.</li>
         <li><strong>Proxies:</strong> Members unable to attend may appoint a proxy. Forms must be received by {{ $data['proxyDeadline'] ?? 'N/A' }}.</li>
@@ -80,7 +80,7 @@
         @endif
     </ul>
 
-    <div class="footer">
+<div class="footer">
         <p><strong>By Order of the Executive Committee</strong></p>
         <p>
             Issued By: {{ $data['issuedBy'] ?? 'Secretary General' }}<br>

@@ -4,7 +4,8 @@
 
 @section('content')
 <style>
-    .site-hero {
+
+.site-hero {
         background:
             radial-gradient(circle at top left, rgba(255, 255, 255, 0.18), transparent 38%),
             linear-gradient(135deg, #123b28 0%, #1a6b3c 45%, #2d9b5a 100%);
@@ -84,7 +85,7 @@
         </div>
     </section>
 
-    <section class="card border-0 shadow-sm">
+<section class="card border-0 shadow-sm">
         <div class="card-body p-4 p-lg-5">
             <div class="row g-4">
                 <div class="col-lg-4">
@@ -129,7 +130,7 @@
         </div>
     </section>
 
-    <section class="card border-0 shadow-sm">
+<section class="card border-0 shadow-sm">
         <div class="card-body p-4 p-lg-5">
             <div class="d-flex flex-column flex-lg-row align-items-lg-end justify-content-between gap-3 mb-4">
                 <div>
@@ -142,7 +143,7 @@
                 </a>
             </div>
 
-            <div class="row g-3">
+<div class="row g-3">
                 @forelse ($categories as $category)
                     <div class="col-md-6 col-xl-3">
                         <div class="card h-100 border-0 bg-light">
@@ -173,7 +174,7 @@
         </div>
     </section>
 
-    <section class="card border-0 shadow-sm">
+<section class="card border-0 shadow-sm">
         <div class="card-body p-4 p-lg-5">
             <div class="row g-4">
                 <div class="col-lg-6">
@@ -211,7 +212,7 @@
                     </div>
                 </div>
 
-                <div class="col-lg-6">
+<div class="col-lg-6">
                     <div class="site-section-title mb-2">Member Benefits</div>
                     <h2 class="fw-bold mb-3">What members gain</h2>
                     <div class="row g-3">
@@ -257,7 +258,7 @@
         </div>
     </section>
 
-    <section class="card border-0 shadow-sm">
+<section class="card border-0 shadow-sm">
         <div class="card-body p-4 p-lg-5">
             <div class="row g-4 align-items-center">
                 <div class="col-lg-7">

@@ -2,19 +2,19 @@
 
 @section('content')
 <div class="container-fluid py-4">
-    <!-- Header -->
-    <div class="mb-4">
+
+<div class="mb-4">
         <a href="{{ route('admin.admins.list') }}" class="text-decoration-none text-muted">
             <i class="fas fa-arrow-left"></i> Back to Admin List
         </a>
         <h2 class="h4 mt-2 mb-0 text-gray-800">Manage Admin: <span class="fw-bold">{{ $user->name }}</span></h2>
     </div>
 
-    <div class="row">
-        <!-- Left Column: Details & Deactivation -->
-        <div class="col-lg-4">
-            <!-- Details Card -->
-            <div class="card shadow-sm mb-4">
+<div class="row">
+
+<div class="col-lg-4">
+
+<div class="card shadow-sm mb-4">
                 <div class="card-header bg-white">
                     <h5 class="mb-0"><i class="fas fa-id-card text-muted me-2"></i>Admin Details</h5>
                 </div>
@@ -26,8 +26,7 @@
                 </div>
             </div>
 
-            <!-- Deactivation Card -->
-            @if(Auth::id() !== $user->id)
+@if(Auth::id() !== $user->id)
             <div class="card shadow-sm border-danger">
                 <div class="card-header bg-danger text-white">
                     <h5 class="mb-0"><i class="fas fa-exclamation-triangle me-2"></i>Danger Zone</h5>
@@ -42,8 +41,7 @@
             @endif
         </div>
 
-        <!-- Right Column: Role Management -->
-        <div class="col-lg-8">
+<div class="col-lg-8">
             <div class="card shadow-sm">
                 <div class="card-header bg-white">
                     <h5 class="mb-0"><i class="fas fa-user-shield text-muted me-2"></i>Manage Roles</h5>
@@ -83,7 +81,6 @@
     </div>
 </div>
 
-<!-- Deactivation Modal -->
 <div class="modal fade" id="deactivateAdminModal" tabindex="-1" aria-labelledby="deactivateAdminModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">

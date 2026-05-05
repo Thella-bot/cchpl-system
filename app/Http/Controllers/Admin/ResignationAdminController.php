@@ -12,13 +12,8 @@ use Illuminate\Support\Facades\DB;
 
 class ResignationAdminController extends Controller
 {
-    /**
-     * Display a listing of member resignations.
-     *
-     * @param Request $request
-     * @return \Illuminate\Contracts\View\View
-     */
-    public function index(Request $request)
+
+public function index(Request $request)
     {
         $query = Resignation::with('user', 'membership.category')
             ->orderByRaw("CASE 
@@ -29,44 +24,31 @@ class ResignationAdminController extends Controller
             END")
             ->orderBy('created_at', 'desc');
 
-        if ($request->filled('status')) {
+if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
 
-        $resignations = $query->paginate(20)->withQueryString();
+$resignations = $query->paginate(20)->withQueryString();
 
-        return view('admin.resignations.index', compact('resignations'));
+return view('admin.resignations.index', compact('resignations'));
     }
 
-    /**
-     * Display the specified resignation request.
-     *
-     * @param Resignation $resignation
-     * @return \Illuminate\Contracts\View\View
-     */
-    public function show(Resignation $resignation)
+public function show(Resignation $resignation)
     {
         $resignation->load('user', 'membership.category', 'acknowledgedBy');
         return view('admin.resignations.show', compact('resignation'));
     }
 
-    /**
-     * Acknowledge a member's resignation request.
-     *
-     * @param Request $request
-     * @param Resignation $resignation
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function acknowledge(Request $request, Resignation $resignation)
+public function acknowledge(Request $request, Resignation $resignation)
     {
         abort_if($resignation->status !== Resignation::STATUS_PENDING, 403, 'This resignation has already been processed.');
 
-        $validated = $request->validate([
+$validated = $request->validate([
             'acknowledgement_notes' => 'nullable|string|max:2000',
             'confirm_acknowledgement' => 'required|accepted',
         ]);
 
-        DB::transaction(function () use ($resignation, $validated) {
+DB::transaction(function () use ($resignation, $validated) {
             $resignation->update([
                 'status' => Resignation::STATUS_ACKNOWLEDGED,
                 'acknowledged_by' => auth()->id(),
@@ -74,11 +56,11 @@ class ResignationAdminController extends Controller
                 'acknowledgement_notes' => $validated['acknowledgement_notes'],
             ]);
 
-            if ($resignation->membership) {
+if ($resignation->membership) {
                 $resignation->membership->update(['status' => Membership::STATUS_RESIGNED]);
             }
 
-            AuditLog::create([
+AuditLog::create([
                 'user_id' => auth()->id(),
                 'action' => 'resignation.acknowledged',
                 'auditable_id' => $resignation->id,
@@ -86,9 +68,8 @@ class ResignationAdminController extends Controller
             ]);
         });
 
-        // Notify the member
-        $resignation->user?->notify(new ResignationAcknowledgementNotification($resignation));
+$resignation->user?->notify(new ResignationAcknowledgementNotification($resignation));
 
-        return redirect()->route('admin.resignations.index')->with('success', 'Resignation for ' . $resignation->user->name . ' has been acknowledged.');
+return redirect()->route('admin.resignations.index')->with('success', 'Resignation for ' . $resignation->user->name . ' has been acknowledged.');
     }
 }

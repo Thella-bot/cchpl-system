@@ -11,15 +11,15 @@ class ApplicationReceivedNotification extends Notification
 {
     use Queueable;
 
-    public function __construct(protected Membership $membership)
+public function __construct(protected Membership $membership)
     {}
 
-    public function via($notifiable): array
+public function via($notifiable): array
     {
         return ['mail'];
     }
 
-    public function toMail($notifiable): MailMessage
+public function toMail($notifiable): MailMessage
     {
         return (new MailMessage)
             ->subject('CCHPL — Application Received')

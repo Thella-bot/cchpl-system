@@ -23,7 +23,7 @@
         </div>
     </div>
 
-    <div class="col-md-5">
+<div class="col-md-5">
         <div class="card border-0 shadow-sm h-100">
             <div class="card-header bg-white fw-semibold">
                 <i class="fas fa-address-card text-muted me-2"></i>Profile Snapshot
@@ -34,18 +34,18 @@
                     <div class="fw-bold fs-5">{{ $user->name }}</div>
                 </div>
 
-                <dl class="row small mb-0">
+<dl class="row small mb-0">
                     <dt class="col-5 text-muted">Email</dt>
                     <dd class="col-7">{{ $user->email }}</dd>
 
-                    <dt class="col-5 text-muted">Phone</dt>
+<dt class="col-5 text-muted">Phone</dt>
                     <dd class="col-7">{{ $user->phone ?: 'Not provided' }}</dd>
 
-                    <dt class="col-5 text-muted">Organisation</dt>
+<dt class="col-5 text-muted">Organisation</dt>
                     <dd class="col-7">{{ $user->organization ?: 'Not provided' }}</dd>
                 </dl>
 
-                <div class="alert alert-info py-2 mt-3 mb-0 small">
+<div class="alert alert-info py-2 mt-3 mb-0 small">
                     <i class="fas fa-info-circle me-1"></i>
                     Your email address is locked here for account protection and verification integrity.
                 </div>
@@ -53,7 +53,7 @@
         </div>
     </div>
 
-    <div class="col-md-7">
+<div class="col-md-7">
         <div class="card border-0 shadow-sm h-100">
             <div class="card-header bg-white fw-semibold d-flex align-items-center justify-content-between">
                 <span><i class="fas fa-user-pen text-muted me-2"></i>Personal Information</span>
@@ -64,14 +64,14 @@
                     @csrf
                     @method('PUT')
 
-                    <div>
+<div>
                         <label for="name" class="form-label fw-semibold small text-muted">Full Name</label>
                         <input id="name" type="text" class="form-control form-control-lg @error('name') is-invalid @enderror"
                                name="name" value="{{ old('name', $user->name) }}" required>
                         @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
 
-                    <div>
+<div>
                         <label for="email" class="form-label fw-semibold small text-muted">Email Address</label>
                         <input id="email" type="email" class="form-control form-control-lg bg-light"
                                value="{{ $user->email }}" readonly disabled>
@@ -80,21 +80,21 @@
                         </div>
                     </div>
 
-                    <div>
+<div>
                         <label for="phone" class="form-label fw-semibold small text-muted">Phone Number</label>
                         <input id="phone" type="text" class="form-control form-control-lg @error('phone') is-invalid @enderror"
                                name="phone" value="{{ old('phone', $user->phone) }}" placeholder="+266 ...">
                         @error('phone')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
 
-                    <div>
+<div>
                         <label for="organization" class="form-label fw-semibold small text-muted">Organisation</label>
                         <input id="organization" type="text" class="form-control form-control-lg @error('organization') is-invalid @enderror"
                                name="organization" value="{{ old('organization', $user->organization) }}" placeholder="Your workplace or institution">
                         @error('organization')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
 
-                    <div class="pt-2">
+<div class="pt-2">
                         <button type="submit" class="btn btn-success btn-lg px-4">
                             <i class="fas fa-save me-2"></i>Save Changes
                         </button>
@@ -104,7 +104,7 @@
         </div>
     </div>
 
-    <div class="col-md-7">
+<div class="col-md-7">
         <div class="card border-0 shadow-sm h-100">
             <div class="card-header bg-white fw-semibold d-flex align-items-center justify-content-between">
                 <span><i class="fas fa-key text-muted me-2"></i>Change Password</span>
@@ -115,14 +115,14 @@
                     @csrf
                     @method('PUT')
 
-                    <div>
+<div>
                         <label for="current_password" class="form-label fw-semibold small text-muted">Current Password</label>
                         <input id="current_password" type="password" class="form-control form-control-lg @error('current_password') is-invalid @enderror"
                                name="current_password" required autocomplete="current-password">
                         @error('current_password')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
 
-                    <div>
+<div>
                         <label for="password" class="form-label fw-semibold small text-muted">New Password</label>
                         <input id="password" type="password" class="form-control form-control-lg @error('password') is-invalid @enderror"
                                name="password" required autocomplete="new-password">
@@ -130,13 +130,13 @@
                         @error('password')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
 
-                    <div>
+<div>
                         <label for="password_confirmation" class="form-label fw-semibold small text-muted">Confirm New Password</label>
                         <input id="password_confirmation" type="password" class="form-control form-control-lg"
                                name="password_confirmation" required autocomplete="new-password">
                     </div>
 
-                    <div class="pt-2">
+<div class="pt-2">
                         <button type="submit" class="btn btn-primary btn-lg px-4">
                             <i class="fas fa-key me-2"></i>Update Password
                         </button>
@@ -146,7 +146,7 @@
         </div>
     </div>
 
-    <div class="col-md-5">
+<div class="col-md-5">
         <div class="card border-0 shadow-sm h-100">
             <div class="card-header bg-white fw-semibold">
                 <i class="fas fa-bolt text-muted me-2"></i>Quick Actions

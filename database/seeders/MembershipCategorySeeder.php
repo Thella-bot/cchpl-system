@@ -7,12 +7,8 @@ use App\Models\MembershipCategory;
 
 class MembershipCategorySeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
-    public function run()
+
+public function run()
     {
         $categories = [
             [
@@ -52,7 +48,7 @@ class MembershipCategorySeeder extends Seeder
             ],
         ];
 
-        foreach ($categories as $category) {
+foreach ($categories as $category) {
             MembershipCategory::updateOrCreate(
                 ['name' => $category['name']],
                 $category

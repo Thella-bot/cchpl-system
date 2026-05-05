@@ -11,10 +11,8 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ReportsController extends Controller
 {
-    /**
-     * Main reports dashboard overview.
-     */
-    public function index()
+
+public function index()
     {
         $stats = [
             'total_members' => Membership::where('status', 'approved')->count(),
@@ -23,65 +21,56 @@ class ReportsController extends Controller
             'pending_revenue' => Payment::where('status', 'pending')->sum('amount'),
         ];
 
-        $membersByCategory = MembershipCategory::withCount(['memberships' => function ($q) {
+$membersByCategory = MembershipCategory::withCount(['memberships' => function ($q) {
             $q->where('status', 'approved');
         }])->get();
 
-        $recentPayments = Payment::with('membership.user')
+$recentPayments = Payment::with('membership.user')
             ->where('status', 'verified')
             ->latest('verified_at')
             ->take(5)
             ->get();
 
-        return view('admin.reports.index', compact('stats', 'membersByCategory', 'recentPayments'));
+return view('admin.reports.index', compact('stats', 'membersByCategory', 'recentPayments'));
     }
 
-    /**
-     * Filterable membership report.
-     */
-    public function membershipReport(Request $request)
+public function membershipReport(Request $request)
     {
         $categories = MembershipCategory::all();
         $query = $this->filterMemberships($request);
-        
-        $stats = [
+
+$stats = [
             'count' => $query->count(),
         ];
 
-        $memberships = $query->latest()->paginate(15)->withQueryString();
+$memberships = $query->latest()->paginate(15)->withQueryString();
 
-        return view('admin.reports.memberships', compact('memberships', 'categories', 'stats'));
+return view('admin.reports.memberships', compact('memberships', 'categories', 'stats'));
     }
 
-    /**
-     * Filterable payment report.
-     */
-    public function paymentReport(Request $request)
+public function paymentReport(Request $request)
     {
         $query = $this->filterPayments($request);
 
-        $stats = [
+$stats = [
             'count' => $query->count(),
             'total_amount' => $query->sum('amount'),
         ];
 
-        $payments = $query->latest()->paginate(15)->withQueryString();
+$payments = $query->latest()->paginate(15)->withQueryString();
 
-        return view('admin.reports.payments', compact('payments', 'stats'));
+return view('admin.reports.payments', compact('payments', 'stats'));
     }
 
-    /**
-     * Export filtered members to CSV.
-     */
-    public function exportMembers(Request $request)
+public function exportMembers(Request $request)
     {
         $query = $this->filterMemberships($request);
         $filename = 'members-export-' . now()->format('Y-m-d-His') . '.csv';
 
-        return $this->streamCsv($filename, function ($handle) use ($query) {
+return $this->streamCsv($filename, function ($handle) use ($query) {
             fputcsv($handle, ['ID', 'Name', 'Email', 'Category', 'Status', 'Joined Date', 'Expiry Date']);
 
-            $query->chunk(100, function ($memberships) use ($handle) {
+$query->chunk(100, function ($memberships) use ($handle) {
                 foreach ($memberships as $m) {
                     fputcsv($handle, [
                         $m->member_id ?? 'N/A',
@@ -97,18 +86,15 @@ class ReportsController extends Controller
         });
     }
 
-    /**
-     * Export filtered payments to CSV.
-     */
-    public function exportPayments(Request $request)
+public function exportPayments(Request $request)
     {
         $query = $this->filterPayments($request);
         $filename = 'payments-export-' . now()->format('Y-m-d-His') . '.csv';
 
-        return $this->streamCsv($filename, function ($handle) use ($query) {
+return $this->streamCsv($filename, function ($handle) use ($query) {
             fputcsv($handle, ['Receipt #', 'Member', 'Reference', 'Provider', 'Amount', 'Status', 'Date']);
 
-            $query->chunk(100, function ($payments) use ($handle) {
+$query->chunk(100, function ($payments) use ($handle) {
                 foreach ($payments as $p) {
                     fputcsv($handle, [
                         $p->receipt_number ?? 'N/A',
@@ -124,27 +110,27 @@ class ReportsController extends Controller
         });
     }
 
-    private function filterMemberships(Request $request)
+private function filterMemberships(Request $request)
     {
         $query = Membership::with(['user', 'category']);
 
-        if ($request->filled('status')) {
+if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
 
-        if ($request->filled('category_id')) {
+if ($request->filled('category_id')) {
             $query->where('category_id', $request->category_id);
         }
 
-        if ($request->filled('start_date')) {
+if ($request->filled('start_date')) {
             $query->whereDate('created_at', '>=', $request->start_date);
         }
 
-        if ($request->filled('end_date')) {
+if ($request->filled('end_date')) {
             $query->whereDate('created_at', '<=', $request->end_date);
         }
 
-        if ($request->filled('search')) {
+if ($request->filled('search')) {
             $search = $request->search;
             $query->whereHas('user', function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
@@ -152,33 +138,33 @@ class ReportsController extends Controller
             });
         }
 
-        return $query;
+return $query;
     }
 
-    private function filterPayments(Request $request)
+private function filterPayments(Request $request)
     {
         $query = Payment::with(['membership.user']);
 
-        if ($request->filled('status')) {
+if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
 
-        if ($request->filled('provider')) {
+if ($request->filled('provider')) {
             $query->where('provider', $request->provider);
         }
 
-        if ($request->filled('start_date')) {
+if ($request->filled('start_date')) {
             $query->whereDate('created_at', '>=', $request->start_date);
         }
 
-        if ($request->filled('end_date')) {
+if ($request->filled('end_date')) {
             $query->whereDate('created_at', '<=', $request->end_date);
         }
 
-        return $query;
+return $query;
     }
 
-    private function streamCsv(string $filename, callable $callback)
+private function streamCsv(string $filename, callable $callback)
     {
         $headers = [
             'Content-type' => 'text/csv',
@@ -188,8 +174,8 @@ class ReportsController extends Controller
             'Expires' => '0',
         ];
 
-        return new StreamedResponse(function () use ($callback) {
-            $handle = fopen('php://output', 'w');
+return new StreamedResponse(function () use ($callback) {
+            $handle = fopen('php:
             $callback($handle);
             fclose($handle);
         }, 200, $headers);

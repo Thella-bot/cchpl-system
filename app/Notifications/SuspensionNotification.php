@@ -11,21 +11,21 @@ class SuspensionNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public function __construct(protected Membership $membership) {}
+public function __construct(protected Membership $membership) {}
 
-    public function via($notifiable): array
+public function via($notifiable): array
     {
         return ['mail'];
     }
 
-    public function toMail($notifiable): MailMessage
+public function toMail($notifiable): MailMessage
     {
         $annualFee    = $this->membership->category->annual_fee;
         $penalty      = round($annualFee * 0.10, 2);
         $totalDue     = $annualFee + $penalty;
         $expiredDate  = $this->membership->expiry_date?->format('d F Y') ?? '—';
 
-        return (new MailMessage)
+return (new MailMessage)
             ->subject('CCHPL — Membership Suspended: Action Required')
             ->greeting('Dear ' . $notifiable->name . ',')
             ->line('We regret to inform you that your CCHPL **' . $this->membership->category->name . '** membership has been **suspended** due to non-payment for more than six months.')

@@ -26,7 +26,7 @@ class AgmNoticeDocument
             'agm_year'            => 'required|integer',
         ]);
 
-        return DocumentReview::create([
+return DocumentReview::create([
             'type'           => DocumentReview::TYPE_AGM_NOTICE,
             'status'         => DocumentReview::STATUS_PENDING_REVIEW,
             'recipient_type' => DocumentReview::RECIPIENT_ALL_PAID_UP,
@@ -51,7 +51,7 @@ class AgmNoticeDocument
         ]);
     }
 
-    public function build(array $data)
+public function build(array $data)
     {
         return DocumentService::agmNotice($data);
     }

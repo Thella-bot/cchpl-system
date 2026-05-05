@@ -23,7 +23,7 @@
         </div>
     </div>
 
-    <div class="col-12 col-lg-10">
+<div class="col-12 col-lg-10">
         <div class="row g-4">
             <div class="col-md-5">
                 <div class="card border-0 shadow-sm h-100">
@@ -36,7 +36,7 @@
                             <div class="fw-semibold">Open the verification email we sent and click the secure confirmation link.</div>
                         </div>
 
-                        <div class="alert alert-info py-2 mt-3 mb-0 small">
+<div class="alert alert-info py-2 mt-3 mb-0 small">
                             <i class="fas fa-circle-info me-1"></i>
                             If the message is not in your inbox, also check your spam or promotions folder.
                         </div>
@@ -44,7 +44,7 @@
                 </div>
             </div>
 
-            <div class="col-md-7">
+<div class="col-md-7">
                 <div class="card border-0 shadow-sm h-100">
                     <div class="card-header bg-white fw-semibold d-flex align-items-center justify-content-between">
                         <span><i class="fas fa-badge-check text-muted me-2"></i>Verification Status</span>
@@ -57,11 +57,11 @@
                             </div>
                         @endif
 
-                        <p class="text-muted mb-3">
+<p class="text-muted mb-3">
                             Before proceeding, please check your email for a verification link.
                         </p>
 
-                        <div class="d-flex flex-column flex-sm-row gap-2">
+<div class="d-flex flex-column flex-sm-row gap-2">
                             <form method="POST" action="{{ route('verification.resend') }}">
                                 @csrf
                                 <button type="submit" class="btn btn-success btn-lg px-4">
@@ -69,7 +69,7 @@
                                 </button>
                             </form>
 
-                            <a href="{{ route('member.dashboard') }}" class="btn btn-outline-secondary btn-lg px-4">
+<a href="{{ route('member.dashboard') }}" class="btn btn-outline-secondary btn-lg px-4">
                                 <i class="fas fa-home me-2"></i>Back to Dashboard
                             </a>
                         </div>

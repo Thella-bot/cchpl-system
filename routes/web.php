@@ -18,7 +18,6 @@ use App\Models\MembershipCategory;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
-// Public website landing page
 Route::get('/', function () {
     return view('welcome', [
         'categories' => MembershipCategory::query()
@@ -28,57 +27,43 @@ Route::get('/', function () {
     ]);
 });
 
-// Authentication routes
 Auth::routes(['verify' => true]);
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Member-facing routes
-// ─────────────────────────────────────────────────────────────────────────────
 Route::middleware('auth')->group(function () {
 
-    // Dashboard — the HOME redirect target (see RouteServiceProvider)
-    Route::get('/member/dashboard', [MemberDashboardController::class, 'index'])
+Route::get('/member/dashboard', [MemberDashboardController::class, 'index'])
         ->name('member.dashboard');
 
-    // Profile — throttled to prevent enumeration
-    Route::get('/member/profile',          [MemberProfileController::class, 'edit'])->name('member.profile');
+Route::get('/member/profile',          [MemberProfileController::class, 'edit'])->name('member.profile');
     Route::put('/member/profile',          [MemberProfileController::class, 'update'])->name('member.profile.update')
         ->middleware('throttle:10,1');
     Route::put('/member/profile/password', [MemberProfileController::class, 'updatePassword'])->name('member.profile.password')
         ->middleware('throttle:5,1');
 
-    // Membership application — requires verified email + rate limiting
-    Route::get('/membership/apply', ApplicationForm::class)
+Route::get('/membership/apply', ApplicationForm::class)
         ->middleware(['verified', 'throttle:5,1'])
         ->name('membership.apply');
 
-    // Payment — requires verified email + rate limiting
-    Route::get('/payment/initiate', InitiatePayment::class)
+Route::get('/payment/initiate', InitiatePayment::class)
         ->middleware(['verified', 'throttle:10,1'])
         ->name('payment.initiate');
 
-    // Document downloads — members can only download their own (enforced in controller)
-    Route::get('/documents/certificate/{membership}',  [DocumentController::class, 'certificate'])
+Route::get('/documents/certificate/{membership}',  [DocumentController::class, 'certificate'])
         ->name('documents.certificate');
     Route::get('/documents/receipt/{payment}',         [DocumentController::class, 'receipt'])
         ->name('documents.receipt');
     Route::get('/documents/welcome-pack/{membership}', [DocumentController::class, 'welcomePack'])
         ->name('documents.welcome-pack');
 
-    // Resignation - member submits their own
-    Route::get('/member/resign', [MemberResignationController::class, 'create'])
+Route::get('/member/resign', [MemberResignationController::class, 'create'])
         ->name('member.resign.create');
     Route::post('/member/resign', [MemberResignationController::class, 'store'])
         ->name('member.resign.store');
 });
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Admin routes
-// ─────────────────────────────────────────────────────────────────────────────
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
 
-    // ── Super Admin ──────────────────────────────────────────────────────────
-    Route::middleware('super-admin')->group(function () {
+Route::middleware('super-admin')->group(function () {
         Route::get('/dashboard',                 [SuperAdminController::class, 'dashboard'])->name('dashboard');
         Route::get('/admins',                    [SuperAdminController::class, 'listAdmins'])->name('admins.list');
         Route::get('/admins/{user}',             [SuperAdminController::class, 'showAdmin'])->name('admins.show');
@@ -89,8 +74,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::get('/roles',                     [SuperAdminController::class, 'manageRoles'])->name('roles.manage');
     });
 
-    // ── Membership Admin ─────────────────────────────────────────────────────
-    Route::middleware('role:membership_admin,super_admin')
+Route::middleware('role:membership_admin,super_admin')
         ->prefix('memberships')
         ->name('memberships.')
         ->group(function () {
@@ -100,23 +84,21 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
             Route::post('/bulk',         [MembershipAdminController::class, 'bulkAction'])->name('bulk');
             Route::get('/export',        [MembershipAdminController::class, 'export'])->name('export');
 
-            Route::get('/{membership}',          [MembershipAdminController::class, 'show'])->name('show');
+Route::get('/{membership}',          [MembershipAdminController::class, 'show'])->name('show');
             Route::post('/{membership}/approve', [MembershipAdminController::class, 'approve'])->name('approve');
             Route::post('/{membership}/reject',  [MembershipAdminController::class, 'reject'])->name('reject');
 
-            Route::post('/{membership}/documents/{document}/review',
+Route::post('/{membership}/documents/{document}/review',
                 [MembershipAdminController::class, 'reviewDocument'])->name('document.review');
         });
 
-    // Finance admin only
-    Route::middleware('role:finance_admin,super_admin')->group(function () {
+Route::middleware('role:finance_admin,super_admin')->group(function () {
         Route::get('/memberships/categories',                  [MembershipAdminController::class, 'categories'])->name('memberships.categories.index');
         Route::get('/memberships/categories/{category}/edit', [MembershipAdminController::class, 'editCategory'])->name('memberships.categories.edit');
         Route::put('/memberships/categories/{category}',       [MembershipAdminController::class, 'updateCategory'])->name('memberships.categories.update');
     });
 
-    // ── Resignations Admin ───────────────────────────────────────────────────
-    Route::middleware('role:membership_admin,super_admin')
+Route::middleware('role:membership_admin,super_admin')
         ->prefix('resignations')
         ->name('resignations.')
         ->group(function () {
@@ -125,8 +107,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
             Route::post('/{resignation}/acknowledge', [ResignationAdminController::class, 'acknowledge'])->name('acknowledge');
         });
 
-    // ── Payment Admin ─────────────────────────────────────────────────────────
-    Route::middleware('role:payment_admin,super_admin')
+Route::middleware('role:payment_admin,super_admin')
         ->prefix('payments')
         ->name('payments.')
         ->group(function () {
@@ -139,8 +120,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
             Route::get('/{payment}/receipt', [PaymentAdminController::class, 'receipt'])->name('receipt');
         });
 
-    // ── Reports Admin ─────────────────────────────────────────────────────────
-    Route::middleware('role:reports_admin,super_admin')
+Route::middleware('role:reports_admin,super_admin')
         ->prefix('reports')
         ->name('reports.')
         ->group(function () {
@@ -151,8 +131,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
             Route::get('/export/payments', [ReportsController::class, 'exportPayments'])->name('export.payments');
         });
 
-    // ── Document Review Queue ─────────────────────────────────────────────────
-    Route::middleware('role:super_admin,membership_admin,payment_admin')
+Route::middleware('role:super_admin,membership_admin,payment_admin')
         ->prefix('documents')
         ->name('documents.')
         ->group(function () {

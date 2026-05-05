@@ -10,9 +10,9 @@
             </div>
         </div>
 
-        <nav class="d-flex flex-column gap-2">
+<nav class="d-flex flex-column gap-2">
 
-            {{-- Super Admin --}}
+{{-- Super Admin --}}
             @if(auth()->user()->isSuperAdmin())
                 <a href="{{ route('admin.dashboard') }}"
                    class="d-flex align-items-center gap-3 px-3 py-3 rounded-4 text-decoration-none small fw-semibold {{ request()->routeIs('admin.dashboard') ? 'text-dark bg-white shadow-sm' : 'text-white' }}"
@@ -48,7 +48,7 @@
                 </a>
             @endif
 
-            {{-- Membership --}}
+{{-- Membership --}}
             @if(auth()->user()->hasAnyRole(['membership_admin', 'super_admin']))
                 <div class="pt-4 pb-1 px-2 small fw-semibold text-uppercase" style="letter-spacing: 0.14em; color: rgba(255, 255, 255, 0.58);">
                     Membership
@@ -79,7 +79,7 @@
                 </a>
             @endif
 
-            {{-- Finance — FIX: was missing finance_admin role check --}}
+{{-- Finance — FIX: was missing finance_admin role check --}}
             @if(auth()->user()->hasAnyRole(['finance_admin', 'super_admin']))
                 <div class="pt-4 pb-1 px-2 small fw-semibold text-uppercase" style="letter-spacing: 0.14em; color: rgba(255, 255, 255, 0.58);">
                     Finance
@@ -93,8 +93,8 @@
                     <span>Membership Fees</span>
                 </a>
             @endif
-                        
-            {{-- Resignations — Secretary queue --}}
+
+{{-- Resignations — Secretary queue --}}
             @if(auth()->user()->hasAnyRole(['membership_admin', 'super_admin']))
                 @php
                     $pendingResignations = \App\Models\Resignation::where('status', 'pending')->count();
@@ -149,7 +149,7 @@
                 </a>
             @endif
 
-            {{-- Documents — FIX: was missing entirely --}}
+{{-- Documents — FIX: was missing entirely --}}
             @if(auth()->user()->hasAnyRole(['super_admin', 'membership_admin', 'payment_admin']))
                 <div class="pt-4 pb-1 px-2 small fw-semibold text-uppercase" style="letter-spacing: 0.14em; color: rgba(255, 255, 255, 0.58);">
                     Documents
@@ -180,7 +180,7 @@
                 </a>
             @endif
 
-            {{-- Reports --}}
+{{-- Reports --}}
             @if(auth()->user()->hasAnyRole(['reports_admin', 'super_admin']))
                 <div class="pt-4 pb-1 px-2 small fw-semibold text-uppercase" style="letter-spacing: 0.14em; color: rgba(255, 255, 255, 0.58);">
                     Reports
@@ -195,6 +195,6 @@
                 </a>
             @endif
 
-        </nav>
+</nav>
     </div>
 </aside>

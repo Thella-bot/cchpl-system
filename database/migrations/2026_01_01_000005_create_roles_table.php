@@ -7,14 +7,14 @@ return new class extends Migration {
     public function up(): void {
         Schema::create('roles', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique(); // super_admin, membership_admin, payment_admin, etc
-            $table->string('display_name'); // Super Administrator, Membership Administrator
+            $table->string('name')->unique(); 
+            $table->string('display_name'); 
             $table->text('description')->nullable();
             $table->timestamps();
         });
     }
 
-    public function down(): void {
+public function down(): void {
         Schema::dropIfExists('roles');
     }
 };

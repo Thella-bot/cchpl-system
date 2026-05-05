@@ -19,8 +19,8 @@ use App\Presenters\StatusPresenter;
 
 <div class="card border-0 shadow-sm">
     <div class="card-body p-4">
-        <!-- Header -->
-        <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4 pb-3 border-bottom">
+
+<div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4 pb-3 border-bottom">
             <div>
                 <h2 class="h4 fw-bold mb-1" style="color: #1a6b3c;">CCHPL</h2>
                 <p class="text-muted small mb-0">Council for Culinary and Hospitality Professionals Lesotho</p>
@@ -31,8 +31,7 @@ use App\Presenters\StatusPresenter;
             </div>
         </div>
 
-        <!-- Member & Payment Details -->
-        <div class="row g-4 mb-4">
+<div class="row g-4 mb-4">
             <div class="col-md-6">
                 <h6 class="fw-bold text-uppercase small text-muted mb-3">Member Details</h6>
                 <dl class="row mb-0 small">
@@ -69,14 +68,14 @@ use App\Presenters\StatusPresenter;
             </div>
         </div>
 
-        @if($payment->verification_notes)
+@if($payment->verification_notes)
             <div class="p-3 bg-light rounded mb-4">
                 <h6 class="fw-bold small text-muted mb-1">Verification Notes</h6>
                 <p class="mb-0 small">{{ $payment->verification_notes }}</p>
             </div>
         @endif
 
-        <div class="border-top pt-3">
+<div class="border-top pt-3">
             <p class="small text-muted mb-0">
                 <i class="fas fa-info-circle me-1"></i>
                 Thank you for supporting CCHPL. This receipt is generated for your records.

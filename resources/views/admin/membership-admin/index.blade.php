@@ -27,7 +27,6 @@
     </div>
 </div>
 
-<!-- Stats -->
 <div class="row g-3 mb-4">
     <div class="col-sm-4">
         <div class="card border-0 shadow-sm">
@@ -78,8 +77,8 @@
         </div>
     </div>
 @else
-    <!-- Bulk Actions Bar (separate form, ids linked via form attribute) -->
-    <form id="bulk-form" method="POST" action="{{ route('admin.memberships.bulk') }}">
+
+<form id="bulk-form" method="POST" action="{{ route('admin.memberships.bulk') }}">
         @csrf
         <div class="card border-0 shadow-sm mb-3">
             <div class="card-body d-flex flex-wrap align-items-center gap-3">
@@ -104,8 +103,7 @@
         </div>
     </form>
 
-    <!-- Application Cards (outside bulk form so individual forms don't nest) -->
-    <div class="d-flex flex-column gap-3">
+<div class="d-flex flex-column gap-3">
         @foreach ($memberships as $membership)
             <div class="card border-0 shadow-sm">
                 <div class="card-body">
@@ -128,7 +126,7 @@
                         </div>
                     </div>
 
-                    <div class="row g-3 mb-3">
+<div class="row g-3 mb-3">
                         <div class="col-sm-4">
                             <small class="text-muted">Category</small>
                             <p class="fw-semibold mb-0">{{ $membership->category->name }}</p>
@@ -143,7 +141,7 @@
                         </div>
                     </div>
 
-                    @if($membership->documents->isNotEmpty())
+@if($membership->documents->isNotEmpty())
                         <div class="mb-3">
                             <small class="text-muted">Uploaded Documents:</small>
                             <div class="d-flex flex-wrap gap-2 mt-1">
@@ -157,7 +155,7 @@
                         </div>
                     @endif
 
-                    <div class="d-flex gap-2 flex-wrap">
+<div class="d-flex gap-2 flex-wrap">
                         <a href="{{ route('admin.memberships.show', $membership->id) }}"
                            class="btn btn-sm btn-outline-primary">
                             <i class="fas fa-eye me-1"></i>View Details
@@ -169,14 +167,14 @@
                                 <i class="fas fa-check me-1"></i>Approve
                             </button>
                         </form>
-                        <!-- Reject with reason (inline collapsed form) -->
-                        <button class="btn btn-sm btn-danger" type="button"
+
+<button class="btn btn-sm btn-danger" type="button"
                                 data-bs-toggle="collapse" data-bs-target="#reject-{{ $membership->id }}">
                             <i class="fas fa-times me-1"></i>Reject
                         </button>
                     </div>
 
-                    <div class="collapse mt-3" id="reject-{{ $membership->id }}">
+<div class="collapse mt-3" id="reject-{{ $membership->id }}">
                         <form action="{{ route('admin.memberships.reject', $membership->id) }}" method="POST">
                             @csrf
                             <div class="input-group">
@@ -193,7 +191,7 @@
         @endforeach
     </div>
 
-    <div class="mt-4">{{ $memberships->links() }}</div>
+<div class="mt-4">{{ $memberships->links() }}</div>
 @endif
 
 @push('scripts')
@@ -201,12 +199,12 @@
     const checkboxes = document.querySelectorAll('.bulk-checkbox');
     const countEl    = document.getElementById('selected-count');
 
-    function updateCount() {
+function updateCount() {
         countEl.textContent = Array.from(checkboxes).filter(c => c.checked).length;
     }
     checkboxes.forEach(cb => cb.addEventListener('change', updateCount));
 
-    document.getElementById('select-all')?.addEventListener('click', () => {
+document.getElementById('select-all')?.addEventListener('click', () => {
         checkboxes.forEach(cb => cb.checked = true); updateCount();
     });
     document.getElementById('select-none')?.addEventListener('click', () => {

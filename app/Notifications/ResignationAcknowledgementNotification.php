@@ -12,16 +12,16 @@ class ResignationAcknowledgementNotification extends Notification implements Sho
 {
     use Queueable;
 
-    public function __construct(protected Resignation $resignation)
+public function __construct(protected Resignation $resignation)
     {
     }
 
-    public function via($notifiable): array
+public function via($notifiable): array
     {
         return ['mail'];
     }
 
-    public function toMail($notifiable): MailMessage
+public function toMail($notifiable): MailMessage
     {
         $mailMessage = (new MailMessage)
             ->subject('CCHPL — Resignation Acknowledgement')
@@ -30,18 +30,18 @@ class ResignationAcknowledgementNotification extends Notification implements Sho
             ->line('Your membership status has been updated to "Resigned". You are no longer entitled to member benefits or the use of the CCHPL professional designation.')
             ->line('We thank you for your past membership and wish you the best in your future endeavors.');
 
-        if (!empty($this->resignation->acknowledgement_notes)) {
+if (!empty($this->resignation->acknowledgement_notes)) {
             $mailMessage->line('---')
                         ->line('**A note from the Secretary:**')
                         ->line(new \Illuminate\Support\HtmlString(nl2br(e($this->resignation->acknowledgement_notes))));
         }
 
-        if ($this->resignation->balance_outstanding > 0) {
+if ($this->resignation->balance_outstanding > 0) {
             $mailMessage->line('---')
                         ->line('**Outstanding Balance:** Please note that our records indicate an outstanding balance of M ' . number_format($this->resignation->balance_outstanding, 2) . '. Please contact finance@cchpl.org.ls to arrange for settlement.');
         }
 
-        return $mailMessage->salutation(
+return $mailMessage->salutation(
             'Sincerely,' . "\n" .
             'The Executive Committee'
         );

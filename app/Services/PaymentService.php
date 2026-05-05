@@ -9,155 +9,114 @@ use Illuminate\Support\Facades\DB;
 
 class PaymentService
 {
-    /**
-     * Verify a payment and update membership status.
-     *
-     * Expiry is always aligned to 31 March per Bylaws 1.3.
-     * If a current membership still has time left, we extend from its
-     * existing expiry date; otherwise we start from today.
-     */
-    public static function verifyPayment(Payment $payment, bool $approved = true): bool
+
+public static function verifyPayment(Payment $payment, bool $approved = true): bool
     {
         if ($approved) {
             return DB::transaction(function () use ($payment) {
-                // Generate receipt number with atomic counter to prevent race conditions
-                $receiptNumber = self::generateReceiptNumber();
 
-                $payment->update([
+$receiptNumber = self::generateReceiptNumber();
+
+$payment->update([
                     'status'               => 'verified',
                     'verified_at'          => now(),
                     'verification_notes'   => 'Payment verified by administrator',
                     'receipt_number'       => $receiptNumber,
                 ]);
 
-                $membership = $payment->membership;
+$membership = $payment->membership;
                 if ($membership) {
                     $newExpiry = self::nextMarchExpiry($membership->expiry_date);
 
-                    $membership->update([
+$membership->update([
                         'status'      => 'approved',
                         'expiry_date' => $newExpiry,
                     ]);
                 }
 
-                return true;
+return true;
             });
         }
 
-        $payment->update([
+$payment->update([
             'status'             => 'rejected',
             'verification_notes' => 'Payment proof rejected - invalid or unclear',
         ]);
 
-        return false;
+return false;
     }
 
-    /**
-     * Calculate next 31 March expiry date, aligned to the financial year.
-     *
-     * Rules (Bylaws 1.3 — fees due by 31 March annually):
-     *   - If the existing expiry is in the future, extend from that date.
-     *   - Otherwise extend from today.
-     *   - Always land on 31 March of the appropriate year.
-     */
-    public static function nextMarchExpiry(?Carbon $currentExpiry = null): Carbon
+public static function nextMarchExpiry(?Carbon $currentExpiry = null): Carbon
     {
         $base = ($currentExpiry && $currentExpiry->isFuture())
             ? $currentExpiry->copy()
             : now();
 
-        // Move one year forward from the base, then snap to 31 March of that year.
-        $year = (int) $base->addYear()->format('Y');
+$year = (int) $base->addYear()->format('Y');
 
-        // If we've already passed 31 March of that year, go to the next year.
-        $candidate = Carbon::create($year, 3, 31, 0, 0, 0);
+$candidate = Carbon::create($year, 3, 31, 0, 0, 0);
         if ($candidate->isPast()) {
             $candidate = Carbon::create($year + 1, 3, 31, 0, 0, 0);
         }
 
-        return $candidate;
+return $candidate;
     }
 
-    /**
-     * Generate a unique, sequential receipt number per financial year.
-     *
-     * Format: RCPT-YYYY-NNNN  e.g. RCPT-2025-0042
-     *
-     * The financial year used is the one that ends on 31 March.
-     * Payments made Apr–Dec belong to the year starting that calendar year.
-     * Payments made Jan–Mar belong to the year starting the previous calendar year.
-     *
-     * Uses an atomic counter table (receipt_sequences) to prevent race conditions.
-     */
-    public static function generateReceiptNumber(): string
+public static function generateReceiptNumber(): string
     {
         $now = now();
-        // Financial year label: the year in which 1 April falls.
-        $fyYear = $now->month >= 4 ? $now->year : $now->year - 1;
 
-        $prefix = "RCPT-{$fyYear}-";
+$fyYear = $now->month >= 4 ? $now->year : $now->year - 1;
 
-        return DB::transaction(function () use ($fyYear, $prefix) {
+$prefix = "RCPT-{$fyYear}-";
+
+return DB::transaction(function () use ($fyYear, $prefix) {
             $sequence = ReceiptSequence::lockForUpdate()
                 ->firstOrCreate(
                     ['financial_year' => (string) $fyYear],
                     ['last_sequence' => 0]
                 );
 
-            $sequence->increment('last_sequence');
+$sequence->increment('last_sequence');
 
-            $sequenceNumber = str_pad($sequence->last_sequence, 4, '0', STR_PAD_LEFT);
+$sequenceNumber = str_pad($sequence->last_sequence, 4, '0', STR_PAD_LEFT);
 
-            return $prefix . $sequenceNumber;
+return $prefix . $sequenceNumber;
         });
     }
 
-    /**
-     * Generate a unique payment transaction reference.
-     * Format: CCHPL-YYYYMMDD-XXXX
-     */
-    public static function generateReference(): string
+public static function generateReference(): string
     {
         do {
             $ref = 'CCHPL-' . now()->format('Ymd') . '-' . str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT);
         } while (Payment::where('transaction_reference', $ref)->exists());
 
-        return $ref;
+return $ref;
     }
 
-    /**
-     * Get human-readable payment instructions for a provider.
-     */
-    public static function getPaymentInstructions(string $provider, string $amount, string $reference): string
+public static function getPaymentInstructions(string $provider, string $amount, string $reference): string
     {
         if ($provider === 'mpesa') {
             return "Pay M{$amount} to:\nM-Pesa Shortcode: " . config('payments.mpesa_shortcode', 'CONTACT_SUPPORT')
                 . "\nReference: {$reference}";
         }
 
-        return "Pay M{$amount} to:\nEcoCash Merchant: " . config('payments.ecocash_merchant', 'CONTACT_SUPPORT')
+return "Pay M{$amount} to:\nEcoCash Merchant: " . config('payments.ecocash_merchant', 'CONTACT_SUPPORT')
             . "\nReference: {$reference}";
     }
 
-    /**
-     * Calculate late payment penalty (Bylaws 1.3 — 10% of annual fee).
-     */
-    public static function calculatePenalty(float $annualFee): float
+public static function calculatePenalty(float $annualFee): float
     {
         return round($annualFee * 0.10, 2);
     }
 
-    /**
-     * Determine if a membership is overdue for suspension.
-     * Bylaws 1.3: non-payment for 6+ months leads to suspension.
-     */
-    public static function isOverdueForSuspension(Membership $membership): bool
+public static function isOverdueForSuspension(Membership $membership): bool
     {
         if ($membership->status !== 'approved') {
             return false;
         }
 
-        return $membership->expiry_date
+return $membership->expiry_date
             && $membership->expiry_date->isPast()
             && $membership->expiry_date->diffInMonths(now()) >= 6;
     }

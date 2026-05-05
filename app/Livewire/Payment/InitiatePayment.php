@@ -13,7 +13,7 @@ class InitiatePayment extends Component
 {
     use WithFileUploads;
 
-    public $amount;
+public $amount;
     public $provider;
     public $purpose;
     public $reference;
@@ -23,7 +23,7 @@ class InitiatePayment extends Component
     public $memberships;
     public $proofFile;
 
-    protected $rules = [
+protected $rules = [
         'amount' => 'required|numeric|min:0.01',
         'provider' => 'required|in:mpesa,ecocash',
         'purpose' => 'required|string|max:255',
@@ -31,14 +31,14 @@ class InitiatePayment extends Component
         'proofFile' => 'required|file|mimes:jpg,jpeg,png|max:5120',
     ];
 
-    public array $purposeOptions = [
+public array $purposeOptions = [
         'Annual Membership Fee',
         'Membership Renewal',
         'Penalty Payment',
         'Other Membership Payment',
     ];
 
-    public function mount()
+public function mount()
     {
         $this->memberships = Membership::query()
             ->where('user_id', auth()->id())
@@ -47,21 +47,21 @@ class InitiatePayment extends Component
             ->latest()
             ->get();
 
-        if ($this->memberships->count() > 0) {
+if ($this->memberships->count() > 0) {
             $membership = $this->memberships->first();
 
-            $this->membershipId = $membership->id;
+$this->membershipId = $membership->id;
             $this->amount = $membership->category?->annual_fee;
             $this->purpose = 'Annual Membership Fee';
         }
     }
 
-    public function generateReference()
+public function generateReference()
     {
         $this->reference = PaymentService::generateReference();
     }
 
-    public function generateInstructions()
+public function generateInstructions()
     {
         $this->validate(['amount' => 'required|numeric|min:0.01', 'provider' => 'required|in:mpesa,ecocash']);
         $this->reference = PaymentService::generateReference();
@@ -69,26 +69,26 @@ class InitiatePayment extends Component
         $this->showInstructions = true;
     }
 
-    public function updatedMembershipId($value): void
+public function updatedMembershipId($value): void
     {
         $membership = $this->memberships->firstWhere('id', (int) $value);
 
-        if ($membership) {
+if ($membership) {
             $this->amount = $membership->category?->annual_fee;
         }
     }
 
-    public function submit()
+public function submit()
     {
         $this->validate();
 
-        if (!$this->reference) {
+if (!$this->reference) {
             $this->generateInstructions();
         }
 
 $proofPath = $this->proofFile->store('payment-proofs', 'public');
 
-        $payment = Payment::create([
+$payment = Payment::create([
             'membership_id' => $this->membershipId,
             'amount' => $this->amount,
             'provider' => $this->provider,
@@ -98,12 +98,12 @@ $proofPath = $this->proofFile->store('payment-proofs', 'public');
             'status' => 'pending',
         ]);
 
-        auth()->user()->notify(new PaymentReceivedNotification($payment));
+auth()->user()->notify(new PaymentReceivedNotification($payment));
 
-        return redirect()->route('member.dashboard')->with('success', 'Payment submitted successfully. It will be reviewed by the finance team.');
+return redirect()->route('member.dashboard')->with('success', 'Payment submitted successfully. It will be reviewed by the finance team.');
     }
 
-    public function render()
+public function render()
     {
         return view('livewire.payment.initiate-payment')
             ->extends('layouts.app')

@@ -7,13 +7,13 @@ use App\Presenters\StatusPresenter;
 
 class Payment extends Model
 {
-    // ── Status constants ──────────────────────────────────────────────────
-    const STATUS_PENDING  = 'pending';
+
+const STATUS_PENDING  = 'pending';
     const STATUS_VERIFIED = 'verified';
     const STATUS_REJECTED = 'rejected';
-    const STATUS_VOIDED   = 'voided'; // abandoned references, no proof uploaded
+    const STATUS_VOIDED   = 'voided'; 
 
-    protected $fillable = [
+protected $fillable = [
         'membership_id',
         'amount',
         'provider',
@@ -26,31 +26,27 @@ class Payment extends Model
         'receipt_number',
     ];
 
-    protected $casts = [
+protected $casts = [
         'verified_at' => 'datetime',
         'amount'      => 'decimal:2',
     ];
 
-    // ── Relationships ──────────────────────────────────────────────────────
-
-    public function membership(): BelongsTo
+public function membership(): BelongsTo
     {
         return $this->belongsTo(Membership::class)->withDefault();
     }
 
-    // ── Helpers ────────────────────────────────────────────────────────────
-
-    public function isVerified(): bool
+public function isVerified(): bool
     {
         return $this->status === self::STATUS_VERIFIED;
     }
 
-    public function isPending(): bool
+public function isPending(): bool
     {
         return $this->status === self::STATUS_PENDING;
     }
 
-    public function statusBadgeClass(): string
+public function statusBadgeClass(): string
     {
         return StatusPresenter::paymentStatusBadge($this->status);
     }

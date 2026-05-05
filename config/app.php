@@ -2,10 +2,10 @@
 
 return [
 
-    'name' => env('APP_NAME', 'CCHPL'),
+'name' => env('APP_NAME', 'CCHPL'),
     'env' => env('APP_ENV', 'production'),
     'debug' => env('APP_DEBUG', false),
-    'url' => env('APP_URL', 'http://localhost'),
+    'url' => env('APP_URL', 'http:
     'timezone' => 'Africa/Maseru',
     'locale' => 'en',
     'fallback_locale' => 'en',

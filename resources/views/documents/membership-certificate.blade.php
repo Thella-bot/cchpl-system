@@ -5,37 +5,35 @@
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  body {
+body {
     font-family: 'DejaVu Serif', Georgia, serif;
     background: #fff;
     color: #1a1a1a;
   }
 
-  /* Outer border frame */
-  .outer-frame {
+.outer-frame {
     position: absolute;
     top: 10mm; left: 10mm; right: 10mm; bottom: 10mm;
-    border: 3px solid #8B6914;
+    border: 3px solid #B08D55;
   }
   .inner-frame {
     position: absolute;
     top: 14mm; left: 14mm; right: 14mm; bottom: 14mm;
-    border: 1px solid #8B6914;
+    border: 1px solid #B08D55;
   }
 
-  .certificate {
+.certificate {
     padding: 20mm 22mm 16mm;
     text-align: center;
     min-height: 190mm;
     position: relative;
   }
 
-  /* Corner ornaments */
-  .corner {
+.corner {
     position: absolute;
     width: 10mm; height: 10mm;
     font-size: 22pt;
-    color: #8B6914;
+    color: #B08D55;
     line-height: 1;
   }
   .corner.tl { top: 16mm; left: 16mm; }
@@ -43,95 +41,94 @@
   .corner.bl { bottom: 16mm; left: 16mm; }
   .corner.br { bottom: 16mm; right: 16mm; text-align: right; }
 
-  .org-header {
+.org-header {
     font-size: 9pt;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: #5a4010;
+    color: #B08D55;
     margin-bottom: 2mm;
   }
 
-  .divider-gold {
+.divider-gold {
     width: 80mm;
     height: 1.5px;
-    background: #8B6914;
+    background: #B08D55;
     margin: 3mm auto;
   }
   .divider-thin {
     width: 50mm;
     height: 0.5px;
-    background: #8B6914;
+    background: #B08D55;
     margin: 2mm auto;
   }
 
-  .cert-title {
+.cert-title {
     font-size: 28pt;
     font-weight: bold;
     letter-spacing: 4px;
     text-transform: uppercase;
-    color: #3a2a00;
+    color: #2C3E50;
     margin: 4mm 0 2mm;
   }
 
-  .cert-subtitle {
+.cert-subtitle {
     font-size: 10pt;
     letter-spacing: 1.5px;
-    color: #5a4010;
+    color: #B08D55;
     font-style: italic;
     margin-bottom: 6mm;
   }
 
-  .certifies-text {
+.certifies-text {
     font-size: 11pt;
     color: #444;
     font-style: italic;
     margin-bottom: 3mm;
   }
 
-  .member-name {
+.member-name {
     font-size: 30pt;
     font-weight: bold;
-    color: #1a1a00;
+    color: #2C3E50;
     letter-spacing: 1px;
     font-family: 'DejaVu Serif', Georgia, serif;
-    border-bottom: 1.5px solid #8B6914;
+    border-bottom: 1.5px solid #B08D55;
     display: inline-block;
     padding: 0 10mm 2mm;
     margin: 2mm 0 4mm;
   }
 
-  .recognised-text {
+.recognised-text {
     font-size: 10pt;
     color: #444;
     font-style: italic;
     margin-bottom: 2mm;
   }
 
-  .category-text {
+.category-text {
     font-size: 15pt;
     font-weight: bold;
     text-transform: uppercase;
     letter-spacing: 2px;
-    color: #3a2a00;
+    color: #2C3E50;
     margin-bottom: 2mm;
   }
 
-  .org-name-text {
+.org-name-text {
     font-size: 10pt;
     color: #444;
     font-style: italic;
     margin-bottom: 2mm;
   }
 
-  .pledge-text {
+.pledge-text {
     font-size: 9pt;
     color: #555;
     font-style: italic;
     margin-bottom: 6mm;
   }
 
-  /* Details table */
-  .details-table {
+.details-table {
     margin: 0 auto 6mm;
     border-collapse: collapse;
     font-size: 9pt;
@@ -152,8 +149,7 @@
     color: #1a1a1a;
   }
 
-  /* Signature row */
-  .sig-row {
+.sig-row {
     display: table;
     width: 100%;
     margin-top: 6mm;
@@ -181,7 +177,7 @@
     font-style: italic;
   }
 
-  .footer-ref {
+.footer-ref {
     position: absolute;
     bottom: 17mm;
     left: 0; right: 0;
@@ -191,7 +187,7 @@
     letter-spacing: 1px;
   }
 
-  .stamp-box {
+.stamp-box {
     position: absolute;
     bottom: 18mm;
     right: 22mm;
@@ -225,26 +221,26 @@
 style="max-height: 80px; margin-bottom: 3mm;"
   <div class="org-header" style="font-size:8pt; letter-spacing:3px; color:#8B6914;">CCHPL &nbsp;|&nbsp; Maseru, Kingdom of Lesotho</div>
 
-  <div class="divider-gold"></div>
+<div class="divider-gold"></div>
 
-  <div class="cert-title">Certificate of Membership</div>
+<div class="cert-title">Certificate of Membership</div>
 
-  <div class="divider-thin"></div>
+<div class="divider-thin"></div>
   <div class="cert-subtitle">Uniting &nbsp;|&nbsp; Elevating &nbsp;|&nbsp; Preserving — Lesotho's Culinary and Hospitality Profession</div>
 
-  <div class="certifies-text">This certifies that</div>
+<div class="certifies-text">This certifies that</div>
 
-  <div class="member-name">{{ $memberName }}</div>
+<div class="member-name">{{ $memberName }}</div>
 
-  <div class="recognised-text" style="margin-top:4mm;">is hereby recognised as a</div>
+<div class="recognised-text" style="margin-top:4mm;">is hereby recognised as a</div>
   <div class="category-text">{{ $category }}</div>
   <div class="org-name-text">of the Council for Culinary and Hospitality Professionals Lesotho</div>
 
-  <div class="pledge-text">having met the criteria for membership and pledged to uphold the CCHPL Code of Ethics.</div>
+<div class="pledge-text">having met the criteria for membership and pledged to uphold the CCHPL Code of Ethics.</div>
 
-  <div class="divider-thin"></div>
+<div class="divider-thin"></div>
 
-  <table class="details-table">
+<table class="details-table">
     <tr>
       <td class="label">Member ID</td>
       <td class="value">{{ $memberId }}</td>
@@ -261,7 +257,7 @@ style="max-height: 80px; margin-bottom: 3mm;"
     </tr>
   </table>
 
-  <div class="sig-row">
+<div class="sig-row">
     <div class="sig-cell">
       <div class="sig-line"></div>
       <div class="sig-name">Mahali Monokoa</div>
@@ -274,7 +270,7 @@ style="max-height: 80px; margin-bottom: 3mm;"
     </div>
   </div>
 
-  <div class="footer-ref">CCHPL &nbsp;|&nbsp; Membership Certificate CCHPL-MEM-002 &nbsp;|&nbsp; Maseru, Kingdom of Lesotho</div>
+<div class="footer-ref">CCHPL &nbsp;|&nbsp; Membership Certificate CCHPL-MEM-002 &nbsp;|&nbsp; Maseru, Kingdom of Lesotho</div>
 
 </div>
 

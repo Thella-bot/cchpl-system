@@ -2,8 +2,8 @@
 
 @section('content')
 <div class="container-fluid py-4">
-    <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
+
+<div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="h4 mb-0 text-gray-800">
             <i class="fas fa-users-cog text-muted me-2"></i>Admin Management
         </h2>
@@ -12,8 +12,7 @@
         </button>
     </div>
 
-    <!-- Admins Table -->
-    <div class="card shadow-sm border-0">
+<div class="card shadow-sm border-0">
         <div class="card-body p-0">
             <div class="table-responsive">
                 <table class="table table-hover mb-0 align-middle">
@@ -67,7 +66,6 @@
     </div>
 </div>
 
-<!-- Create Admin Modal -->
 <div class="modal fade" id="createAdminModal" tabindex="-1" aria-labelledby="createAdminModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">

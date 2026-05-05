@@ -20,7 +20,7 @@ class StatusPresenter
         };
     }
 
-    public static function paymentStatusBadge(string $status): string
+public static function paymentStatusBadge(string $status): string
     {
         return match ($status) {
             Payment::STATUS_VERIFIED => 'bg-success',
@@ -31,7 +31,7 @@ class StatusPresenter
         };
     }
 
-    public static function resignationStatusBadge(string $status): string
+public static function resignationStatusBadge(string $status): string
     {
         return match ($status) {
             Resignation::STATUS_ACKNOWLEDGED => 'bg-green-100 text-green-800',

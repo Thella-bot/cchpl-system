@@ -14,8 +14,8 @@ class MembershipDocumentResource extends JsonResource
             'id' => $this->id,
             'document_type' => $this->document_type,
             'original_name' => $this->original_name,
-            // Note: This assumes you have a public disk configured for storage.
-            'url' => $this->file_path ? Storage::url($this->file_path) : null,
+
+'url' => $this->file_path ? Storage::url($this->file_path) : null,
             'uploaded_at' => $this->created_at->toIso8601String(),
         ];
     }

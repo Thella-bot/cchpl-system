@@ -18,8 +18,8 @@ class PaymentResource extends JsonResource
             'status' => $this->status,
             'created_at' => $this->created_at->toIso8601String(),
             'verified_at' => $this->verified_at ? $this->verified_at->toIso8601String() : null,
-            // Conditionally load the user for efficiency
-            'member' => new UserResource($this->whenLoaded('membership', fn() => $this->membership->user)),
+
+'member' => new UserResource($this->whenLoaded('membership', fn() => $this->membership->user)),
         ];
     }
 }

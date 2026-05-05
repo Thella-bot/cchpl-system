@@ -10,10 +10,9 @@
     <h1 class="h3 fw-bold mt-2 mb-0">Membership Application</h1>
 </div>
 
-<!-- Info Grid -->
 <div class="row g-4 mb-4">
-    <!-- Applicant -->
-    <div class="col-md-4">
+
+<div class="col-md-4">
         <div class="card border-0 shadow-sm h-100">
             <div class="card-header bg-white fw-semibold">
                 <i class="fas fa-user text-muted me-2"></i>Applicant Information
@@ -33,8 +32,7 @@
         </div>
     </div>
 
-    <!-- Membership Details -->
-    <div class="col-md-4">
+<div class="col-md-4">
         <div class="card border-0 shadow-sm h-100">
             <div class="card-header bg-white fw-semibold">
                 <i class="fas fa-id-card text-muted me-2"></i>Membership Details
@@ -62,8 +60,7 @@
         </div>
     </div>
 
-    <!-- Category Requirements -->
-    <div class="col-md-4">
+<div class="col-md-4">
         <div class="card border-0 shadow-sm h-100">
             <div class="card-header bg-white fw-semibold">
                 <i class="fas fa-list-check text-muted me-2"></i>Requirements
@@ -88,7 +85,6 @@
     </div>
 </div>
 
-<!-- Documents -->
 <div class="card border-0 shadow-sm mb-4">
     <div class="card-header bg-white fw-semibold">
         <i class="fas fa-folder-open text-muted me-2"></i>Uploaded Documents
@@ -145,7 +141,6 @@
     </div>
 </div>
 
-<!-- Payment History -->
 @if ($membership->payments->isNotEmpty())
     <div class="card border-0 shadow-sm mb-4">
         <div class="card-header bg-white fw-semibold">
@@ -184,7 +179,6 @@
     </div>
 @endif
 
-<!-- Approve / Reject Actions -->
 @if($membership->status === 'pending')
     <div class="card border-0 shadow-sm">
         <div class="card-header bg-white fw-semibold">

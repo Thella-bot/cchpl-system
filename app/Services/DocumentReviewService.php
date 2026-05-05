@@ -17,14 +17,14 @@ class DocumentReviewService
         $this->assertEditableType($review);
         abort_unless($review->isPendingReview(), 403, 'Only pending documents can be approved.');
 
-        $review->update([
+$review->update([
             'status'         => DocumentReview::STATUS_APPROVED,
             'reviewed_by'    => auth()->id(),
             'reviewed_at'    => now(),
             'reviewer_notes' => $request->reviewer_notes ?? $review->reviewer_notes,
         ]);
 
-        AuditLog::create([
+AuditLog::create([
             'user_id'        => auth()->id(),
             'action'         => 'document_review.approved',
             'auditable_type' => DocumentReview::class,
@@ -34,40 +34,39 @@ class DocumentReviewService
             'meta'           => ['approved_by' => auth()->user()->email ?? null],
         ]);
 
-        return $review;
+return $review;
     }
 
-    public function send(Request $request, DocumentReview $review, AgmNoticeDocument $agmNoticeDocument, EcMinutesDocument $ecMinutesDocument)
+public function send(Request $request, DocumentReview $review, AgmNoticeDocument $agmNoticeDocument, EcMinutesDocument $ecMinutesDocument)
     {
         $this->assertEditableType($review);
         abort_if($review->isSent() || $review->isCancelled(), 403, 'Document already finalised.');
 
-        // Prevent timeouts for large distribution lists
-        set_time_limit(300);
+set_time_limit(300);
 
-        $request->validate(['confirm_send' => 'required|accepted']);
+$request->validate(['confirm_send' => 'required|accepted']);
 
-        $filename = $this->filename($review) . '.pdf';
+$filename = $this->filename($review) . '.pdf';
         $tmpDir   = storage_path('app/tmp');
 
-        if (!is_dir($tmpDir)) {
+if (!is_dir($tmpDir)) {
             mkdir($tmpDir, 0755, true);
         }
 
-        $tmpPath = $tmpDir . '/' . $filename;
+$tmpPath = $tmpDir . '/' . $filename;
         $this->buildPdf($review->type, $review->data, $agmNoticeDocument, $ecMinutesDocument)->save($tmpPath);
 
-        $this->dispatchEmail($review, $tmpPath, $filename);
+$this->dispatchEmail($review, $tmpPath, $filename);
 
-        @unlink($tmpPath);
+@unlink($tmpPath);
 
-        $review->update([
+$review->update([
             'status'  => DocumentReview::STATUS_SENT,
             'sent_by' => auth()->id(),
             'sent_at' => now(),
         ]);
 
-        AuditLog::create([
+AuditLog::create([
             'user_id'        => auth()->id(),
             'action'         => 'document_review.sent',
             'auditable_type' => DocumentReview::class,
@@ -81,24 +80,24 @@ class DocumentReviewService
             ],
         ]);
 
-        return $review;
+return $review;
     }
 
-    public function cancel(Request $request, DocumentReview $review)
+public function cancel(Request $request, DocumentReview $review)
     {
         $this->assertEditableType($review);
         abort_if($review->isSent(), 403, 'A sent document cannot be cancelled.');
 
-        $request->validate(['cancellation_reason' => 'required|string|min:5']);
+$request->validate(['cancellation_reason' => 'required|string|min:5']);
 
-        $review->update([
+$review->update([
             'status'              => DocumentReview::STATUS_CANCELLED,
             'cancellation_reason' => $request->cancellation_reason,
             'reviewed_by'         => auth()->id(),
             'reviewed_at'         => now(),
         ]);
 
-        AuditLog::create([
+AuditLog::create([
             'user_id'        => auth()->id(),
             'action'         => 'document_review.cancelled',
             'auditable_type' => DocumentReview::class,
@@ -111,10 +110,10 @@ class DocumentReviewService
             ],
         ]);
 
-        return $review;
+return $review;
     }
 
-    private function buildPdf(string $type, array $data, AgmNoticeDocument $agmNoticeDocument, EcMinutesDocument $ecMinutesDocument)
+private function buildPdf(string $type, array $data, AgmNoticeDocument $agmNoticeDocument, EcMinutesDocument $ecMinutesDocument)
     {
         return match ($type) {
             DocumentReview::TYPE_AGM_NOTICE => $agmNoticeDocument->build($data),
@@ -123,13 +122,13 @@ class DocumentReviewService
         };
     }
 
-    private function filename(DocumentReview $review): string
+private function filename(DocumentReview $review): string
     {
         $slug = strtolower(str_replace([' ', '/'], '-', $review->data['meetingNo'] ?? $review->type));
         return 'cchpl-' . str_replace('_', '-', $review->type) . '-' . $slug . '-' . now()->format('Ymd');
     }
 
-    private function assertEditableType(DocumentReview $review): void
+private function assertEditableType(DocumentReview $review): void
     {
         abort_unless(
             in_array($review->type, [DocumentReview::TYPE_AGM_NOTICE, DocumentReview::TYPE_EC_MINUTES]),
@@ -138,16 +137,16 @@ class DocumentReviewService
         );
     }
 
-    private function dispatchEmail(DocumentReview $review, string $pdfPath, string $filename): void
+private function dispatchEmail(DocumentReview $review, string $pdfPath, string $filename): void
     {
         $typeLabel = $review->typeLabel();
 
-        if ($review->recipient_type === DocumentReview::RECIPIENT_ALL_PAID_UP) {
-            // Use chunking to prevent memory exhaustion
-            Membership::where('status', 'approved')
+if ($review->recipient_type === DocumentReview::RECIPIENT_ALL_PAID_UP) {
+
+Membership::where('status', 'approved')
                 ->whereNotNull('expiry_date')
-                // Fix: use whereDate to include the full expiry day (ignore time)
-                ->whereDate('expiry_date', '>=', now())
+
+->whereDate('expiry_date', '>=', now())
                 ->with('user')
                 ->chunk(100, function ($members) use ($typeLabel, $pdfPath, $filename) {
                     foreach ($members as $membership) {
@@ -166,7 +165,7 @@ class DocumentReviewService
                     }
                 });
 
-        } elseif ($review->recipient_type === DocumentReview::RECIPIENT_EC_MEMBERS) {
+} elseif ($review->recipient_type === DocumentReview::RECIPIENT_EC_MEMBERS) {
             $ecMembers = User::whereHas('roles', fn($q) => $q->where('name', 'executive_committee'))->get();
             foreach ($ecMembers as $ec) {
                 if (!$ec->email) continue;
@@ -175,7 +174,7 @@ class DocumentReviewService
         }
     }
 
-    private function sendSingleEmail($email, $name, $subject, $path, $filename)
+private function sendSingleEmail($email, $name, $subject, $path, $filename)
     {
         Mail::send([], [], function ($m) use ($email, $name, $subject, $path, $filename) {
             $m->to($email, $name)

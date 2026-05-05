@@ -3,25 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  body {
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
     font-family: 'DejaVu Sans', Arial, sans-serif;
     font-size: 9pt;
     color: #111;
   }
 
-  /* ── One receipt block ─────────────────────────── */
-  .receipt {
+.receipt {
     padding: 8mm 10mm 6mm;
     height: 128mm;
-    border: 1.5px solid #222;
+    border: 1.5px solid #2C3E50;
     position: relative;
     page-break-inside: avoid;
   }
 
-  /* ── Header row: org name left / receipt no right ── */
-  .header-table {
+.header-table {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 3mm;
@@ -32,12 +31,14 @@
   }
   .header-left {
     width: 70%;
-    border: 1.5px solid #222;
+    border: 1.5px solid #2C3E50;
     padding: 2.5mm 3mm;
+
+background-color: rgba(44, 62, 80, 0.03);
   }
   .header-right {
     width: 30%;
-    border: 1.5px solid #222;
+    border: 1.5px solid #2C3E50;
     border-left: none;
     padding: 2.5mm 3mm;
     text-align: right;
@@ -48,20 +49,22 @@
     letter-spacing: 1px;
     display: block;
     margin-bottom: 1mm;
+    color: #2C3E50;
   }
   .org-name {
     font-size: 10pt;
     font-weight: bold;
     display: block;
     margin-bottom: 0.5mm;
+    color: #2C3E50;
   }
   .org-sub {
     font-size: 7.5pt;
-    color: #444;
+    color: #B08D55;
   }
   .rec-no-label {
     font-size: 7.5pt;
-    color: #444;
+    color: #666;
     display: block;
     margin-bottom: 1.5mm;
   }
@@ -70,25 +73,25 @@
     font-weight: bold;
     display: block;
     margin-bottom: 2mm;
+    color: #2C3E50;
   }
-  .date-label { font-size: 7.5pt; color: #444; }
-  .date-value { font-size: 9pt; font-weight: bold; }
+  .date-label { font-size: 7.5pt; color: #666; }
+  .date-value { font-size: 9pt; font-weight: bold; color: #2C3E50; }
   .copy-type {
     display: block;
     margin-top: 2mm;
     font-size: 7.5pt;
     font-style: italic;
-    color: #555;
+    color: #B08D55;
   }
 
-  /* ── Body fields ── */
-  .fields-table {
+.fields-table {
     width: 100%;
     border-collapse: collapse;
     font-size: 8.5pt;
   }
   .fields-table td {
-    border: 0.5px solid #aaa;
+    border: 0.5px solid #2C3E50;
     padding: 1.5mm 2.5mm;
     vertical-align: top;
   }
@@ -97,26 +100,27 @@
     font-weight: bold;
     background: #f7f7f7;
     white-space: nowrap;
+    color: #2C3E50;
   }
   .fields-table td.value {
     width: 68%;
   }
-  .amount-row td { border-top: 1.5px solid #222; }
-  .amount-label { font-size: 10pt; font-weight: bold; }
+  .amount-row td { border-top: 1.5px solid #B08D55; }
+  .amount-label { font-size: 10pt; font-weight: bold; color: #2C3E50; }
   .amount-value {
     font-size: 12pt;
     font-weight: bold;
     letter-spacing: 1px;
+    color: #B08D55;
   }
 
-  /* ── Footer: sig + stamp ── */
-  .footer-table {
+.footer-table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 0;
   }
   .footer-table td {
-    border: 0.5px solid #aaa;
+    border: 0.5px solid #2C3E50;
     padding: 2mm 3mm;
     vertical-align: top;
   }
@@ -125,31 +129,30 @@
     width: 35%;
     text-align: center;
     font-style: italic;
-    color: #999;
+    color: #B08D55;
     font-size: 7.5pt;
   }
   .sig-line {
-    border-bottom: 1px solid #333;
+    border-bottom: 1px solid #2C3E50;
     width: 55mm;
     margin-top: 6mm;
     margin-bottom: 1mm;
   }
 
-  .small-note {
+.small-note {
     font-size: 7pt;
     color: #666;
     font-style: italic;
     margin-top: 1.5mm;
   }
 
-  /* ── Cut line ── */
-  .cut-line {
+.cut-line {
     text-align: center;
     font-size: 7.5pt;
-    color: #aaa;
+    color: #B08D55;
     letter-spacing: 2px;
     margin: 3mm 0;
-    border-top: 1px dashed #ccc;
+    border-top: 1px dashed #2C3E50;
     padding-top: 2mm;
   }
 </style>
@@ -166,7 +169,7 @@
 @foreach ($copies as $copy)
 <div class="receipt">
 
-  {{-- Header --}}
+{{-- Header --}}
   <table class="header-table">
     <tr>
       <td class="header-left">
@@ -184,7 +187,7 @@ style="max-height: 55px; margin-bottom: 1mm;"
     </tr>
   </table>
 
-  {{-- Fields --}}
+{{-- Fields --}}
   <table class="fields-table">
     <tr>
       <td class="label">Received From</td>
@@ -228,7 +231,7 @@ style="max-height: 55px; margin-bottom: 1mm;"
     </tr>
   </table>
 
-  {{-- Footer: sig + stamp --}}
+{{-- Footer: sig + stamp --}}
   <table class="footer-table">
     <tr>
       <td class="sig-cell">
@@ -243,7 +246,7 @@ style="max-height: 55px; margin-bottom: 1mm;"
     </tr>
   </table>
 
-  <div class="small-note">
+<div class="small-note">
     This is an official receipt of CCHPL. Please retain for your records. &nbsp; Queries: secretary@cchpl.org.ls
   </div>
 

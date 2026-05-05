@@ -18,35 +18,35 @@ class PaymentAdminController extends Controller
         $verifiedCount = Payment::where('status', 'verified')->count();
         $rejectedCount = Payment::where('status', 'rejected')->count();
 
-        $payments = Payment::where('status', 'pending')
+$payments = Payment::where('status', 'pending')
             ->with('membership.user', 'membership.category')
             ->orderBy('created_at', 'asc')
             ->paginate(15);
 
-        return view('admin.payment-admin.index', compact(
+return view('admin.payment-admin.index', compact(
             'payments', 'pendingCount', 'verifiedCount', 'rejectedCount'
         ));
     }
 
-    public function show(Payment $payment)
+public function show(Payment $payment)
     {
         $payment->load('membership.user', 'membership.category');
         return view('admin.payment-admin.show', compact('payment'));
     }
 
-    public function verify(Request $request, Payment $payment)
+public function verify(Request $request, Payment $payment)
     {
         $request->validate([
             'verification_notes' => 'required|string|min:5',
         ]);
 
-        $oldValues = $payment->only(['status', 'verification_notes']);
+$oldValues = $payment->only(['status', 'verification_notes']);
 
-        PaymentService::verifyPayment($payment, true);
+PaymentService::verifyPayment($payment, true);
         $payment->refresh();
         $payment->update(['verification_notes' => $request->verification_notes]);
 
-        AuditLog::create([
+AuditLog::create([
             'user_id'        => auth()->id(),
             'action'         => 'payment.verified',
             'auditable_type' => Payment::class,
@@ -56,49 +56,45 @@ class PaymentAdminController extends Controller
             'meta'           => ['verified_by' => auth()->user()->email ?? null],
         ]);
 
-        $membership = $payment->membership->fresh();
+$membership = $payment->membership->fresh();
         $user       = $membership->user;
 
-        // ── Brief notification email (no attachment) ──────────────────────
-        $user->notify(new PaymentStatusNotification(
+$user->notify(new PaymentStatusNotification(
             $payment, 'verified', $request->verification_notes
         ));
 
-        // ── Financial year label ──────────────────────────────────────────
-        $fyYear  = $payment->verified_at->month >= 4
+$fyYear  = $payment->verified_at->month >= 4
             ? $payment->verified_at->year
             : $payment->verified_at->year - 1;
 
-// ── Auto-send receipt PDF ─────────────────────────────────────────
 DocumentService::sendToMember($membership, DocumentReview::TYPE_RECEIPT, $payment);
 
-        // ── Auto-send welcome pack on first verified payment ──────────────
-        $isFirstPayment = $membership->payments()
+$isFirstPayment = $membership->payments()
             ->where('status', 'verified')
             ->count() === 1;
 
-        if ($isFirstPayment) {
+if ($isFirstPayment) {
             $expiry = $membership->expiry_date;
             DocumentService::sendToMember($membership, DocumentReview::TYPE_WELCOME_PACK);
         }
 
-        $extra = $isFirstPayment ? ' Receipt and Welcome Pack emailed.' : ' Receipt emailed.';
+$extra = $isFirstPayment ? ' Receipt and Welcome Pack emailed.' : ' Receipt emailed.';
 
-        return back()->with('success', "✅ Payment verified for {$user->name}.{$extra}");
+return back()->with('success', "✅ Payment verified for {$user->name}.{$extra}");
     }
 
-    public function reject(Request $request, Payment $payment)
+public function reject(Request $request, Payment $payment)
     {
         $request->validate([
             'rejection_reason' => 'required|string|min:10',
         ]);
 
-        $oldValues = $payment->only(['status', 'verification_notes']);
+$oldValues = $payment->only(['status', 'verification_notes']);
 
-        PaymentService::verifyPayment($payment, false);
+PaymentService::verifyPayment($payment, false);
         $payment->update(['verification_notes' => $request->rejection_reason]);
 
-        AuditLog::create([
+AuditLog::create([
             'user_id'        => auth()->id(),
             'action'         => 'payment.rejected',
             'auditable_type' => Payment::class,
@@ -111,36 +107,36 @@ DocumentService::sendToMember($membership, DocumentReview::TYPE_RECEIPT, $paymen
             ],
         ]);
 
-        $payment->membership->user->notify(
+$payment->membership->user->notify(
             new PaymentStatusNotification($payment, 'rejected', $request->rejection_reason)
         );
 
-        return back()->with('success', '❌ Payment rejected. Member has been notified.');
+return back()->with('success', '❌ Payment rejected. Member has been notified.');
     }
 
-    public function receipt(Payment $payment)
+public function receipt(Payment $payment)
     {
         $payment->load('membership.user', 'membership.category');
         return view('admin.payment-admin.receipt', compact('payment'));
     }
 
-    public function verified()
+public function verified()
     {
         $payments = Payment::where('status', 'verified')
             ->with('membership.user', 'membership.category')
             ->orderBy('verified_at', 'desc')
             ->paginate(20);
 
-        return view('admin.payment-admin.verified', compact('payments'));
+return view('admin.payment-admin.verified', compact('payments'));
     }
 
-    public function rejected()
+public function rejected()
     {
         $payments = Payment::where('status', 'rejected')
             ->with('membership.user', 'membership.category')
             ->orderBy('updated_at', 'desc')
             ->paginate(20);
 
-        return view('admin.payment-admin.rejected', compact('payments'));
+return view('admin.payment-admin.rejected', compact('payments'));
     }
 }

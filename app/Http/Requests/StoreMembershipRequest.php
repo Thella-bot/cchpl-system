@@ -11,7 +11,7 @@ class ProcessPaymentRequest extends FormRequest
         return auth()->check() && auth()->user()->can('make_payments');
     }
 
-    public function rules(): array
+public function rules(): array
     {
         return [
             'membership_id' => ['required', 'exists:memberships,id'],
@@ -22,7 +22,7 @@ class ProcessPaymentRequest extends FormRequest
         ];
     }
 
-    protected function prepareForValidation()
+protected function prepareForValidation()
     {
         $this->merge([
             'amount' => number_format($this->amount, 2, '.', ''),

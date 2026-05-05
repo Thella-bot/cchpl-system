@@ -27,7 +27,7 @@ class EcMinutesDocument
             'action_items'      => 'nullable|array',
         ]);
 
-        return DocumentReview::create([
+return DocumentReview::create([
             'type'           => DocumentReview::TYPE_EC_MINUTES,
             'status'         => DocumentReview::STATUS_PENDING_REVIEW,
             'recipient_type' => DocumentReview::RECIPIENT_EC_MEMBERS,
@@ -54,7 +54,7 @@ class EcMinutesDocument
         ]);
     }
 
-    public function build(array $data)
+public function build(array $data)
     {
         return DocumentService::ecMinutes($data);
     }

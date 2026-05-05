@@ -5,17 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'CCHPL Admin')</title>
     @livewireStyles
-    <!-- Bootstrap 5 -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-    <!-- Font Awesome 6 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- Tailwind CSS (preflight disabled to avoid Bootstrap conflict) -->
-    <script src="https://cdn.tailwindcss.com"></script>
+
+<link rel="stylesheet" href="https:
+
+<link rel="stylesheet" href="https:
+
+<script src="https:
     <script>tailwind.config = { corePlugins: { preflight: false } }</script>
     <style>
-        html, body { height: 100%; }
+
+.bg-green-50 { background-color: rgba(26, 107, 60, 0.08) !important; }
+        .bg-green-100 { background-color: rgba(26, 107, 60, 0.15) !important; }
+        .bg-green-200 { background-color: rgba(26, 107, 60, 0.25) !important; }
+        .bg-green-600 { background-color: #1a6b3c !important; }
+        .bg-green-700 { background-color: #155a32 !important; }
+        .bg-green-800 { background-color: #123b28 !important; }
+        .text-green-500 { color: #2d9b5a !important; }
+        .text-green-600 { color: #1a6b3c !important; }
+        .text-green-700 { color: #155a32 !important; }
+        .text-green-800 { color: #123b28 !important; }
+        .border-green-500 { border-color: #2d9b5a !important; }
+        .border-green-600 { border-color: #1a6b3c !important; }
+        .border-green-200 { border-color: rgba(26, 107, 60, 0.25) !important; }
+        .focus\:ring-green-500:focus { --tw-ring-color: #2d9b5a !important; }
+
+html, body { height: 100%; }
         body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: linear-gradient(180deg, #eef6f1 0%, #f8fafc 28%, #f1f5f9 100%); }
-        .admin-topbar {
+
+.admin-topbar {
             height: 76px;
             position: fixed;
             top: 0;
@@ -23,13 +40,13 @@
             right: 0;
             z-index: 1040;
             border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            background: linear-gradient(90deg, #113826 0%, #174b32 42%, #1d5e3d 100%);
+            background: linear-gradient(90deg, #123b28 0%, #1a6b3c 42%, #2d9b5a 100%);
             box-shadow: 0 14px 30px rgba(10, 32, 22, 0.18);
         }
         .admin-layout { display: flex; padding-top: 76px; min-height: 100vh; }
-        .admin-sidebar-wrap {
+.admin-sidebar-wrap {
             width: 290px;
-            background: linear-gradient(180deg, #113826 0%, #174b32 42%, #1c5b3b 100%);
+            background: linear-gradient(180deg, #123b28 0%, #1a6b3c 42%, #2d9b5a 100%);
             border: 1px solid rgba(255, 255, 255, 0.08);
             position: fixed;
             top: 92px;
@@ -119,8 +136,8 @@
     </style>
 </head>
 <body>
-    <!-- Top Bar -->
-    <header class="admin-topbar d-flex align-items-center px-4 px-lg-5">
+
+<header class="admin-topbar d-flex align-items-center px-4 px-lg-5">
         <div class="d-flex align-items-center gap-3 me-auto">
             <button type="button" class="btn btn-sm admin-topbar-action admin-menu-toggle" id="admin-menu-toggle" aria-label="Toggle admin menu" aria-expanded="false" aria-controls="admin-sidebar">
                 <i class="fas fa-bars"></i>
@@ -158,16 +175,14 @@
         </div>
     </header>
 
-    <!-- Layout -->
-    <div class="admin-layout">
-        <!-- Sidebar -->
-        <div class="admin-sidebar-wrap" id="admin-sidebar">
+<div class="admin-layout">
+
+<div class="admin-sidebar-wrap" id="admin-sidebar">
             @include('components.admin-sidebar')
         </div>
         <div class="admin-sidebar-backdrop" id="admin-sidebar-backdrop"></div>
 
-        <!-- Main Content -->
-        <main class="admin-content">
+<main class="admin-content">
             <div class="admin-shell-card">
                 @if(session('success'))
                     <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
@@ -199,42 +214,41 @@
                     </div>
                 @endif
 
-                @yield('content')
+@yield('content')
             </div>
         </main>
     </div>
 
-    <!-- Bootstrap JS Bundle -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https:
     <script>
         (() => {
             const sidebar = document.getElementById('admin-sidebar');
             const backdrop = document.getElementById('admin-sidebar-backdrop');
             const toggle = document.getElementById('admin-menu-toggle');
 
-            if (!sidebar || !backdrop || !toggle) {
+if (!sidebar || !backdrop || !toggle) {
                 return;
             }
 
-            const setOpen = (isOpen) => {
+const setOpen = (isOpen) => {
                 sidebar.classList.toggle('is-open', isOpen);
                 backdrop.classList.toggle('is-open', isOpen);
                 toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
             };
 
-            toggle.addEventListener('click', () => {
+toggle.addEventListener('click', () => {
                 setOpen(!sidebar.classList.contains('is-open'));
             });
 
-            backdrop.addEventListener('click', () => setOpen(false));
+backdrop.addEventListener('click', () => setOpen(false));
 
-            document.addEventListener('keydown', (event) => {
+document.addEventListener('keydown', (event) => {
                 if (event.key === 'Escape') {
                     setOpen(false);
                 }
             });
 
-            window.addEventListener('resize', () => {
+window.addEventListener('resize', () => {
                 if (window.innerWidth < 576) {
                     setOpen(false);
                 }

@@ -11,21 +11,21 @@ class MembershipExpiryReminder extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public function __construct(protected Membership $membership) {}
+public function __construct(protected Membership $membership) {}
 
-    public function via($notifiable): array
+public function via($notifiable): array
     {
         return ['mail'];
     }
 
-    public function toMail($notifiable): MailMessage
+public function toMail($notifiable): MailMessage
     {
         $days       = $this->membership->daysUntilExpiry();
         $expiryDate = $this->membership->expiry_date->format('d F Y');
         $annualFee  = $this->membership->category->annual_fee;
         $penalty    = round($annualFee * 0.10, 2);
 
-        return (new MailMessage)
+return (new MailMessage)
             ->subject('CCHPL — Membership Renewal Reminder')
             ->greeting('Dear ' . $notifiable->name . ',')
             ->line('Your CCHPL **' . $this->membership->category->name . '** membership is due to expire on **' . $expiryDate . '** — that is in **' . $days . ' day(s)**.')

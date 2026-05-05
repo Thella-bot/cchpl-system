@@ -17,9 +17,8 @@ class MembershipResource extends JsonResource
             'created_at' => $this->created_at->toIso8601String(),
             'user' => new UserResource($this->whenLoaded('user')),
             'category' => new MembershipCategoryResource($this->whenLoaded('category')),
-            
-            // These relationships are only loaded on the 'show' endpoint
-            'documents' => MembershipDocumentResource::collection($this->whenLoaded('documents')),
+
+'documents' => MembershipDocumentResource::collection($this->whenLoaded('documents')),
             'payments' => PaymentResource::collection($this->whenLoaded('payments')),
         ];
     }

@@ -11,14 +11,14 @@ class MemberWelcomeNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public function __construct(protected Membership $membership) {}
+public function __construct(protected Membership $membership) {}
 
-    public function via($notifiable): array
+public function via($notifiable): array
     {
         return ['mail'];
     }
 
-    public function toMail($notifiable): MailMessage
+public function toMail($notifiable): MailMessage
     {
         $category  = $this->membership->category?->name ?? '—';
         $memberId  = $this->membership->member_id ?? '—';
@@ -27,7 +27,7 @@ class MemberWelcomeNotification extends Notification implements ShouldQueue
             : '31 March ' . now()->addYear()->year;
         $annualFee = 'M' . number_format($this->membership->category?->annual_fee ?? 0, 2);
 
-        return (new MailMessage)
+return (new MailMessage)
             ->subject('Welcome to CCHPL — Your Membership Is Active')
             ->greeting('Dear ' . $notifiable->name . ',')
             ->line('On behalf of the Executive Committee and all members of CCHPL, we are delighted to confirm that your membership is now **active**.')

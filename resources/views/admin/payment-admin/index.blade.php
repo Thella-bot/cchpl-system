@@ -8,7 +8,6 @@
     <p class="text-muted mb-0">Review member payment proofs and verify or reject them.</p>
 </div>
 
-<!-- Stats -->
 <div class="row g-3 mb-4">
     <div class="col-sm-4">
         <div class="card border-0 shadow-sm">
@@ -63,8 +62,8 @@
         @foreach ($payments as $payment)
             <div class="card border-0 shadow-sm">
                 <div class="card-body">
-                    <!-- Header -->
-                    <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+
+<div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
                         <div>
                             <h5 class="fw-semibold mb-1">{{ $payment->membership->user->name }}</h5>
                             <p class="text-muted small mb-0">
@@ -76,8 +75,7 @@
                         <span class="badge bg-warning text-dark">Pending Verification</span>
                     </div>
 
-                    <!-- Payment Info -->
-                    <div class="row g-3 mb-3">
+<div class="row g-3 mb-3">
                         <div class="col-sm-3">
                             <small class="text-muted">Amount</small>
                             <p class="fw-bold fs-5 mb-0 text-success">M{{ number_format($payment->amount, 2) }}</p>
@@ -96,8 +94,7 @@
                         </div>
                     </div>
 
-                    <!-- Payment Proof -->
-                    @if ($payment->proof_file)
+@if ($payment->proof_file)
                         <div class="mb-3">
                             <small class="text-muted">Payment Proof:</small><br>
                             <a href="{{ asset('storage/' . $payment->proof_file) }}" target="_blank"
@@ -115,8 +112,7 @@
                         </div>
                     @endif
 
-                    <!-- Action Buttons -->
-                    <div class="d-flex gap-2 flex-wrap mb-2">
+<div class="d-flex gap-2 flex-wrap mb-2">
                         <a href="{{ route('admin.payments.show', $payment->id) }}" class="btn btn-sm btn-outline-secondary">
                             <i class="fas fa-eye me-1"></i>Full Details
                         </a>
@@ -130,8 +126,7 @@
                         </button>
                     </div>
 
-                    <!-- Verify Form -->
-                    <div class="collapse" id="verify-{{ $payment->id }}">
+<div class="collapse" id="verify-{{ $payment->id }}">
                         <form action="{{ route('admin.payments.verify', $payment->id) }}" method="POST" class="mt-2">
                             @csrf
                             <div class="input-group">
@@ -144,8 +139,7 @@
                         </form>
                     </div>
 
-                    <!-- Reject Form -->
-                    <div class="collapse" id="reject-{{ $payment->id }}">
+<div class="collapse" id="reject-{{ $payment->id }}">
                         <form action="{{ route('admin.payments.reject', $payment->id) }}" method="POST" class="mt-2">
                             @csrf
                             <div class="input-group">

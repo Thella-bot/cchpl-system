@@ -12,15 +12,15 @@ class ResignationSubmittedNotification extends Notification implements ShouldQue
 {
     use Queueable;
 
-    public function __construct(protected Resignation $resignation)
+public function __construct(protected Resignation $resignation)
     {}
 
-    public function via($notifiable): array
+public function via($notifiable): array
     {
         return ['mail'];
     }
 
-    public function toMail($notifiable): MailMessage
+public function toMail($notifiable): MailMessage
     {
         return (new MailMessage)
             ->subject('CCHPL — Resignation Request Received')

@@ -16,12 +16,12 @@ class MembershipCategory extends Model
         'other_notes',
     ];
 
-    protected $casts = [
+protected $casts = [
         'annual_fee' => 'decimal:2',
         'voting_rights' => 'boolean',
     ];
 
-    public function memberships(): HasMany
+public function memberships(): HasMany
     {
         return $this->hasMany(Membership::class, 'category_id');
     }

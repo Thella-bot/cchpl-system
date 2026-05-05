@@ -4,8 +4,8 @@
 
 @section('content')
 <div class="row g-4">
-    <!-- Welcome Header -->
-    <div class="col-12">
+
+<div class="col-12">
         <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #1a6b3c 0%, #2d9b5a 100%);">
             <div class="card-body py-4 px-4">
                 <div class="d-flex align-items-center gap-3">
@@ -24,9 +24,9 @@
         </div>
     </div>
 
-    @if ($membership)
-        <!-- Membership Status Card -->
-        <div class="col-md-6">
+@if ($membership)
+
+<div class="col-md-6">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-header bg-white fw-semibold">
                     <i class="fas fa-id-card text-muted me-2"></i>Membership Status
@@ -39,18 +39,18 @@
                         </span>
                     </div>
 
-                    @if ($membership->member_id)
+@if ($membership->member_id)
                         <div class="p-3 bg-light rounded mb-3">
                             <small class="text-muted">Member ID</small>
                             <p class="fw-bold font-monospace mb-0 fs-5">{{ $membership->member_id }}</p>
                         </div>
                     @endif
 
-                    <dl class="row small mb-0">
+<dl class="row small mb-0">
                         <dt class="col-5 text-muted">Annual Fee</dt>
                         <dd class="col-7 fw-semibold">M{{ number_format($membership->category->annual_fee, 2) }}</dd>
 
-                        @if ($membership->expiry_date)
+@if ($membership->expiry_date)
                             <dt class="col-5 text-muted">Expires</dt>
                             <dd class="col-7 fw-semibold {{ $membership->isExpiringSoon() ? 'text-warning' : '' }}
                                 {{ $membership->isExpired() ? 'text-danger' : '' }}">
@@ -64,11 +64,11 @@
                             </dd>
                         @endif
 
-                        <dt class="col-5 text-muted">Applied</dt>
+<dt class="col-5 text-muted">Applied</dt>
                         <dd class="col-7">{{ $membership->created_at->format('M d, Y') }}</dd>
                     </dl>
 
-                    @if ($membership->status === 'pending')
+@if ($membership->status === 'pending')
                         <div class="alert alert-info py-2 mt-3 mb-0 small">
                             <i class="fas fa-info-circle me-1"></i>
                             Your application is under review. The Membership Committee will respond within 60 days.
@@ -91,8 +91,7 @@
             </div>
         </div>
 
-        <!-- Payment History -->
-        <div class="col-md-6">
+<div class="col-md-6">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-header bg-white fw-semibold d-flex align-items-center justify-content-between">
                     <span><i class="fas fa-credit-card text-muted me-2"></i>Payment History</span>
@@ -138,8 +137,8 @@
             </div>
         </div>
     @else
-        <!-- No membership yet -->
-        <div class="col-12">
+
+<div class="col-12">
             <div class="card border-0 shadow-sm text-center py-5">
                 <div class="card-body">
                     <div class="rounded-circle bg-primary bg-opacity-10 d-flex align-items-center justify-content-center mx-auto mb-3"
@@ -156,8 +155,7 @@
         </div>
     @endif
 
-    <!-- Quick Actions -->
-    <div class="col-12">
+<div class="col-12">
         <div class="card border-0 shadow-sm">
             <div class="card-header bg-white fw-semibold">
                 <i class="fas fa-bolt text-muted me-2"></i>Quick Actions
@@ -174,7 +172,7 @@
                         </div>
                     @endif
 
-                    @if ($membership && $membership->status === 'approved')
+@if ($membership && $membership->status === 'approved')
                         <div class="col-sm-6 col-md-3">
                             <a href="{{ route('payment.initiate') }}"
                                class="card text-center border text-decoration-none h-100 p-3">
@@ -191,7 +189,7 @@
                         </div>
                     @endif
 
-                    <div class="col-sm-6 col-md-3">
+<div class="col-sm-6 col-md-3">
                         <a href="{{ route('member.profile') }}"
                            class="card text-center border text-decoration-none h-100 p-3">
                             <div class="text-info mb-2"><i class="fas fa-user-edit fa-lg"></i></div>
@@ -199,7 +197,7 @@
                         </a>
                     </div>
 
-                    <div class="col-sm-6 col-md-3">
+<div class="col-sm-6 col-md-3">
                         <form action="{{ route('logout') }}" method="POST" class="h-100">
                             @csrf
                             <button type="submit"
@@ -210,7 +208,7 @@
                         </form>
                     </div>
 
-                    @if ($membership && in_array($membership->status, ['approved', 'suspended', 'expired']))
+@if ($membership && in_array($membership->status, ['approved', 'suspended', 'expired']))
                         <div class="col-sm-6 col-md-3">
                             <a href="{{ route('member.resign.create') }}"
                                class="card text-center border text-decoration-none h-100 p-3">

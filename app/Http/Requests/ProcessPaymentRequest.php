@@ -6,18 +6,13 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class ProcessPaymentRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
+
+public function authorize(): bool
     {
         return auth()->check();
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     */
-    public function rules(): array
+public function rules(): array
     {
         return [
             'membership_id' => ['required', 'exists:memberships,id'],
@@ -28,10 +23,7 @@ class ProcessPaymentRequest extends FormRequest
         ];
     }
 
-    /**
-     * Prepare the data for validation.
-     */
-    protected function prepareForValidation()
+protected function prepareForValidation()
     {
         $this->merge([
             'amount' => number_format($this->amount, 2, '.', ''),

@@ -9,8 +9,7 @@
         </a>
     </div>
 
-    <!-- Filters -->
-    <div class="card shadow mb-4">
+<div class="card shadow mb-4">
         <div class="card-header py-3">
             <h6 class="m-0 fw-bold text-primary"><i class="fas fa-filter me-1"></i> Advanced Filters</h6>
         </div>
@@ -53,8 +52,7 @@
         </div>
     </div>
 
-    <!-- Results -->
-    <div class="card shadow mb-4">
+<div class="card shadow mb-4">
         <div class="card-header py-3 d-flex justify-content-between align-items-center">
             <h6 class="m-0 fw-bold text-primary">Results ({{ $stats['count'] }})</h6>
         </div>

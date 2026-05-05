@@ -11,21 +11,21 @@ class FeeChangedNotification extends Notification
 {
     use Queueable;
 
-    protected $category;
+protected $category;
     protected $oldFee;
 
-    public function __construct(MembershipCategory $category, $oldFee)
+public function __construct(MembershipCategory $category, $oldFee)
     {
         $this->category = $category;
         $this->oldFee = $oldFee;
     }
 
-    public function via($notifiable)
+public function via($notifiable)
     {
         return ['mail'];
     }
 
-    public function toMail($notifiable)
+public function toMail($notifiable)
     {
         return (new MailMessage)
             ->subject('Membership Fee Updated')

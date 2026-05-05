@@ -11,8 +11,8 @@
 </div>
 
 <div class="row g-4">
-    <!-- Left column: payment & member info -->
-    <div class="col-lg-7">
+
+<div class="col-lg-7">
         <div class="card border-0 shadow-sm mb-4">
             <div class="card-header bg-white fw-semibold">
                 <i class="fas fa-credit-card text-muted me-2"></i>Payment Information
@@ -22,32 +22,32 @@
                     <dt class="col-sm-5 text-muted">Transaction Reference</dt>
                     <dd class="col-sm-7 font-monospace">{{ $payment->transaction_reference }}</dd>
 
-                    <dt class="col-sm-5 text-muted">Amount</dt>
+<dt class="col-sm-5 text-muted">Amount</dt>
                     <dd class="col-sm-7 fw-bold fs-5 text-success">M{{ number_format($payment->amount, 2) }}</dd>
 
-                    <dt class="col-sm-5 text-muted">Provider</dt>
+<dt class="col-sm-5 text-muted">Provider</dt>
                     <dd class="col-sm-7">{{ ucfirst($payment->provider) }}</dd>
 
-                    <dt class="col-sm-5 text-muted">Purpose</dt>
+<dt class="col-sm-5 text-muted">Purpose</dt>
                     <dd class="col-sm-7">{{ $payment->purpose ?? '—' }}</dd>
 
-                    <dt class="col-sm-5 text-muted">Status</dt>
+<dt class="col-sm-5 text-muted">Status</dt>
                     <dd class="col-sm-7">
                         <span class="badge {{ $payment->statusBadgeClass() }}">{{ ucfirst($payment->status) }}</span>
                     </dd>
 
-                    <dt class="col-sm-5 text-muted">Submitted</dt>
+<dt class="col-sm-5 text-muted">Submitted</dt>
                     <dd class="col-sm-7">{{ $payment->created_at->format('M d, Y H:i') }}</dd>
 
-                    @if($payment->verified_at)
+@if($payment->verified_at)
                         <dt class="col-sm-5 text-muted">Verified At</dt>
                         <dd class="col-sm-7">{{ $payment->verified_at->format('M d, Y H:i') }}</dd>
 
-                        <dt class="col-sm-5 text-muted">Receipt No.</dt>
+<dt class="col-sm-5 text-muted">Receipt No.</dt>
                         <dd class="col-sm-7 font-monospace">{{ $payment->receipt_number ?? '—' }}</dd>
                     @endif
 
-                    @if($payment->verification_notes)
+@if($payment->verification_notes)
                         <dt class="col-sm-5 text-muted">Notes</dt>
                         <dd class="col-sm-7">{{ $payment->verification_notes }}</dd>
                     @endif
@@ -55,7 +55,7 @@
             </div>
         </div>
 
-        <div class="card border-0 shadow-sm">
+<div class="card border-0 shadow-sm">
             <div class="card-header bg-white fw-semibold">
                 <i class="fas fa-user text-muted me-2"></i>Member Details
             </div>
@@ -64,29 +64,28 @@
                     <dt class="col-sm-5 text-muted">Name</dt>
                     <dd class="col-sm-7 fw-semibold">{{ $payment->membership->user->name }}</dd>
 
-                    <dt class="col-sm-5 text-muted">Email</dt>
+<dt class="col-sm-5 text-muted">Email</dt>
                     <dd class="col-sm-7">{{ $payment->membership->user->email }}</dd>
 
-                    <dt class="col-sm-5 text-muted">Phone</dt>
+<dt class="col-sm-5 text-muted">Phone</dt>
                     <dd class="col-sm-7">{{ $payment->membership->user->phone ?? '—' }}</dd>
 
-                    <dt class="col-sm-5 text-muted">Category</dt>
+<dt class="col-sm-5 text-muted">Category</dt>
                     <dd class="col-sm-7">{{ $payment->membership->category->name }}</dd>
 
-                    <dt class="col-sm-5 text-muted">Member ID</dt>
+<dt class="col-sm-5 text-muted">Member ID</dt>
                     <dd class="col-sm-7 font-monospace">{{ $payment->membership->member_id ?? '—' }}</dd>
 
-                    <dt class="col-sm-5 text-muted">Expiry Date</dt>
+<dt class="col-sm-5 text-muted">Expiry Date</dt>
                     <dd class="col-sm-7">{{ $payment->membership->expiry_date?->format('M d, Y') ?? '—' }}</dd>
                 </dl>
             </div>
         </div>
     </div>
 
-    <!-- Right column: proof image + actions -->
-    <div class="col-lg-5">
-        <!-- Proof Image -->
-        <div class="card border-0 shadow-sm mb-4">
+<div class="col-lg-5">
+
+<div class="card border-0 shadow-sm mb-4">
             <div class="card-header bg-white fw-semibold">
                 <i class="fas fa-image text-muted me-2"></i>Payment Proof
             </div>
@@ -108,8 +107,7 @@
             </div>
         </div>
 
-        <!-- Actions (only for pending) -->
-        @if($payment->isPending())
+@if($payment->isPending())
             <div class="card border-0 shadow-sm mb-3">
                 <div class="card-header bg-success text-white fw-semibold">
                     <i class="fas fa-check me-2"></i>Verify Payment
@@ -129,7 +127,7 @@
                 </div>
             </div>
 
-            <div class="card border-0 shadow-sm">
+<div class="card border-0 shadow-sm">
                 <div class="card-header bg-danger text-white fw-semibold">
                     <i class="fas fa-times me-2"></i>Reject Payment
                 </div>
@@ -149,7 +147,7 @@
             </div>
         @endif
 
-        @if($payment->isVerified())
+@if($payment->isVerified())
             <a href="{{ route('admin.payments.receipt', $payment->id) }}" class="btn btn-outline-primary w-100">
                 <i class="fas fa-receipt me-2"></i>View/Print Receipt
             </a>

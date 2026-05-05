@@ -18,7 +18,7 @@
         </div>
     </div>
 
-    <div class="col-md-5">
+<div class="col-md-5">
         <div class="card border-0 shadow-sm h-100">
             <div class="card-header bg-white fw-semibold">
                 <i class="fas fa-id-card text-muted me-2"></i>Application Guidance
@@ -29,7 +29,7 @@
                     <div class="fw-semibold">Choose the category that best matches your professional standing.</div>
                 </div>
 
-                <div class="d-flex flex-column gap-2">
+<div class="d-flex flex-column gap-2">
                     <div class="p-3 bg-light rounded d-flex align-items-center gap-3">
                         <div class="rounded-circle bg-success bg-opacity-10 d-flex align-items-center justify-content-center"
                              style="width: 42px; height: 42px;">
@@ -41,7 +41,7 @@
                         </div>
                     </div>
 
-                    <div class="p-3 bg-light rounded d-flex align-items-center gap-3">
+<div class="p-3 bg-light rounded d-flex align-items-center gap-3">
                         <div class="rounded-circle bg-primary bg-opacity-10 d-flex align-items-center justify-content-center"
                              style="width: 42px; height: 42px;">
                             <i class="fas fa-file-upload text-primary"></i>
@@ -52,7 +52,7 @@
                         </div>
                     </div>
 
-                    <div class="p-3 bg-light rounded d-flex align-items-center gap-3">
+<div class="p-3 bg-light rounded d-flex align-items-center gap-3">
                         <div class="rounded-circle bg-warning bg-opacity-10 d-flex align-items-center justify-content-center"
                              style="width: 42px; height: 42px;">
                             <i class="fas fa-clock text-warning"></i>
@@ -64,7 +64,7 @@
                     </div>
                 </div>
 
-                <div class="mt-4 p-3 bg-primary bg-opacity-10 rounded">
+<div class="mt-4 p-3 bg-primary bg-opacity-10 rounded">
                     <h6 class="fw-semibold mb-2 text-primary">What happens next?</h6>
                     <ul class="small text-muted mb-0 ps-3">
                         <li>Your documents are reviewed by the Membership Committee.</li>
@@ -76,7 +76,7 @@
         </div>
     </div>
 
-    <div class="col-md-7">
+<div class="col-md-7">
         <div class="card border-0 shadow-sm h-100">
             <div class="card-header bg-white fw-semibold d-flex align-items-center justify-content-between">
                 <span><i class="fas fa-pen-to-square text-muted me-2"></i>Application Details</span>
@@ -89,13 +89,13 @@
                     </div>
                 @endif
 
-                @if (session()->has('error'))
+@if (session()->has('error'))
                     <div class="alert alert-danger">
                         {{ session('error') }}
                     </div>
                 @endif
 
-                <form wire:submit.prevent="submit" class="d-flex flex-column gap-3">
+<form wire:submit.prevent="submit" class="d-flex flex-column gap-3">
                     <div>
                         <label class="form-label fw-semibold small text-muted">Select Membership Category</label>
                         <select wire:model="selected_category_id" class="form-select form-select-lg @error('selected_category_id') is-invalid @enderror">
@@ -114,7 +114,7 @@
                         @endif
                     </div>
 
-                    <div>
+<div>
                         <label class="form-label fw-semibold small text-muted">Upload CV / Resume</label>
                         <input type="file" wire:model="cv_file" accept=".pdf,.doc,.docx"
                                class="form-control form-control-lg @error('cv_file') is-invalid @enderror">
@@ -124,7 +124,7 @@
                         @endif
                     </div>
 
-                    <div>
+<div>
                         <label class="form-label fw-semibold small text-muted">Upload Certificates / Qualifications</label>
                         <input type="file" wire:model="certificates_file" accept=".pdf,.jpg,.jpeg,.png"
                                class="form-control form-control-lg @error('certificates_file') is-invalid @enderror">
@@ -134,7 +134,7 @@
                         @endif
                     </div>
 
-                    <div>
+<div>
                         <label class="form-label fw-semibold small text-muted">Employment Letter / Student Proof</label>
                         <input type="file" wire:model="employment_letter_file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
                                class="form-control form-control-lg @error('employment_letter_file') is-invalid @enderror">
@@ -144,7 +144,7 @@
                         @endif
                     </div>
 
-                    <div class="d-flex flex-column flex-sm-row gap-2 pt-2">
+<div class="d-flex flex-column flex-sm-row gap-2 pt-2">
                         <button type="submit" class="btn btn-success btn-lg px-4" @disabled($categories->isEmpty())>
                             <i class="fas fa-paper-plane me-2"></i>Submit Application
                         </button>

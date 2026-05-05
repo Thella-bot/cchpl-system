@@ -18,7 +18,7 @@
         </div>
     </div>
 
-    <div class="col-md-5">
+<div class="col-md-5">
         <div class="card border-0 shadow-sm h-100">
             <div class="card-header bg-white fw-semibold">
                 <i class="fas fa-wallet text-muted me-2"></i>Payment Guidance
@@ -29,7 +29,7 @@
                     <div class="fw-semibold">Generate your instructions first, then use the same reference when completing the payment.</div>
                 </div>
 
-                <div class="d-flex flex-column gap-2">
+<div class="d-flex flex-column gap-2">
                     <div class="p-3 bg-light rounded d-flex align-items-center gap-3">
                         <div class="rounded-circle bg-success bg-opacity-10 d-flex align-items-center justify-content-center"
                              style="width: 42px; height: 42px;">
@@ -41,7 +41,7 @@
                         </div>
                     </div>
 
-                    <div class="p-3 bg-light rounded d-flex align-items-center gap-3">
+<div class="p-3 bg-light rounded d-flex align-items-center gap-3">
                         <div class="rounded-circle bg-primary bg-opacity-10 d-flex align-items-center justify-content-center"
                              style="width: 42px; height: 42px;">
                             <i class="fas fa-mobile-screen-button text-primary"></i>
@@ -52,7 +52,7 @@
                         </div>
                     </div>
 
-                    <div class="p-3 bg-light rounded d-flex align-items-center gap-3">
+<div class="p-3 bg-light rounded d-flex align-items-center gap-3">
                         <div class="rounded-circle bg-warning bg-opacity-10 d-flex align-items-center justify-content-center"
                              style="width: 42px; height: 42px;">
                             <i class="fas fa-hourglass-half text-warning"></i>
@@ -64,7 +64,7 @@
                     </div>
                 </div>
 
-                <div class="alert alert-info py-2 mt-3 mb-0 small">
+<div class="alert alert-info py-2 mt-3 mb-0 small">
                     <i class="fas fa-info-circle me-1"></i>
                     Use the generated reference exactly as shown so your payment can be matched quickly.
                 </div>
@@ -72,14 +72,14 @@
         </div>
     </div>
 
-    <div class="col-md-7">
+<div class="col-md-7">
         <div class="card border-0 shadow-sm h-100">
             <div class="card-header bg-white fw-semibold d-flex align-items-center justify-content-between">
                 <span><i class="fas fa-money-check-dollar text-muted me-2"></i>Payment Details</span>
                 <span class="badge bg-light text-dark border">Finance Workflow</span>
             </div>
 
-            <div class="card-body">
+<div class="card-body">
                 @if(session()->has('error'))
                     <div class="alert alert-danger">{{ session('error') }}</div>
                 @endif
@@ -87,7 +87,7 @@
                     <div class="alert alert-success">{{ session('message') }}</div>
                 @endif
 
-                @if ($memberships->isEmpty())
+@if ($memberships->isEmpty())
                     <div class="text-center text-muted py-4">
                         <i class="fas fa-circle-info fa-2x mb-3 opacity-50"></i>
                         <p class="mb-2 fw-semibold">No eligible memberships available for payment.</p>
@@ -110,14 +110,14 @@
                             @error('membershipId')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
                         </div>
 
-                        <div>
+<div>
                             <label for="amount" class="form-label fw-semibold small text-muted">Amount (M)</label>
                             <input id="amount" type="number" step="0.01" min="0.01"
                                    wire:model="amount" class="form-control form-control-lg @error('amount') is-invalid @enderror" required>
                             @error('amount')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
                         </div>
 
-                        <div>
+<div>
                             <label for="provider" class="form-label fw-semibold small text-muted">Payment Provider</label>
                             <select id="provider" wire:model="provider" class="form-select form-select-lg @error('provider') is-invalid @enderror">
                                 <option value="">Select provider</option>
@@ -127,7 +127,7 @@
                             @error('provider')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
                         </div>
 
-                        <div>
+<div>
                             <label for="purpose" class="form-label fw-semibold small text-muted">Purpose</label>
                             <select id="purpose" wire:model="purpose" class="form-select form-select-lg @error('purpose') is-invalid @enderror">
                                 <option value="">Select purpose</option>
@@ -138,7 +138,7 @@
                             @error('purpose')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
                         </div>
 
-                        <div>
+<div>
                             <label for="proofFile" class="form-label fw-semibold small text-muted">Payment Proof</label>
                             <input id="proofFile" type="file" accept="image/jpeg,image/png"
                                    wire:model="proofFile" class="form-control form-control-lg @error('proofFile') is-invalid @enderror">
@@ -146,13 +146,13 @@
                             @error('proofFile')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
                         </div>
 
-                        <div class="pt-2">
+<div class="pt-2">
                             <button type="button" wire:click="generateInstructions" class="btn btn-outline-primary btn-lg px-4">
                                 <i class="fas fa-list-ol me-2"></i>Generate Payment Instructions
                             </button>
                         </div>
 
-                        @if ($showInstructions)
+@if ($showInstructions)
                             <div class="card bg-light border mb-0">
                                 <div class="card-header fw-semibold">
                                     <i class="fas fa-file-lines me-1"></i>Payment Instructions
@@ -166,7 +166,7 @@
                                 </div>
                             </div>
 
-                            <div class="d-flex flex-column flex-sm-row gap-2 pt-2">
+<div class="d-flex flex-column flex-sm-row gap-2 pt-2">
                                 <button type="submit" class="btn btn-success btn-lg px-4">
                                     <i class="fas fa-check me-2"></i>Confirm Payment Initiation
                                 </button>

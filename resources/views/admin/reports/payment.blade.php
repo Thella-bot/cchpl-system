@@ -4,7 +4,7 @@
 @section('content')
 <div class="container mx-auto px-4 py-8">
 
-    <div class="mb-8 flex items-center justify-between">
+<div class="mb-8 flex items-center justify-between">
         <div>
             <a href="{{ route('admin.reports.index') }}" class="text-sm text-blue-600 hover:underline">&larr; Reports dashboard</a>
             <h1 class="text-3xl font-bold text-gray-800 mt-1">Payment Report</h1>
@@ -16,7 +16,7 @@
         </a>
     </div>
 
-    {{-- ── Revenue summary ── --}}
+{{-- ── Revenue summary ── --}}
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
         <div class="bg-white rounded shadow p-5">
             <p class="text-sm text-gray-500">Total revenue (all time)</p>
@@ -43,7 +43,7 @@
         </div>
     </div>
 
-    {{-- ── Payment issues ── --}}
+{{-- ── Payment issues ── --}}
     @if ($rejectedCount > 0 || $voidedCount > 0)
     <div class="grid grid-cols-2 gap-5 mb-8">
         <div class="bg-white rounded shadow p-5 border-l-4 border-red-300">
@@ -59,7 +59,7 @@
     </div>
     @endif
 
-    {{-- ── Monthly revenue table ── --}}
+{{-- ── Monthly revenue table ── --}}
     <div class="bg-white rounded shadow mb-8">
         <div class="px-6 py-4 border-b border-gray-100">
             <h2 class="text-lg font-semibold text-gray-800">Monthly revenue (last 12 months)</h2>

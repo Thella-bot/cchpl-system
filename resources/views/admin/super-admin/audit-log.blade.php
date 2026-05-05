@@ -2,15 +2,14 @@
 
 @section('content')
 <div class="container-fluid py-4">
-    <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
+
+<div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="h4 mb-0 text-gray-800">
             <i class="fas fa-history text-muted me-2"></i>System Audit Log
         </h2>
     </div>
 
-    <!-- Filters -->
-    <div class="card shadow-sm mb-4">
+<div class="card shadow-sm mb-4">
         <div class="card-body">
             <form method="GET" action="{{ route('admin.audit-log') }}" class="row g-3 align-items-end">
                 <div class="col-md-4">
@@ -39,8 +38,7 @@
         </div>
     </div>
 
-    <!-- Logs Table -->
-    <div class="card shadow-sm border-0">
+<div class="card shadow-sm border-0">
         <div class="card-body p-0">
             <div class="table-responsive">
                 <table class="table table-hover mb-0 align-middle">
@@ -95,8 +93,8 @@
                                 @endif
                             </td>
                         </tr>
-                        <!-- Details Row -->
-                        <tr class="collapse bg-light" id="log-{{ $log->id }}">
+
+<tr class="collapse bg-light" id="log-{{ $log->id }}">
                             <td colspan="5" class="p-0">
                                 <div class="p-3 border-top border-bottom">
                                     <div class="row g-3">
@@ -106,15 +104,15 @@
                                             <pre class="small bg-white p-2 border rounded text-secondary" style="max-height: 200px; overflow-y: auto;">{{ json_encode($log->old_values, JSON_PRETTY_PRINT) }}</pre>
                                         </div>
                                         @endif
-                                        
-                                        @if(!empty($log->new_values))
+
+@if(!empty($log->new_values))
                                         <div class="col-md-4">
                                             <h6 class="small fw-bold text-success text-uppercase mb-2">New Values</h6>
                                             <pre class="small bg-white p-2 border rounded text-secondary" style="max-height: 200px; overflow-y: auto;">{{ json_encode($log->new_values, JSON_PRETTY_PRINT) }}</pre>
                                         </div>
                                         @endif
-                                        
-                                        @if(!empty($log->meta))
+
+@if(!empty($log->meta))
                                         <div class="col-md-4">
                                             <h6 class="small fw-bold text-info text-uppercase mb-2">Metadata</h6>
                                             <pre class="small bg-white p-2 border rounded text-secondary" style="max-height: 200px; overflow-y: auto;">{{ json_encode($log->meta, JSON_PRETTY_PRINT) }}</pre>

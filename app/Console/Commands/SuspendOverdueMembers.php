@@ -7,18 +7,12 @@ use App\Notifications\SuspensionNotification;
 use App\Services\PaymentService;
 use Illuminate\Console\Command;
 
-/**
- * Suspend members who have not paid for 6+ months (Bylaws 1.3).
- *
- * Schedule: daily at midnight.
- * Run manually: php artisan membership:suspend-overdue
- */
 class SuspendOverdueMembers extends Command
 {
     protected $signature   = 'membership:suspend-overdue';
     protected $description = 'Suspend members who have not renewed for 6+ months (Bylaws 1.3).';
 
-    public function handle(): int
+public function handle(): int
     {
         $overdue = Membership::where('status', 'approved')
             ->whereNotNull('expiry_date')
@@ -26,21 +20,21 @@ class SuspendOverdueMembers extends Command
             ->with('user', 'category')
             ->get();
 
-        if ($overdue->isEmpty()) {
+if ($overdue->isEmpty()) {
             $this->info('No members to suspend.');
             return 0;
         }
 
-        foreach ($overdue as $membership) {
+foreach ($overdue as $membership) {
             $oldValues = $membership->only(['status', 'suspended_at']);
 
-            $membership->update([
+$membership->update([
                 'status'       => 'suspended',
                 'suspended_at' => now(),
             ]);
 
-            AuditLog::create([
-                'user_id'        => null, // system action
+AuditLog::create([
+                'user_id'        => null, 
                 'action'         => 'membership.auto_suspended',
                 'auditable_type' => Membership::class,
                 'auditable_id'   => $membership->id,
@@ -53,15 +47,15 @@ class SuspendOverdueMembers extends Command
                 ],
             ]);
 
-            if ($membership->user) {
+if ($membership->user) {
                 $membership->user->notify(new SuspensionNotification($membership));
             }
 
-            $memberId = $membership->member_id ? $membership->member_id : $membership->id;
+$memberId = $membership->member_id ? $membership->member_id : $membership->id;
             $this->line("Suspended: {$membership->user->name} ({$memberId})");
         }
 
-        $this->info("Suspended {$overdue->count()} member(s).");
+$this->info("Suspended {$overdue->count()} member(s).");
         return 0;
     }
 }

@@ -5,18 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'CCHPL System')</title>
     @livewireStyles
-    <!-- Bootstrap 5 -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-    <!-- Font Awesome 6 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- Tailwind CSS (preflight disabled to avoid Bootstrap conflict) -->
-    <script src="https://cdn.tailwindcss.com"></script>
+
+<link rel="stylesheet" href="https:
+
+<link rel="stylesheet" href="https:
+
+<script src="https:
     <script>tailwind.config = { corePlugins: { preflight: false } }</script>
-    <style>
+<style>
         body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background-color: #f8f9fa; }
         .navbar-brand-cchpl { color: #1a6b3c !important; font-weight: 700; }
         .navbar-brand-cchpl:hover { color: #155a32 !important; }
         .nav-topbar { border-bottom: 3px solid #1a6b3c; }
+
+.bg-brand-green { background-color: #1a6b3c; }
+        .bg-brand-green-light { background-color: #2d9b5a; }
+        .bg-brand-green-dark { background-color: #123b28; }
+        .text-brand-green { color: #1a6b3c; }
+        .text-brand-green-light { color: #2d9b5a; }
+        .border-brand-green { border-color: #1a6b3c; }
+        .btn-brand-green { background-color: #1a6b3c; border-color: #1a6b3c; }
+        .btn-brand-green:hover { background-color: #155a32; border-color: #155a32; }
+
+.bg-green-50 { background-color: rgba(26, 107, 60, 0.08) !important; }
+        .bg-green-100 { background-color: rgba(26, 107, 60, 0.15) !important; }
+        .bg-green-600 { background-color: #1a6b3c !important; }
+        .bg-green-700 { background-color: #155a32 !important; }
+        .text-green-600 { color: #1a6b3c !important; }
+        .text-green-700 { color: #155a32 !important; }
+        .border-green-600 { border-color: #1a6b3c !important; }
     </style>
 </head>
 <body>
@@ -76,13 +93,12 @@
         </div>
     </nav>
 
-    <div class="container py-4">
+<div class="container py-4">
         @include('components.flash-messages')
         @yield('content')
     </div>
 
-    <!-- Bootstrap 5 JS Bundle -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https:
     @livewireScripts
     @stack('scripts')
 </body>

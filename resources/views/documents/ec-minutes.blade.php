@@ -8,19 +8,19 @@
         .header { border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 20px; }
         .org { font-weight: bold; font-size: 12pt; text-transform: uppercase; }
         .title { font-weight: bold; font-size: 14pt; margin-top: 5px; }
-        
-        table.meta { width: 100%; margin-bottom: 20px; border-collapse: collapse; }
+
+table.meta { width: 100%; margin-bottom: 20px; border-collapse: collapse; }
         table.meta td { padding: 5px; border-bottom: 1px solid #eee; }
         .label { font-weight: bold; width: 140px; }
-        
-        .section { margin-bottom: 20px; }
+
+.section { margin-bottom: 20px; }
         .section-head { background-color: #eee; padding: 5px; font-weight: bold; border-bottom: 1px solid #999; margin-bottom: 10px; }
-        
-        table.actions { width: 100%; border-collapse: collapse; font-size: 10pt; }
+
+table.actions { width: 100%; border-collapse: collapse; font-size: 10pt; }
         table.actions th { border: 1px solid #000; padding: 5px; background: #f0f0f0; text-align: left; }
         table.actions td { border: 1px solid #000; padding: 5px; vertical-align: top; }
-        
-        .footer { margin-top: 40px; font-size: 10pt; page-break-inside: avoid; }
+
+.footer { margin-top: 40px; font-size: 10pt; page-break-inside: avoid; }
         .sig-box { width: 45%; display: inline-block; vertical-align: top; margin-top: 30px; }
         .sig-line { border-top: 1px solid #000; margin-top: 40px; width: 80%; }
     </style>
@@ -32,7 +32,7 @@
         <div class="title">MINUTES OF THE EXECUTIVE COMMITTEE MEETING</div>
     </div>
 
-    <table class="meta">
+<table class="meta">
         <tr>
             <td class="label">Meeting No:</td> <td>{{ $data['meetingNo'] }}</td>
             <td class="label">Type:</td> <td>{{ ucfirst($data['meetingType']) }}</td>
@@ -50,7 +50,7 @@
         </tr>
     </table>
 
-    <div class="section">
+<div class="section">
         <div class="section-head">1. ATTENDANCE</div>
         <p><strong>Present:</strong> {{ $data['membersPresent'] ?? '0' }}/{{ $data['totalEcMembers'] ?? '—' }} (Quorum: {{ ($data['quorumAchieved'] ?? false) ? 'ACHIEVED' : 'NOT ACHIEVED' }})</p>
         <ul>
@@ -60,7 +60,7 @@
         </ul>
     </div>
 
-    <div class="section">
+<div class="section">
         <div class="section-head">2. PROCEEDINGS</div>
         @if(!empty($data['agendaItems']))
             @foreach($data['agendaItems'] as $index => $item)
@@ -77,7 +77,7 @@
         @endif
     </div>
 
-    <div class="section">
+<div class="section">
         <div class="section-head">3. ACTION ITEMS</div>
         <table class="actions">
             <thead>
@@ -101,11 +101,11 @@
         </table>
     </div>
 
-    <div class="footer">
+<div class="footer">
         <p><strong>Approval of Minutes:</strong></p>
         <p>These minutes were confirmed as a true record of proceedings on: {{ $data['confirmationDate'] ?? '___________' }}</p>
 
-        <div style="width: 100%;">
+<div style="width: 100%;">
             <div class="sig-box">
                 <div class="sig-line"></div>
                 <strong>Chairperson</strong>

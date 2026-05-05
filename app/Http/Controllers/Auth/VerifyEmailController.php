@@ -7,44 +7,21 @@ use Illuminate\Foundation\Auth\VerifiesEmails;
 
 class VerifyEmailController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Email Verification Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller is responsible for handling email verification for any
-    | user that recently registered with the application. Emails may also
-    | be re-sent if the user didn't receive the original email message.
-    |
-    */
 
-    use VerifiesEmails;
+use VerifiesEmails;
 
-    /**
-     * Where to redirect users after verification.
-     *
-     * @var string
-     */
-    /**
-     * Get the post-login redirect path for the user.
-     */
-    protected function redirectTo(): string
+protected function redirectTo(): string
     {
         $user = auth()->user();
 
-        if ($user && $user->isAdmin()) {
+if ($user && $user->isAdmin()) {
             return $user->adminHome();
         }
 
-        return '/member/dashboard';
+return '/member/dashboard';
     }
 
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
+public function __construct()
     {
         $this->middleware('auth');
         $this->middleware('signed')->only('verify');

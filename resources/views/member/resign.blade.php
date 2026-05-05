@@ -23,7 +23,7 @@
         </div>
     </div>
 
-    <div class="col-md-5">
+<div class="col-md-5">
         <div class="card border-0 shadow-sm h-100">
             <div class="card-header bg-white fw-semibold">
                 <i class="fas fa-file-signature text-muted me-2"></i>Resignation Summary
@@ -34,12 +34,12 @@
                     <div class="fw-bold fs-5">{{ $membership->category->name }}</div>
                 </div>
 
-                <div class="alert alert-info small mb-3">
+<div class="alert alert-info small mb-3">
                     <i class="fas fa-info-circle me-1"></i>
                     The Secretary will acknowledge your resignation within 14 days in line with the CCHPL Bylaws.
                 </div>
 
-                @if ($balance > 0)
+@if ($balance > 0)
                     <div class="alert alert-warning small mb-3">
                         <i class="fas fa-exclamation-triangle me-1"></i>
                         <strong>Outstanding Balance:</strong> M{{ number_format($balance, 2) }}
@@ -47,18 +47,18 @@
                     </div>
                 @endif
 
-                <dl class="row small mb-0">
+<dl class="row small mb-0">
                     <dt class="col-5 text-muted">Current Status</dt>
                     <dd class="col-7">{{ ucfirst($membership->status) }}</dd>
 
-                    <dt class="col-5 text-muted">Annual Fee</dt>
+<dt class="col-5 text-muted">Annual Fee</dt>
                     <dd class="col-7">M{{ number_format($membership->category->annual_fee, 2) }}</dd>
                 </dl>
             </div>
         </div>
     </div>
 
-    <div class="col-md-7">
+<div class="col-md-7">
         <div class="card border-0 shadow-sm h-100">
             <div class="card-header bg-white fw-semibold d-flex align-items-center justify-content-between">
                 <span><i class="fas fa-pen-to-square text-muted me-2"></i>Resignation Details</span>
@@ -68,14 +68,14 @@
                 <form method="POST" action="{{ route('member.resign.store') }}" class="d-flex flex-column gap-3">
                     @csrf
 
-                    <div>
+<div>
                         <label for="effective_date" class="form-label fw-semibold small text-muted">Effective Date</label>
                         <input id="effective_date" type="date" class="form-control form-control-lg @error('effective_date') is-invalid @enderror"
                                name="effective_date" value="{{ old('effective_date') }}" required min="{{ date('Y-m-d') }}">
                         @error('effective_date')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
 
-                    <div>
+<div>
                         <label for="reason_code" class="form-label fw-semibold small text-muted">Reason for Resignation</label>
                         <select id="reason_code" class="form-select form-select-lg @error('reason_code') is-invalid @enderror" name="reason_code">
                             <option value="">Select a reason (optional)</option>
@@ -86,14 +86,14 @@
                         @error('reason_code')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
 
-                    <div>
+<div>
                         <label for="reason_notes" class="form-label fw-semibold small text-muted">Additional Notes</label>
                         <textarea id="reason_notes" class="form-control @error('reason_notes') is-invalid @enderror"
                                   name="reason_notes" rows="4" placeholder="Optional comments...">{{ old('reason_notes') }}</textarea>
                         @error('reason_notes')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
 
-                    <div class="p-3 bg-light rounded">
+<div class="p-3 bg-light rounded">
                         <div class="form-check">
                             <input class="form-check-input @error('confirm') is-invalid @enderror"
                                    type="checkbox" name="confirm" id="confirm" value="1" required>
@@ -104,7 +104,7 @@
                         </div>
                     </div>
 
-                    <div class="d-flex flex-column flex-sm-row gap-2 pt-2">
+<div class="d-flex flex-column flex-sm-row gap-2 pt-2">
                         <button type="submit" class="btn btn-danger btn-lg px-4">
                             <i class="fas fa-paper-plane me-2"></i>Submit Resignation
                         </button>

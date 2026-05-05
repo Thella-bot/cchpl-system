@@ -12,7 +12,7 @@ return new class extends Migration {
         });
     }
 
-    public function down(): void
+public function down(): void
     {
         Schema::table('membership_documents', function (Blueprint $table) {
             $table->dropColumn('status');

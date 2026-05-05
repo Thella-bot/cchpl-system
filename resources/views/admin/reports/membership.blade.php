@@ -5,7 +5,7 @@
 @section('content')
 <div class="container mx-auto px-4 py-8">
 
-    <div class="mb-8 flex items-center justify-between">
+<div class="mb-8 flex items-center justify-between">
         <div>
             <a href="{{ route('admin.reports.index') }}" class="text-sm text-blue-600 hover:underline">&larr; Reports dashboard</a>
             <h1 class="text-3xl font-bold text-gray-800 mt-1">Membership Report</h1>
@@ -17,7 +17,7 @@
         </a>
     </div>
 
-    {{-- ── By category ── --}}
+{{-- ── By category ── --}}
     <div class="bg-white rounded shadow mb-8 overflow-x-auto">
         <div class="px-6 py-4 border-b border-gray-100">
             <h2 class="text-lg font-semibold text-gray-800">Membership by category</h2>
@@ -56,7 +56,7 @@
         </table>
     </div>
 
-    {{-- ── Status summary ── --}}
+{{-- ── Status summary ── --}}
     <div class="grid grid-cols-3 gap-5 mb-8">
         <div class="bg-white rounded shadow p-5 text-center">
             <p class="text-sm text-gray-500 mb-1">Expired memberships</p>
@@ -73,7 +73,7 @@
         </div>
     </div>
 
-    {{-- ── Expiring within 30 days ── --}}
+{{-- ── Expiring within 30 days ── --}}
     <div class="bg-white rounded shadow">
         <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
             <h2 class="text-lg font-semibold text-gray-800">
@@ -82,7 +82,7 @@
             </h2>
         </div>
 
-        @if ($expiringMembers->isEmpty())
+@if ($expiringMembers->isEmpty())
             <div class="px-6 py-8 text-center text-gray-400 text-sm">No memberships expiring in the next 30 days.</div>
         @else
             <div class="overflow-x-auto">

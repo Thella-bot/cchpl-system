@@ -9,29 +9,24 @@ use Illuminate\Http\Request;
 
 class MembershipController extends Controller
 {
-    /**
-     * Display a paginated list of memberships.
-     */
-    public function index(Request $request)
+
+public function index(Request $request)
     {
         $query = Membership::with(['user', 'category']);
 
-        if ($request->filled('status')) {
+if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
         if ($request->filled('category_id')) {
             $query->where('category_id', $request->category_id);
         }
 
-        $memberships = $query->latest()->paginate(25)->withQueryString();
+$memberships = $query->latest()->paginate(25)->withQueryString();
 
-        return MembershipResource::collection($memberships);
+return MembershipResource::collection($memberships);
     }
 
-    /**
-     * Display a single membership with all its relations.
-     */
-    public function show(Membership $membership)
+public function show(Membership $membership)
     {
         $membership->load(['user', 'category', 'documents', 'payments']);
         return new MembershipResource($membership);

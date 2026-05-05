@@ -21,7 +21,7 @@
                         <p class="text-muted small mb-3">{{ $role->description }}</p>
                     @endif
 
-                    @if($role->users->isNotEmpty())
+@if($role->users->isNotEmpty())
                         <ul class="list-unstyled mb-0">
                             @foreach($role->users as $user)
                                 <li class="d-flex align-items-center gap-2 py-2 border-bottom">

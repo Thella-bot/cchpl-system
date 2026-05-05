@@ -5,18 +5,16 @@ use Closure;
 use Illuminate\Http\Request;
 
 class AdminMiddleware {
-    /**
-     * Check if user is an admin
-     */
-    public function handle(Request $request, Closure $next) {
+
+public function handle(Request $request, Closure $next) {
         if (!auth()->check()) {
             return redirect('login');
         }
 
-        if (!auth()->user()->isAdmin()) {
+if (!auth()->user()->isAdmin()) {
             abort(403, 'Unauthorized access');
         }
 
-        return $next($request);
+return $next($request);
     }
 }

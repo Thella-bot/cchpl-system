@@ -13,18 +13,18 @@ class MembershipRenewalReminderNotification extends Notification implements Shou
 {
     use Queueable, SerializesModels;
 
-    public function __construct(
+public function __construct(
         protected Membership $membership,
         protected int $daysUntilExpiry
     ) {
     }
 
-    public function via($notifiable): array
+public function via($notifiable): array
     {
         return ['mail'];
     }
 
-    public function toMail($notifiable): MailMessage
+public function toMail($notifiable): MailMessage
     {
         return (new MailMessage)
             ->subject("CCHPL Membership Renewal Reminder - {$this->daysUntilExpiry} Day(s) Remaining")

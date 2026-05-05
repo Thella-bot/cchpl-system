@@ -9,15 +9,11 @@ use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
-    public function run()
+
+public function run()
     {
-        // Create super admin user
-        $superAdmin = User::firstOrCreate(
+
+$superAdmin = User::firstOrCreate(
             ['email' => 'admin@cchpl.org.ls'],
             [
                 'name' => 'Super Admin',
@@ -27,19 +23,17 @@ class UserSeeder extends Seeder
             ]
         );
 
-        $superAdmin->forceFill([
+$superAdmin->forceFill([
             'is_admin' => true,
             'email_verified_at' => $superAdmin->email_verified_at ?: now(),
         ])->save();
 
-        // Assign super admin role
-        $superAdminRole = Role::where('name', 'super_admin')->first();
+$superAdminRole = Role::where('name', 'super_admin')->first();
         if ($superAdminRole) {
             $superAdmin->roles()->sync([$superAdminRole->id]);
         }
 
-        // Create additional admin users if needed
-        $membershipAdmin = User::firstOrCreate(
+$membershipAdmin = User::firstOrCreate(
             ['email' => 'membership@cchpl.org.ls'],
             [
                 'name' => 'Membership Admin',
@@ -49,12 +43,12 @@ class UserSeeder extends Seeder
             ]
         );
 
-        $membershipAdmin->forceFill([
+$membershipAdmin->forceFill([
             'is_admin' => true,
             'email_verified_at' => $membershipAdmin->email_verified_at ?: now(),
         ])->save();
 
-        $membershipAdminRole = Role::where('name', 'membership_admin')->first();
+$membershipAdminRole = Role::where('name', 'membership_admin')->first();
         if ($membershipAdminRole) {
             $membershipAdmin->roles()->sync([$membershipAdminRole->id]);
         }

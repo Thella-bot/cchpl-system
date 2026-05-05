@@ -5,26 +5,26 @@
 @section('content')
 <div class="container mx-auto px-4 py-8 max-w-3xl">
 
-  <a href="{{ route('admin.documents.queue') }}" class="text-sm text-blue-600 hover:underline">&larr; Back to queue</a>
+<a href="{{ route('admin.documents.queue') }}" class="text-sm text-blue-600 hover:underline">&larr; Back to queue</a>
 
-  <h1 class="text-3xl font-bold text-gray-800 mt-2 mb-2">Compose EC Meeting Minutes</h1>
+<h1 class="text-3xl font-bold text-gray-800 mt-2 mb-2">Compose EC Meeting Minutes</h1>
   <p class="text-gray-500 text-sm mb-6">
     Fill in meeting details below. Use <strong>Preview</strong> to check before saving.
     After saving you can edit the body sections (reports, resolutions, action items) in the review screen.
     <br>Reference: CCHPL-OPS-002 &nbsp;|&nbsp; Per Constitution Clause 7.5 and Bylaws Clause 2.2.
   </p>
 
-  @if ($errors->any())
+@if ($errors->any())
     <div class="mb-5 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 rounded text-sm">
       <ul class="list-disc list-inside">@foreach ($errors->all() as $e)<li>{{ $e }}</li>@endforeach</ul>
     </div>
   @endif
 
-  <form method="POST" action="{{ route('admin.documents.store.minutes') }}" id="minutes-form">
+<form method="POST" action="{{ route('admin.documents.store.minutes') }}" id="minutes-form">
     @csrf
     <div class="bg-white rounded shadow p-6 space-y-5">
 
-      <h2 class="text-base font-semibold text-gray-700 border-b pb-2">Meeting reference</h2>
+<h2 class="text-base font-semibold text-gray-700 border-b pb-2">Meeting reference</h2>
       <div class="grid sm:grid-cols-2 gap-5">
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Meeting number / Reference *</label>
@@ -43,7 +43,7 @@
         </div>
       </div>
 
-      <h2 class="text-base font-semibold text-gray-700 border-b pb-2 pt-2">Date & venue</h2>
+<h2 class="text-base font-semibold text-gray-700 border-b pb-2 pt-2">Date & venue</h2>
       <div class="grid sm:grid-cols-3 gap-5">
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Date *</label>
@@ -71,7 +71,7 @@
           placeholder="e.g. CCHPL Secretariat Office, Maseru / Zoom">
       </div>
 
-      <h2 class="text-base font-semibold text-gray-700 border-b pb-2 pt-2">Officers</h2>
+<h2 class="text-base font-semibold text-gray-700 border-b pb-2 pt-2">Officers</h2>
       <div class="grid sm:grid-cols-2 gap-5">
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Chairperson *</label>
@@ -86,7 +86,7 @@
         </div>
       </div>
 
-      <h2 class="text-base font-semibold text-gray-700 border-b pb-2 pt-2">Attendance & quorum</h2>
+<h2 class="text-base font-semibold text-gray-700 border-b pb-2 pt-2">Attendance & quorum</h2>
       <div class="grid sm:grid-cols-3 gap-5">
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Total EC members *</label>
@@ -105,7 +105,7 @@
         </div>
       </div>
 
-      {{-- Attendance rows --}}
+{{-- Attendance rows --}}
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-2">Attendance list (EC members)</label>
         <div id="attendees-list" class="space-y-2">
@@ -126,7 +126,7 @@
         </div>
       </div>
 
-      <h2 class="text-base font-semibold text-gray-700 border-b pb-2 pt-2">Confirmation</h2>
+<h2 class="text-base font-semibold text-gray-700 border-b pb-2 pt-2">Confirmation</h2>
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-1">Date of confirmation meeting *</label>
         <input type="text" name="confirmation_date" value="{{ old('confirmation_date') }}" required
@@ -135,9 +135,9 @@
         <p class="text-xs text-gray-400 mt-1">The date of the next EC meeting at which these minutes will be confirmed.</p>
       </div>
 
-    </div>
+</div>
 
-    <div class="mt-6 flex flex-wrap gap-3 items-center">
+<div class="mt-6 flex flex-wrap gap-3 items-center">
       <button type="button" onclick="previewDraft()"
         class="px-6 py-2.5 bg-blue-600 text-white rounded hover:bg-blue-700 font-medium">
         Preview PDF
@@ -168,7 +168,7 @@ function previewDraft() {
   const form = document.getElementById('minutes-form');
   const fd = new FormData(form);
 
-  const attendees = [];
+const attendees = [];
   let i = 0;
   while (fd.get('attendees[' + i + '][name]') !== null) {
     attendees.push({
@@ -179,18 +179,18 @@ function previewDraft() {
     i++;
   }
 
-  const pForm = document.createElement('form');
+const pForm = document.createElement('form');
   pForm.method = 'POST';
   pForm.action = '{{ route("admin.documents.preview-draft") }}';
   pForm.target = 'preview-frame';
 
-  const addHidden = (name, value) => {
+const addHidden = (name, value) => {
     const inp = document.createElement('input');
     inp.type = 'hidden'; inp.name = name; inp.value = value ?? '';
     pForm.appendChild(inp);
   };
 
-  addHidden('_token', '{{ csrf_token() }}');
+addHidden('_token', '{{ csrf_token() }}');
   addHidden('type', 'ec_minutes');
   addHidden('data[meetingNo]',        fd.get('meeting_no'));
   addHidden('data[meetingType]',      fd.get('meeting_type'));
@@ -206,17 +206,17 @@ function previewDraft() {
   addHidden('data[quorumAchieved]',   parseInt(fd.get('members_present') || 0) >= parseInt(fd.get('quorum_required') || 1) ? '1' : '0');
   addHidden('data[confirmationDate]', fd.get('confirmation_date'));
 
-  attendees.forEach((a, idx) => {
+attendees.forEach((a, idx) => {
     addHidden('data[attendees][' + idx + '][name]',     a.name);
     addHidden('data[attendees][' + idx + '][position]', a.position);
     addHidden('data[attendees][' + idx + '][status]',   a.status);
   });
 
-  document.body.appendChild(pForm);
+document.body.appendChild(pForm);
   pForm.submit();
   document.body.removeChild(pForm);
 
-  document.getElementById('preview-modal').style.display = 'flex';
+document.getElementById('preview-modal').style.display = 'flex';
 }
 
 function closePreview() {
