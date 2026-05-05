@@ -5,8 +5,19 @@ use App\Models\DocumentReview;
 use App\Services\DocumentService;
 use Illuminate\Http\Request;
 
+/**
+ * Service class for handling AGM Notice document creation and building.
+ *
+ * Centralizes AGM Notice logic for maintainability and reusability.
+ */
 class AgmNoticeDocument
 {
+    /**
+     * Store a new AGM Notice document review from request data.
+     *
+     * @param Request $request The HTTP request containing AGM notice data.
+     * @return DocumentReview The created document review instance.
+     */
     public function store(Request $request)
     {
         $data = $request->validate([
@@ -26,7 +37,8 @@ class AgmNoticeDocument
             'agm_year'            => 'required|integer',
         ]);
 
-return DocumentReview::create([
+        // Create a new document review for the AGM notice
+        return DocumentReview::create([
             'type'           => DocumentReview::TYPE_AGM_NOTICE,
             'status'         => DocumentReview::STATUS_PENDING_REVIEW,
             'recipient_type' => DocumentReview::RECIPIENT_ALL_PAID_UP,
@@ -51,7 +63,13 @@ return DocumentReview::create([
         ]);
     }
 
-public function build(array $data)
+    /**
+     * Build the AGM Notice PDF document from data.
+     *
+     * @param array $data Data for the AGM notice.
+     * @return \Barryvdh\DomPDF\PDF The generated PDF instance.
+     */
+    public function build(array $data)
     {
         return DocumentService::agmNotice($data);
     }

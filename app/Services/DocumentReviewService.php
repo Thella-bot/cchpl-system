@@ -17,14 +17,16 @@ class DocumentReviewService
         $this->assertEditableType($review);
         abort_unless($review->isPendingReview(), 403, 'Only pending documents can be approved.');
 
-$review->update([
+            // Update review status and reviewer details
+            $review->update([
             'status'         => DocumentReview::STATUS_APPROVED,
             'reviewed_by'    => auth()->id(),
             'reviewed_at'    => now(),
             'reviewer_notes' => $request->reviewer_notes ?? $review->reviewer_notes,
         ]);
 
-AuditLog::create([
+            // Log the approval action for auditing
+            AuditLog::create([
             'user_id'        => auth()->id(),
             'action'         => 'document_review.approved',
             'auditable_type' => DocumentReview::class,
@@ -42,11 +44,14 @@ public function send(Request $request, DocumentReview $review, AgmNoticeDocument
         $this->assertEditableType($review);
         abort_if($review->isSent() || $review->isCancelled(), 403, 'Document already finalised.');
 
-set_time_limit(300);
+            // Allow for long-running PDF generation
+            set_time_limit(300);
 
-$request->validate(['confirm_send' => 'required|accepted']);
+            // Validate confirmation
+            $request->validate(['confirm_send' => 'required|accepted']);
 
-$filename = $this->filename($review) . '.pdf';
+            // Prepare file paths and directories
+            $filename = $this->filename($review) . '.pdf';
         $tmpDir   = storage_path('app/tmp');
 
 if (!is_dir($tmpDir)) {
@@ -54,9 +59,11 @@ if (!is_dir($tmpDir)) {
         }
 
 $tmpPath = $tmpDir . '/' . $filename;
-        $this->buildPdf($review->type, $review->data, $agmNoticeDocument, $ecMinutesDocument)->save($tmpPath);
+            // Build and save the PDF
+            $this->buildPdf($review->type, $review->data, $agmNoticeDocument, $ecMinutesDocument)->save($tmpPath);
 
-$this->dispatchEmail($review, $tmpPath, $filename);
+            // Dispatch the document via email
+            $this->dispatchEmail($review, $tmpPath, $filename);
 
 @unlink($tmpPath);
 

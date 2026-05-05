@@ -2,44 +2,67 @@
 namespace App\Services;
 
 use App\Models\Membership;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
-
+/**
+            str_contains(strtolower($categoryName), 'associate')    => 'ASC',
+            str_contains(strtolower($categoryName), 'student')      => 'STU',
+            str_contains(strtolower($categoryName), 'corporate')    => 'COR',
+            str_contains(strtolower($categoryName), 'honorary')     => 'HON',
 class MembershipService
 {
 
-public function generateMemberId(Membership $membership): string
+    /**
+     * Generate a unique member ID for a membership.
+     *
+     * @param Membership $membership The membership instance.
+     * @return string The generated member ID.
+     */
+    public function generateMemberId(Membership $membership): string
     {
         $code = $this->categoryCode($membership->category->name);
         $year = now()->year;
 
-return DB::transaction(function () use ($membership, $code, $year) {
+        return DB::transaction(function () use ($membership, $code, $year) {
+            // Count approved memberships for the year and category
             $count = Membership::where('status', Membership::STATUS_APPROVED)
                 ->whereYear('updated_at', $year)
                 ->whereHas('category', fn ($q) => $q->where('name', $membership->category->name))
                 ->lockForUpdate()
                 ->count();
 
-$sequence = str_pad($count + 1, 3, '0', STR_PAD_LEFT);
+            // Format member ID
+            $sequence = str_pad($count + 1, 3, '0', STR_PAD_LEFT);
             $memberId = "CCHPL-{$code}-{$year}-{$sequence}";
 
-$membership->update(['member_id' => $memberId]);
+            $membership->update(['member_id' => $memberId]);
             return $memberId;
         });
     }
 
-public function isPenaltyApplicable(Membership $membership): bool
+    /**
+     * Determine if a penalty is applicable for a membership.
+     *
+     * @param Membership $membership The membership instance.
+     * @return bool True if penalty applies, false otherwise.
+     */
+    public function isPenaltyApplicable(Membership $membership): bool
     {
         if (!$membership->isExpired()) {
             return false;
         }
 
-$dueDate = Carbon::create($membership->expiry_date->year, 3, 31);
+        // Penalty applies if past March 31 of expiry year
+        $dueDate = Carbon::create($membership->expiry_date->year, 3, 31);
 
-return now()->greaterThan($dueDate);
+        return now()->greaterThan($dueDate);
     }
 
-public static function calculateOutstandingBalance(Membership $membership): float
+    /**
+     * Calculate the outstanding balance for a membership.
+     *
+     * @param Membership $membership The membership instance.
+     * @return float The outstanding balance.
+     */
+    public static function calculateOutstandingBalance(Membership $membership): float
     {
         $balance = 0.0;
         if ($membership->isExpired() || $membership->status === 'suspended') {
@@ -51,14 +74,19 @@ public static function calculateOutstandingBalance(Membership $membership): floa
         return $balance;
     }
 
-public static function categoryCode(string $categoryName): string
+    /**
+     * Get the code for a membership category name.
+     *
+     * @param string $categoryName The category name.
+     * @return string The code for the category.
+     */
+    public static function categoryCode(string $categoryName): string
     {
         return match (true) {
             str_contains(strtolower($categoryName), 'professional') => 'PRO',
             str_contains(strtolower($categoryName), 'associate')    => 'ASC',
             str_contains(strtolower($categoryName), 'student')      => 'STU',
             str_contains(strtolower($categoryName), 'corporate')    => 'COR',
-            str_contains(strtolower($categoryName), 'honorary')     => 'HON',
             default                                                 => 'MEM',
         };
     }

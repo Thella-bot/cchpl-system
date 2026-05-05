@@ -5,8 +5,19 @@ use App\Models\DocumentReview;
 use App\Services\DocumentService;
 use Illuminate\Http\Request;
 
+/**
+ * Service class for handling EC Minutes document creation and building.
+ *
+ * Centralizes EC Minutes logic for maintainability and reusability.
+ */
 class EcMinutesDocument
 {
+    /**
+     * Store a new EC Minutes document review from request data.
+     *
+     * @param Request $request The HTTP request containing EC minutes data.
+     * @return DocumentReview The created document review instance.
+     */
     public function store(Request $request)
     {
         $data = $request->validate([
@@ -27,7 +38,8 @@ class EcMinutesDocument
             'action_items'      => 'nullable|array',
         ]);
 
-return DocumentReview::create([
+        // Create a new document review for the EC minutes
+        return DocumentReview::create([
             'type'           => DocumentReview::TYPE_EC_MINUTES,
             'status'         => DocumentReview::STATUS_PENDING_REVIEW,
             'recipient_type' => DocumentReview::RECIPIENT_EC_MEMBERS,
@@ -54,7 +66,13 @@ return DocumentReview::create([
         ]);
     }
 
-public function build(array $data)
+    /**
+     * Build the EC Minutes PDF document from data.
+     *
+     * @param array $data Data for the EC minutes.
+     * @return \Barryvdh\DomPDF\PDF The generated PDF instance.
+     */
+    public function build(array $data)
     {
         return DocumentService::ecMinutes($data);
     }
