@@ -78,30 +78,28 @@
     </div>
 @else
 
-<form id="bulk-form" method="POST" action="{{ route('admin.memberships.bulk') }}">
-        @csrf
-        <div class="card border-0 shadow-sm mb-3">
-            <div class="card-body d-flex flex-wrap align-items-center gap-3">
-                <div class="d-flex align-items-center gap-2">
-                    <button type="button" id="select-all" class="btn btn-sm btn-outline-secondary">All</button>
-                    <button type="button" id="select-none" class="btn btn-sm btn-outline-secondary">None</button>
-                    <span class="text-muted small">Selected: <strong id="selected-count">0</strong></span>
-                </div>
-                <div class="d-flex gap-2 ms-auto flex-wrap align-items-center">
-                    <input type="text" name="reason" class="form-control form-control-sm"
-                           placeholder="Rejection reason (required for bulk reject)…" style="min-width: 260px;">
-                    <button type="submit" name="action" value="approve"
-                            class="btn btn-sm btn-success">
-                        <i class="fas fa-check me-1"></i>Approve Selected
-                    </button>
-                    <button type="submit" name="action" value="reject"
-                            class="btn btn-sm btn-danger">
-                        <i class="fas fa-times me-1"></i>Reject Selected
-                    </button>
-                </div>
+<form id="bulk-approve-form" method="POST" action="{{ route('admin.memberships.bulk.approve') }}" class="d-none">@csrf</form>
+    <form id="bulk-reject-form" method="POST" action="{{ route('admin.memberships.bulk.reject') }}" class="d-none">@csrf</form>
+
+    <div class="card border-0 shadow-sm mb-3">
+        <div class="card-body d-flex flex-wrap align-items-center gap-3">
+            <div class="d-flex align-items-center gap-2">
+                <button type="button" id="select-all" class="btn btn-sm btn-outline-secondary">All</button>
+                <button type="button" id="select-none" class="btn btn-sm btn-outline-secondary">None</button>
+                <span class="text-muted small">Selected: <strong id="selected-count">0</strong></span>
+            </div>
+            <div class="d-flex gap-2 ms-auto flex-wrap align-items-center">
+                <input type="text" id="bulk-reject-reason" class="form-control form-control-sm"
+                       placeholder="Rejection reason (required for bulk reject)…" style="min-width: 260px;">
+                <button type="button" id="bulk-approve-btn" class="btn btn-sm btn-success">
+                    <i class="fas fa-check me-1"></i>Approve Selected
+                </button>
+                <button type="button" id="bulk-reject-btn" class="btn btn-sm btn-danger">
+                    <i class="fas fa-times me-1"></i>Reject Selected
+                </button>
             </div>
         </div>
-    </form>
+    </div>
 
 <div class="d-flex flex-column gap-3">
         @foreach ($memberships as $membership)
@@ -109,8 +107,7 @@
                 <div class="card-body">
                     <div class="d-flex align-items-start gap-3 mb-3">
                         <input type="checkbox" name="ids[]" value="{{ $membership->id }}"
-                               class="bulk-checkbox form-check-input mt-1 flex-shrink-0"
-                               form="bulk-form">
+                               class="bulk-checkbox form-check-input mt-1 flex-shrink-0">
                         <div class="flex-grow-1">
                             <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
                                 <div>
@@ -196,19 +193,95 @@
 
 @push('scripts')
 <script>
-    const checkboxes = document.querySelectorAll('.bulk-checkbox');
-    const countEl    = document.getElementById('selected-count');
+    document.addEventListener('DOMContentLoaded', function () {
+        const checkboxes = document.querySelectorAll('.bulk-checkbox');
+        const countEl = document.getElementById('selected-count');
+        const selectAllBtn = document.getElementById('select-all');
+        const selectNoneBtn = document.getElementById('select-none');
+        const approveBtn = document.getElementById('bulk-approve-btn');
+        const rejectBtn = document.getElementById('bulk-reject-btn');
+        const approveForm = document.getElementById('bulk-approve-form');
+        const rejectForm = document.getElementById('bulk-reject-form');
+        const reasonInput = document.getElementById('bulk-reject-reason');
 
-function updateCount() {
-        countEl.textContent = Array.from(checkboxes).filter(c => c.checked).length;
-    }
-    checkboxes.forEach(cb => cb.addEventListener('change', updateCount));
+        function getSelectedIds() {
+            return Array.from(checkboxes)
+                .filter(c => c.checked)
+                .map(c => c.value);
+        }
 
-document.getElementById('select-all')?.addEventListener('click', () => {
-        checkboxes.forEach(cb => cb.checked = true); updateCount();
-    });
-    document.getElementById('select-none')?.addEventListener('click', () => {
-        checkboxes.forEach(cb => cb.checked = false); updateCount();
+        function updateCount() {
+            countEl.textContent = getSelectedIds().length;
+        }
+
+        function appendIdsToForm(form, ids) {
+            // Clear previous hidden inputs
+            form.querySelectorAll('input[name="ids[]"]').forEach(el => el.remove());
+            ids.forEach(id => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'ids[]';
+                input.value = id;
+                form.appendChild(input);
+            });
+        }
+
+        checkboxes.forEach(cb => cb.addEventListener('change', updateCount));
+
+        if (selectAllBtn) {
+            selectAllBtn.addEventListener('click', () => {
+                checkboxes.forEach(cb => cb.checked = true);
+                updateCount();
+            });
+        }
+
+        if (selectNoneBtn) {
+            selectNoneBtn.addEventListener('click', () => {
+                checkboxes.forEach(cb => cb.checked = false);
+                updateCount();
+            });
+        }
+
+        if (approveBtn) {
+            approveBtn.addEventListener('click', () => {
+                const selectedIds = getSelectedIds();
+                if (selectedIds.length === 0) {
+                    alert('Please select at least one application to approve.');
+                    return;
+                }
+                if (confirm(`Are you sure you want to approve ${selectedIds.length} application(s)?`)) {
+                    appendIdsToForm(approveForm, selectedIds);
+                    approveForm.submit();
+                }
+            });
+        }
+
+        if (rejectBtn) {
+            rejectBtn.addEventListener('click', () => {
+                const selectedIds = getSelectedIds();
+                if (selectedIds.length === 0) {
+                    alert('Please select at least one application to reject.');
+                    return;
+                }
+                const reason = reasonInput.value.trim();
+                if (reason.length < 10) {
+                    alert('A rejection reason of at least 10 characters is required.');
+                    reasonInput.focus();
+                    return;
+                }
+                if (confirm(`Are you sure you want to reject ${selectedIds.length} application(s)?`)) {
+                    appendIdsToForm(rejectForm, selectedIds);
+                    const reasonField = document.createElement('input');
+                    reasonField.type = 'hidden';
+                    reasonField.name = 'reason';
+                    reasonField.value = reason;
+                    rejectForm.appendChild(reasonField);
+                    rejectForm.submit();
+                }
+            });
+        }
+
+        updateCount();
     });
 </script>
 @endpush

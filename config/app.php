@@ -5,7 +5,7 @@ return [
 'name' => env('APP_NAME', 'CCHPL'),
     'env' => env('APP_ENV', 'production'),
     'debug' => env('APP_DEBUG', false),
-    'url' => env('APP_URL', 'http:
+    'url' => env('APP_URL', 'http://localhost'),
     'timezone' => 'Africa/Maseru',
     'locale' => 'en',
     'fallback_locale' => 'en',

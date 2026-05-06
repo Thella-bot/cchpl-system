@@ -6,12 +6,12 @@
     <title>@yield('title', 'CCHPL Admin')</title>
     @livewireStyles
 
-<link rel="stylesheet" href="https:
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
 
-<link rel="stylesheet" href="https:
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-<script src="https:
-    <script>tailwind.config = { corePlugins: { preflight: false } }</script>
+
     <style>
 
 .bg-green-50 { background-color: rgba(26, 107, 60, 0.08) !important; }
@@ -219,8 +219,8 @@ html, body { height: 100%; }
         </main>
     </div>
 
-<script src="https:
-    <script>
+<script>
+
         (() => {
             const sidebar = document.getElementById('admin-sidebar');
             const backdrop = document.getElementById('admin-sidebar-backdrop');

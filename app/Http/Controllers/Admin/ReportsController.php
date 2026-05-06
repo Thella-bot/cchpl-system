@@ -174,8 +174,8 @@ private function streamCsv(string $filename, callable $callback)
             'Expires' => '0',
         ];
 
-return new StreamedResponse(function () use ($callback) {
-            $handle = fopen('php:
+        return new StreamedResponse(function () use ($callback) {
+            $handle = fopen('php://output', 'w');
             $callback($handle);
             fclose($handle);
         }, 200, $headers);

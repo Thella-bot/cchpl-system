@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 
 class DocumentController extends Controller
 {
-
 public function certificate(Membership $membership)
     {
 

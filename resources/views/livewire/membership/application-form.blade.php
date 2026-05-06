@@ -119,6 +119,7 @@
                         <input type="file" wire:model="cv_file" accept=".pdf,.doc,.docx"
                                class="form-control form-control-lg @error('cv_file') is-invalid @enderror">
                         @error('cv_file') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
+                        <div wire:loading wire:target="cv_file" class="form-text text-muted">Uploading...</div>
                         @if ($this->cv_file)
                             <div class="form-text text-success">Selected: {{ $this->cv_file->getClientOriginalName() }}</div>
                         @endif
@@ -129,6 +130,7 @@
                         <input type="file" wire:model="certificates_file" accept=".pdf,.jpg,.jpeg,.png"
                                class="form-control form-control-lg @error('certificates_file') is-invalid @enderror">
                         @error('certificates_file') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
+                        <div wire:loading wire:target="certificates_file" class="form-text text-muted">Uploading...</div>
                         @if ($this->certificates_file)
                             <div class="form-text text-success">Selected: {{ $this->certificates_file->getClientOriginalName() }}</div>
                         @endif
@@ -139,14 +141,16 @@
                         <input type="file" wire:model="employment_letter_file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
                                class="form-control form-control-lg @error('employment_letter_file') is-invalid @enderror">
                         @error('employment_letter_file') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
+                        <div wire:loading wire:target="employment_letter_file" class="form-text text-muted">Uploading...</div>
                         @if ($this->employment_letter_file)
                             <div class="form-text text-success">Selected: {{ $this->employment_letter_file->getClientOriginalName() }}</div>
                         @endif
                     </div>
 
 <div class="d-flex flex-column flex-sm-row gap-2 pt-2">
-                        <button type="submit" class="btn btn-success btn-lg px-4" @disabled($categories->isEmpty())>
-                            <i class="fas fa-paper-plane me-2"></i>Submit Application
+                        <button type="submit" class="btn btn-success btn-lg px-4" @disabled($categories->isEmpty()) wire:loading.attr="disabled">
+                            <span wire:loading.remove><i class="fas fa-paper-plane me-2"></i>Submit Application</span>
+                            <span wire:loading><i class="fas fa-spinner fa-spin me-2"></i>Submitting...</span>
                         </button>
                         <a href="{{ route('member.dashboard') }}" class="btn btn-outline-secondary btn-lg px-4">
                             <i class="fas fa-arrow-left me-2"></i>Back to Dashboard

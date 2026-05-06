@@ -1,8 +1,8 @@
 <?php
 namespace App\Console;
 
+use App\Console\Commands\CheckMembershipRenewals;
 use App\Console\Commands\MarkExpiredMemberships;
-use App\Console\Commands\SendMembershipExpiryReminders;
 use App\Console\Commands\SuspendOverdueMembers;
 use App\Console\Commands\VoidAbandonedPayments;
 use Illuminate\Console\Scheduling\Schedule;
@@ -33,7 +33,7 @@ $schedule->command(VoidAbandonedPayments::class)
             ->withoutOverlapping()
             ->appendOutputTo(storage_path('logs/void-abandoned.log'));
 
-$schedule->command(SendMembershipExpiryReminders::class)
+        $schedule->command(CheckMembershipRenewals::class)
             ->weeklyOn(1, '08:00')
             ->timezone('Africa/Maseru')
             ->withoutOverlapping()

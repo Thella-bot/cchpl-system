@@ -14,48 +14,48 @@ class SuspendOverdueMembers extends Command
 
 public function handle(): int
     {
-        $overdue = Membership::where('status', 'approved')
+        $overdueMemberships = Membership::where('status', 'approved')
             ->whereNotNull('expiry_date')
             ->where('expiry_date', '<', now()->subMonths(6))
-            ->with('user', 'category')
+            ->with('user')
             ->get();
 
-if ($overdue->isEmpty()) {
+        if ($overdueMemberships->isEmpty()) {
             $this->info('No members to suspend.');
             return 0;
         }
 
-foreach ($overdue as $membership) {
-            $oldValues = $membership->only(['status', 'suspended_at']);
+        $overdueIds = $overdueMemberships->pluck('id');
 
-$membership->update([
-                'status'       => 'suspended',
-                'suspended_at' => now(),
-            ]);
+        $count = Membership::whereIn('id', $overdueIds)->update([
+            'status'       => 'suspended',
+            'suspended_at' => now(),
+        ]);
 
-AuditLog::create([
-                'user_id'        => null, 
-                'action'         => 'membership.auto_suspended',
-                'auditable_type' => Membership::class,
-                'auditable_id'   => $membership->id,
-                'old_values'     => $oldValues,
-                'new_values'     => $membership->only(['status', 'suspended_at']),
-                'meta'           => [
-                    'reason'       => 'Non-payment for 6+ months (Bylaws 1.3)',
-                    'expired_date' => $membership->expiry_date->toDateString(),
-                    'command'      => 'membership:suspend-overdue',
-                ],
-            ]);
+        AuditLog::create([
+            'user_id'        => null,
+            'action'         => 'membership.bulk_auto_suspended',
+            'auditable_type' => Membership::class,
+            'auditable_id'   => null,
+            'old_values'     => ['status' => 'approved'],
+            'new_values'     => ['status' => 'suspended'],
+            'meta'           => [
+                'reason'        => 'Non-payment for 6+ months (Bylaws 1.3)',
+                'suspended_ids' => $overdueIds->toArray(),
+                'count'         => $count,
+                'command'       => 'membership:suspend-overdue',
+            ],
+        ]);
 
-if ($membership->user) {
+        foreach ($overdueMemberships as $membership) {
+            if ($membership->user) {
                 $membership->user->notify(new SuspensionNotification($membership));
+                $memberId = $membership->member_id ?: $membership->id;
+                $this->line("Notified and suspended: {$membership->user->name} ({$memberId})");
             }
-
-$memberId = $membership->member_id ? $membership->member_id : $membership->id;
-            $this->line("Suspended: {$membership->user->name} ({$memberId})");
         }
 
-$this->info("Suspended {$overdue->count()} member(s).");
+        $this->info("Suspended and notified {$count} member(s).");
         return 0;
     }
 }

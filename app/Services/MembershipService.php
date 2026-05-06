@@ -2,14 +2,11 @@
 namespace App\Services;
 
 use App\Models\Membership;
-/**
-            str_contains(strtolower($categoryName), 'associate')    => 'ASC',
-            str_contains(strtolower($categoryName), 'student')      => 'STU',
-            str_contains(strtolower($categoryName), 'corporate')    => 'COR',
-            str_contains(strtolower($categoryName), 'honorary')     => 'HON',
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+
 class MembershipService
 {
-
     /**
      * Generate a unique member ID for a membership.
      *
@@ -18,7 +15,7 @@ class MembershipService
      */
     public function generateMemberId(Membership $membership): string
     {
-        $code = $this->categoryCode($membership->category->name);
+        $code = self::categoryCode($membership->category->name);
         $year = now()->year;
 
         return DB::transaction(function () use ($membership, $code, $year) {
@@ -67,7 +64,8 @@ class MembershipService
         $balance = 0.0;
         if ($membership->isExpired() || $membership->status === 'suspended') {
             $balance = (float) $membership->category->annual_fee;
-            if ($membership->isPenaltyApplicable()) {
+            // Use instance method for penalty check
+            if ((new self)->isPenaltyApplicable($membership)) {
                 $balance += $balance * 0.10;
             }
         }

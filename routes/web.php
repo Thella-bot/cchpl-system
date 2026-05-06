@@ -48,13 +48,6 @@ Route::get('/payment/initiate', InitiatePayment::class)
         ->middleware(['verified', 'throttle:10,1'])
         ->name('payment.initiate');
 
-Route::get('/documents/certificate/{membership}',  [DocumentController::class, 'certificate'])
-        ->name('documents.certificate');
-    Route::get('/documents/receipt/{payment}',         [DocumentController::class, 'receipt'])
-        ->name('documents.receipt');
-    Route::get('/documents/welcome-pack/{membership}', [DocumentController::class, 'welcomePack'])
-        ->name('documents.welcome-pack');
-
 Route::get('/member/resign', [MemberResignationController::class, 'create'])
         ->name('member.resign.create');
     Route::post('/member/resign', [MemberResignationController::class, 'store'])
@@ -81,7 +74,8 @@ Route::middleware('role:membership_admin,super_admin')
             Route::get('/pending',       [MembershipAdminController::class, 'index'])->name('index');
             Route::get('/list/all',      [MembershipAdminController::class, 'listMembers'])->name('list');
             Route::get('/list/rejected', [MembershipAdminController::class, 'listRejected'])->name('rejected');
-            Route::post('/bulk',         [MembershipAdminController::class, 'bulkAction'])->name('bulk');
+            Route::post('/bulk-approve', [MembershipAdminController::class, 'bulkApprove'])->name('bulk.approve');
+            Route::post('/bulk-reject',  [MembershipAdminController::class, 'bulkReject'])->name('bulk.reject');
             Route::get('/export',        [MembershipAdminController::class, 'export'])->name('export');
 
 Route::get('/{membership}',          [MembershipAdminController::class, 'show'])->name('show');
@@ -92,7 +86,7 @@ Route::post('/{membership}/documents/{document}/review',
                 [MembershipAdminController::class, 'reviewDocument'])->name('document.review');
         });
 
-Route::middleware('role:finance_admin,super_admin')->group(function () {
+Route::middleware('role:finance_admin,super_admin,content_admin')->group(function () {
         Route::get('/memberships/categories',                  [MembershipAdminController::class, 'categories'])->name('memberships.categories.index');
         Route::get('/memberships/categories/{category}/edit', [MembershipAdminController::class, 'editCategory'])->name('memberships.categories.edit');
         Route::put('/memberships/categories/{category}',       [MembershipAdminController::class, 'updateCategory'])->name('memberships.categories.update');
@@ -131,10 +125,13 @@ Route::middleware('role:reports_admin,super_admin')
             Route::get('/export/payments', [ReportsController::class, 'exportPayments'])->name('export.payments');
         });
 
-Route::middleware('role:super_admin,membership_admin,payment_admin')
+Route::middleware('role:super_admin,content_admin')
         ->prefix('documents')
         ->name('documents.')
         ->group(function () {
+            Route::get('/certificate/{membership}',  [DocumentController::class, 'certificate'])->name('certificate');
+            Route::get('/receipt/{payment}',         [DocumentController::class, 'receipt'])->name('receipt');
+            Route::get('/welcome-pack/{membership}', [DocumentController::class, 'welcomePack'])->name('welcome-pack');
             Route::get('/',                    [DocumentReviewController::class, 'queue'])->name('queue');
             Route::get('/compose/agm-notice',  [AgmNoticeController::class, 'create'])->name('compose.agm');
             Route::post('/compose/agm-notice', [AgmNoticeController::class, 'store'])->name('store.agm');
@@ -148,4 +145,8 @@ Route::middleware('role:super_admin,membership_admin,payment_admin')
             Route::post('/{review}/send',      [DocumentReviewController::class, 'send'])->name('send');
             Route::post('/{review}/cancel',    [DocumentReviewController::class, 'cancel'])->name('cancel');
         });
+
+    Route::middleware('role:content_admin,super_admin')->group(function () {
+        Route::get('/content-dashboard', [\App\Http\Controllers\Admin\ContentAdminController::class, 'dashboard'])->name('content.dashboard');
+    });
 });

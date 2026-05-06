@@ -51,12 +51,85 @@ public function show(Membership $membership)
 
 public function approve(Request $request, Membership $membership)
     {
+        $result = $this->approveMembership($membership);
+
+        $message = "✅ Application for {$membership->user->name} approved. Member ID: {$membership->member_id}.";
+        if ($result['cert_error']) {
+            $message .= " Certificate could not be emailed due to a technical issue (full details logged). Check logs if needed.";
+        } else {
+            $message .= ' Certificate emailed.';
+        }
+
+        return back()->with('success', $message);
+    }
+
+    public function reject(Request $request, Membership $membership)
+    {
+        $request->validate(['reason' => 'required|string|min:10']);
+
+        $this->rejectMembership($membership, $request->reason);
+
+        return back()->with('success', "❌ Application for {$membership->user->name} rejected.");
+    }
+
+    public function bulkApprove(Request $request)
+    {
+        $request->validate([
+            'ids'   => 'required|array|min:1',
+            'ids.*' => 'exists:memberships,id',
+        ]);
+
+        $memberships = Membership::whereIn('id', $request->ids)
+            ->where('status', Membership::STATUS_PENDING)
+            ->with('user')
+            ->get();
+
+        $certFailures = [];
+        foreach ($memberships as $membership) {
+            $result = $this->approveMembership($membership);
+            if ($result['cert_error']) {
+                $certFailures[] = $membership->user->name;
+            }
+        }
+
+        $count = $memberships->count();
+        $message = "✅ Approved {$count} application(s).";
+        if (!empty($certFailures)) {
+            $message .= ' Certificate emails could not be sent for some members due to technical issues (full details logged).';
+        } else {
+            $message .= ' Certificates emailed.';
+        }
+
+        return back()->with('success', $message);
+    }
+
+    public function bulkReject(Request $request)
+    {
+        $request->validate([
+            'ids'    => 'required|array|min:1',
+            'ids.*'  => 'exists:memberships,id',
+            'reason' => 'required|string|min:10',
+        ]);
+
+        $memberships = Membership::whereIn('id', $request->ids)
+            ->where('status', Membership::STATUS_PENDING)
+            ->get();
+
+        foreach ($memberships as $membership) {
+            $this->rejectMembership($membership, $request->reason);
+        }
+
+        return back()->with('success', "❌ Rejected {$memberships->count()} application(s).");
+    }
+
+    private function approveMembership(Membership $membership): array
+    {
         $oldValues = $membership->only(['status', 'member_id']);
 
-$membership->update(['status' => Membership::STATUS_APPROVED]);
+        $membership->update(['status' => Membership::STATUS_APPROVED]);
         $memberId = $membership->generateMemberId();
 
-AuditLog::create([
+        AuditLog::create([
             'user_id'        => auth()->id(),
             'action'         => 'membership.application.approved',
             'auditable_type' => Membership::class,
@@ -69,11 +142,11 @@ AuditLog::create([
             ],
         ]);
 
-$membership->user->notify(
+        $membership->user->notify(
             new ApplicationStatusNotification($membership, Membership::STATUS_APPROVED)
         );
 
-$certError = null;
+        $certError = null;
         try {
             DocumentService::sendToMember($membership, DocumentReview::TYPE_CERTIFICATE);
         } catch (\Exception $e) {
@@ -81,24 +154,15 @@ $certError = null;
             \Log::warning("Certificate email failed for membership #{$membership->id}: {$certError}");
         }
 
-$message = "✅ Application for {$membership->user->name} approved. Member ID: {$memberId}.";
-        if ($certError) {
-$message .= " Certificate could not be emailed due to a technical issue (full details logged). Check logs if needed.";
-        } else {
-            $message .= ' Certificate emailed.';
-        }
-
-return back()->with('success', $message);
+        return ['cert_error' => $certError];
     }
 
-public function reject(Request $request, Membership $membership)
+    private function rejectMembership(Membership $membership, string $reason): void
     {
-        $request->validate(['reason' => 'required|string|min:10']);
-
-$oldValues = $membership->only(['status']);
+        $oldValues = $membership->only(['status']);
         $membership->update(['status' => Membership::STATUS_REJECTED]);
 
-AuditLog::create([
+        AuditLog::create([
             'user_id'        => auth()->id(),
             'action'         => 'membership.application.rejected',
             'auditable_type' => Membership::class,
@@ -107,88 +171,13 @@ AuditLog::create([
             'new_values'     => $membership->only(['status']),
             'meta'           => [
                 'rejected_by' => auth()->user()->email ?? null,
-                'reason'      => $request->reason,
+                'reason'      => $reason,
             ],
         ]);
 
-$membership->user->notify(
-            new ApplicationStatusNotification($membership, Membership::STATUS_REJECTED, $request->reason)
+        $membership->user->notify(
+            new ApplicationStatusNotification($membership, Membership::STATUS_REJECTED, $reason)
         );
-
-return back()->with('success', "❌ Application for {$membership->user->name} rejected.");
-    }
-
-public function bulkAction(Request $request)
-    {
-        $request->validate([
-            'ids'    => 'required|array|min:1',
-            'ids.*'  => 'exists:memberships,id',
-            'action' => 'required|in:approve,reject',
-            'reason' => $request->action === 'reject'
-                ? 'required|string|min:10'
-                : 'nullable|string|min:10',
-        ]);
-
-$memberships = Membership::whereIn('id', $request->ids)
-            ->where('status', Membership::STATUS_PENDING)
-            ->with('user', 'category')
-            ->get();
-
-$certFailures = [];
-
-foreach ($memberships as $membership) {
-            $oldValues = $membership->only(['status']);
-            $newStatus = $request->action === 'approve' ? Membership::STATUS_APPROVED : Membership::STATUS_REJECTED;
-
-$membership->update(['status' => $newStatus]);
-
-$memberId = null;
-
-if ($newStatus === Membership::STATUS_APPROVED) {
-
-$memberId = $membership->generateMemberId();
-
-try {
-                    DocumentService::sendToMember($membership, DocumentReview::TYPE_CERTIFICATE);
-                } catch (\Exception $e) {
-                    $certFailures[] = $membership->user->name;
-                    \Log::warning("Certificate email failed for membership #{$membership->id}: {$e->getMessage()}");
-                }
-            }
-
-AuditLog::create([
-                'user_id'        => auth()->id(),
-                'action'         => "membership.application.{$newStatus}",
-                'auditable_type' => Membership::class,
-                'auditable_id'   => $membership->id,
-                'old_values'     => $oldValues,
-                'new_values'     => $membership->fresh()->only(['status', 'member_id']),
-                'meta'           => [
-                    ($newStatus === Membership::STATUS_APPROVED ? 'approved_by' : 'rejected_by') => auth()->user()->email ?? null,
-                    'reason'    => $request->reason ?? null,
-                    'member_id' => $memberId,
-                ],
-            ]);
-
-$membership->user->notify(
-                new ApplicationStatusNotification($membership, $newStatus, $request->reason ?? null)
-            );
-        }
-
-$count = $memberships->count();
-
-if ($request->action === 'approve') {
-            $message = "✅ Approved {$count} application(s).";
-            if (!empty($certFailures)) {
-                $message .= ' Certificate emails could not be sent for some members due to technical issues (full details logged).';
-            } else {
-                $message .= ' Certificates emailed.';
-            }
-        } else {
-            $message = "❌ Rejected {$count} application(s).";
-        }
-
-return back()->with('success', $message);
     }
 
 public function export(Request $request)
@@ -210,7 +199,7 @@ $headers = [
         ];
 
 $callback = function () use ($memberships) {
-            $handle = fopen('php:
+            $handle = fopen('php://output', 'w');
             fputcsv($handle, ['Name', 'Email', 'Category', 'Fee (M)', 'Applied At', 'Status']);
             foreach ($memberships as $m) {
                 fputcsv($handle, [
@@ -219,7 +208,7 @@ $callback = function () use ($memberships) {
                     $m->category->name,
                     number_format($m->category->annual_fee, 2),
                     $m->created_at->format('Y-m-d H:i:s'),
-                    ucfirst($m->status),
+                    ucfirst($m->status)
                 ]);
             }
             fclose($handle);
@@ -234,9 +223,9 @@ public function reviewDocument(Request $request, Membership $membership, Members
             abort(404);
         }
 
-$request->validate([
+        $request->validate([
             'status' => ['required', Rule::in([MembershipDocument::STATUS_APPROVED, MembershipDocument::STATUS_REJECTED])],
-            'reason' => 'nullable|string|max:500',
+            'reason' => 'nullable|string|max:500'
         ]);
 
 $oldValues = $document->only(['status']);
@@ -349,4 +338,3 @@ return redirect()
             ->with('success', "✅ '{$category->name}' updated successfully.");
     }
 }
-

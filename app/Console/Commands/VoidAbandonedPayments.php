@@ -12,40 +12,36 @@ class VoidAbandonedPayments extends Command
 
 public function handle(): int
     {
-        $abandoned = Payment::where('status', 'pending')
+        $abandonedIds = Payment::where('status', 'pending')
             ->whereNull('proof_file')
             ->where('created_at', '<', now()->subHours(48))
-            ->get();
+            ->pluck('id');
 
-if ($abandoned->isEmpty()) {
+        if ($abandonedIds->isEmpty()) {
             $this->info('No abandoned payments to void.');
             return 0;
         }
 
-foreach ($abandoned as $payment) {
-            $payment->update([
-                'status'             => 'voided',
-                'verification_notes' => 'Automatically voided — no proof uploaded within 48 hours.',
-            ]);
+        $count = Payment::whereIn('id', $abandonedIds)->update([
+            'status'             => 'voided',
+            'verification_notes' => 'Automatically voided — no proof uploaded within 48 hours.',
+        ]);
 
-AuditLog::create([
-                'user_id'        => null,
-                'action'         => 'payment.auto_voided',
-                'auditable_type' => Payment::class,
-                'auditable_id'   => $payment->id,
-                'old_values'     => ['status' => 'pending'],
-                'new_values'     => ['status' => 'voided'],
-                'meta'           => [
-                    'reference' => $payment->transaction_reference,
-                    'created'   => $payment->created_at->toIso8601String(),
-                    'command'   => 'payments:void-abandoned',
-                ],
-            ]);
+        AuditLog::create([
+            'user_id'        => null,
+            'action'         => 'payment.bulk_auto_voided',
+            'auditable_type' => Payment::class,
+            'auditable_id'   => null,
+            'old_values'     => ['status' => 'pending'],
+            'new_values'     => ['status' => 'voided'],
+            'meta'           => [
+                'voided_ids' => $abandonedIds->toArray(),
+                'count'      => $count,
+                'command'    => 'payments:void-abandoned',
+            ],
+        ]);
 
-$this->line("Voided: {$payment->transaction_reference}");
-        }
-
-$this->info("Voided {$abandoned->count()} abandoned payment(s).");
+        $this->info("Voided {$count} abandoned payment(s).");
         return 0;
     }
 }

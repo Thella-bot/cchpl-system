@@ -25,19 +25,27 @@ class ApplicationForm extends Component
 #[Validate('required|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:5120')]
     public $employment_letter_file = null;
 
-public function messages(): array
+    public function updated($propertyName)
     {
-        return [
-            'selected_category_id.required' => 'Please select a membership category.',
-            'selected_category_id.exists'   => 'Please select a valid membership category.',
-            'cv_file.required'              => 'A CV or resume is required.',
-            'cv_file.mimes'                 => 'CV must be a PDF or Word document (max 5MB).',
-            'certificates_file.required'    => 'Certificate proof is required.',
-            'certificates_file.mimes'       => 'Certificate proof must be a PDF, JPG or PNG (max 5MB).',
-            'employment_letter_file.required' => 'An employment letter or student proof is required.',
-            'employment_letter_file.mimes'    => 'Employment letter must be a PDF, Word document, JPG or PNG (max 5MB).',
-        ];
+        $this->validateOnly($propertyName);
     }
+
+public function messages(): array
+{
+    return [
+        'selected_category_id.required' => 'Please select a membership category.',
+        'selected_category_id.exists'   => 'Please select a valid membership category.',
+        'cv_file.required'              => 'A CV or resume is required.',
+        'cv_file.mimes'                 => 'CV must be a PDF or Word document (max 5MB).',
+        'cv_file.max'                   => 'The CV file must not be larger than 5MB.',
+        'certificates_file.required'    => 'Certificate proof is required.',
+        'certificates_file.mimes'       => 'Certificate proof must be a PDF, JPG or PNG (max 5MB).',
+        'certificates_file.max'         => 'The certificates file must not be larger than 5MB.',
+        'employment_letter_file.required' => 'An employment letter or student proof is required.',
+        'employment_letter_file.mimes'    => 'Employment letter must be a PDF, Word document, JPG or PNG (max 5MB).',
+        'employment_letter_file.max'      => 'The employment letter file must not be larger than 5MB.',
+    ];
+}
 
 public function submit(): void
     {

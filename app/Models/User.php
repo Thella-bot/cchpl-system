@@ -123,6 +123,10 @@ if ($this->hasRole('reports_admin')) {
             return route('admin.reports.index');
         }
 
+        if ($this->hasRole('content_admin')) {
+            return route('admin.content.dashboard');
+        }
+
 return route('member.dashboard');
     }
 

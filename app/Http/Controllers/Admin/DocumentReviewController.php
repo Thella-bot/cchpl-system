@@ -92,9 +92,9 @@ public function send(Request $request, DocumentReview $review, AgmNoticeDocument
     {
         $this->documentReviewService->send($request, $review, $agmNoticeDocument, $ecMinutesDocument);
 
-return redirect()
+        return redirect()
             ->route('admin.documents.queue')
-            ->with('success', "✅ {$review->typeLabel()} sent to {$review->recipient_name ?? $review->recipient_type}.");
+            ->with('success', "✅ {$review->typeLabel()} sent to " . ($review->recipient_name ? $review->recipient_name : $review->recipient_type) . ".");
     }
 
 public function cancel(Request $request, DocumentReview $review)

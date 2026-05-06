@@ -6,19 +6,19 @@
     <title>@yield('title', 'CCHPL System')</title>
     @livewireStyles
 
-<link rel="stylesheet" href="https:
+    {{-- Core CSS (Bootstrap) + Icons (Font Awesome) --}}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
 
-<link rel="stylesheet" href="https:
 
-<script src="https:
-    <script>tailwind.config = { corePlugins: { preflight: false } }</script>
-<style>
+
+    <style>
         body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background-color: #f8f9fa; }
         .navbar-brand-cchpl { color: #1a6b3c !important; font-weight: 700; }
         .navbar-brand-cchpl:hover { color: #155a32 !important; }
         .nav-topbar { border-bottom: 3px solid #1a6b3c; }
 
-.bg-brand-green { background-color: #1a6b3c; }
+        .bg-brand-green { background-color: #1a6b3c; }
         .bg-brand-green-light { background-color: #2d9b5a; }
         .bg-brand-green-dark { background-color: #123b28; }
         .text-brand-green { color: #1a6b3c; }
@@ -27,7 +27,7 @@
         .btn-brand-green { background-color: #1a6b3c; border-color: #1a6b3c; }
         .btn-brand-green:hover { background-color: #155a32; border-color: #155a32; }
 
-.bg-green-50 { background-color: rgba(26, 107, 60, 0.08) !important; }
+        .bg-green-50 { background-color: rgba(26, 107, 60, 0.08) !important; }
         .bg-green-100 { background-color: rgba(26, 107, 60, 0.15) !important; }
         .bg-green-600 { background-color: #1a6b3c !important; }
         .bg-green-700 { background-color: #155a32 !important; }
@@ -93,13 +93,17 @@
         </div>
     </nav>
 
-<div class="container py-4">
+    <div class="container py-4">
         @include('components.flash-messages')
         @yield('content')
     </div>
 
-<script src="https:
+    {{-- Bootstrap JS (required for navbar toggling, dropdowns, modals, etc.) --}}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    {{-- Livewire scripts --}}
     @livewireScripts
+
     @stack('scripts')
 </body>
 </html>

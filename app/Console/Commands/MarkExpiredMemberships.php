@@ -12,40 +12,33 @@ class MarkExpiredMemberships extends Command
 
 public function handle(): int
     {
-
-$expired = Membership::where('status', 'approved')
+        $expiredIds = Membership::where('status', 'approved')
             ->whereNotNull('expiry_date')
             ->where('expiry_date', '<', now()->startOfDay())
-            ->with('user', 'category')
-            ->get();
+            ->pluck('id');
 
-if ($expired->isEmpty()) {
+        if ($expiredIds->isEmpty()) {
             $this->info('No memberships to mark as expired.');
             return 0;
         }
 
-foreach ($expired as $membership) {
-            $oldStatus = $membership->status;
-            $membership->update(['status' => 'expired']);
+        $count = Membership::whereIn('id', $expiredIds)->update(['status' => 'expired']);
 
-AuditLog::create([
-                'user_id'        => null, 
-                'action'         => 'membership.auto_expired',
-                'auditable_type' => Membership::class,
-                'auditable_id'   => $membership->id,
-                'old_values'     => ['status' => $oldStatus],
-                'new_values'     => ['status' => 'expired'],
-                'meta'           => [
-                    'expired_date' => $membership->expiry_date->toDateString(),
-                    'command'      => 'membership:mark-expired',
-                ],
-            ]);
+        AuditLog::create([
+            'user_id'        => null, 
+            'action'         => 'membership.bulk_auto_expired',
+            'auditable_type' => Membership::class,
+            'auditable_id'   => null,
+            'old_values'     => ['status' => 'approved'],
+            'new_values'     => ['status' => 'expired'],
+            'meta'           => [
+                'expired_ids' => $expiredIds->toArray(),
+                'count'       => $count,
+                'command'     => 'membership:mark-expired',
+            ],
+        ]);
 
-$memberId = $membership->member_id ? $membership->member_id : $membership->id;
-            $this->line("Expired: {$membership->user->name} ({$memberId})");
-        }
-
-$this->info("Marked {$expired->count()} membership(s) as expired.");
+        $this->info("Marked {$count} membership(s) as expired.");
         return 0;
     }
 }

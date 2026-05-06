@@ -1,20 +1,5 @@
-<?php
-
-namespace App\Services;
-
-use Illuminate\Support\Facades\Log;
-use Psr\Log\LoggerInterface;
-
-{
-    protected LoggerInterface $logger;
-
-public function __construct()
-    {
-        $this->logger = Log::channel('payment');
     }
-
-public function logTransaction(array $data): void
-    {
+}
         $this->logger->info('Payment transaction', [
             'user_id' => auth()->id(),
             'transaction_id' => $data['transaction_id'],
@@ -25,7 +10,7 @@ public function logTransaction(array $data): void
         ]);
     }
 
-public function logError(string $message, array $context = []): void
+    public function logError(string $message, array $context = []): void
     {
         $this->logger->error($message, array_merge($context, [
             'user_id' => auth()->id(),
@@ -33,23 +18,14 @@ public function logError(string $message, array $context = []): void
         ]));
     }
 
-public function logSuspiciousActivity(array $data): void
+    public function logSuspiciousActivity(array $data): void
     {
         $this->logger->warning('Suspicious payment activity detected', [
             'user_id' => auth()->id(),
             'ip' => request()->ip(),
-            'details' => $data,
         ]);
     }
 }
-/**
- * Service class for logging payment-related events and errors.
- *
- * Centralizes payment logging logic for maintainability and reusability.
- */
-class PaymentLogger
-{
-    /**
      * Logger instance for the payment channel.
      * @var LoggerInterface
      */
