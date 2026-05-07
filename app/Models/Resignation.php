@@ -9,6 +9,8 @@ class Resignation extends Model
     const STATUS_PENDING      = 'pending';
     const STATUS_ACKNOWLEDGED = 'acknowledged';
     const STATUS_CANCELLED    = 'cancelled';
+    const STATUS_REJECTED     = 'rejected';
+
 
 const REASON_CODES = [
         'career_change'       => 'Career change / relocation',

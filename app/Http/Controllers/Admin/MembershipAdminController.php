@@ -7,12 +7,15 @@ use App\Models\DocumentReview;
 use App\Models\Membership;
 use App\Models\MembershipCategory;
 use App\Models\MembershipDocument;
+use App\Models\User;
 use App\Notifications\ApplicationStatusNotification;
 use App\Notifications\DocumentReviewNotification;
 use App\Notifications\FeeChangedNotification;
 use App\Services\DocumentService;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Log;
+
 
 class MembershipAdminController extends Controller
 {
@@ -151,8 +154,9 @@ public function approve(Request $request, Membership $membership)
             DocumentService::sendToMember($membership, DocumentReview::TYPE_CERTIFICATE);
         } catch (\Exception $e) {
             $certError = $e->getMessage();
-            \Log::warning("Certificate email failed for membership #{$membership->id}: {$certError}");
+            Log::warning("Certificate email failed for membership #{$membership->id}: {$certError}");
         }
+
 
         return ['cert_error' => $certError];
     }
@@ -251,6 +255,117 @@ $membership->user->notify(
 return back()->with('success', "Document status updated to {$request->status}.");
     }
 
+public function updateMemberEmail(Request $request, Membership $membership)
+    {
+        $membership->load('user');
+        $user = $membership->user;
+        abort_unless($user->exists, 404);
+
+        $validated = $request->validate([
+            'email' => [
+                'required',
+                'string',
+                'email:rfc',
+                'max:255',
+                Rule::unique('users', 'email')->ignore($user->id),
+            ],
+        ]);
+
+        $newEmail = strtolower(trim($validated['email']));
+        $oldEmail = $user->email;
+
+        if (strcasecmp($oldEmail, $newEmail) === 0) {
+            return back()->with('info', 'The member email address is unchanged.');
+        }
+
+        $user->forceFill([
+            'email' => $newEmail,
+            'email_verified_at' => null,
+        ])->save();
+
+        AuditLog::create([
+            'user_id'        => auth()->id(),
+            'action'         => 'member.email.updated',
+            'auditable_type' => User::class,
+            'auditable_id'   => $user->id,
+            'old_values'     => ['email' => $oldEmail],
+            'new_values'     => ['email' => $newEmail],
+            'meta'           => [
+                'membership_id' => $membership->id,
+                'changed_by'    => auth()->user()->email ?? null,
+            ],
+        ]);
+
+        return back()->with('success', 'Member email address updated successfully.');
+    }
+
+    public function updateStatus(Request $request, Membership $membership)
+    {
+        $request->validate([
+            'status' => ['required', 'string', Rule::in([
+                Membership::STATUS_APPROVED,
+                Membership::STATUS_SUSPENDED,
+                Membership::STATUS_EXPIRED,
+                Membership::STATUS_RESIGNED,
+            ])],
+            'reason' => 'required|string|min:10|max:500',
+        ]);
+
+        $oldStatus = $membership->status;
+        $newStatus = $request->status;
+
+        if ($oldStatus === $newStatus) {
+            return back()->with('info', 'Membership status is unchanged.');
+        }
+
+        // Guardrails
+        if ($oldStatus === Membership::STATUS_APPROVED && $newStatus === Membership::STATUS_PENDING) {
+            return back()->with('error', 'Invalid status transition.');
+        }
+
+        if ($oldStatus === Membership::STATUS_RESIGNED && $newStatus === Membership::STATUS_APPROVED) {
+            return back()->with('error', 'Cannot revert a resigned membership back to approved.');
+        }
+
+        // Only allow admins to move approved members between operational states.
+        // (This route is used from the approved members area.)
+        if ($oldStatus !== Membership::STATUS_APPROVED && !in_array($oldStatus, [Membership::STATUS_SUSPENDED, Membership::STATUS_EXPIRED, Membership::STATUS_RESIGNED], true)) {
+            return back()->with('error', 'Cannot manage status from the current membership state.');
+        }
+
+        $oldValues = $membership->only(['status', 'suspended_at', 'expiry_date', 'rejection_reason']);
+
+        $membership->fill([
+            'status' => $newStatus,
+        ]);
+
+        if ($newStatus === Membership::STATUS_SUSPENDED) {
+            $membership->suspended_at = $membership->suspended_at ?? now();
+        } else {
+            $membership->suspended_at = null;
+        }
+
+        // Keep expiry_date as-is; commands already handle expiry marking.
+        $membership->save();
+
+        AuditLog::create([
+            'user_id'        => auth()->id(),
+            'action'         => 'membership.status.updated',
+            'auditable_type' => Membership::class,
+            'auditable_id'   => $membership->id,
+            'old_values'     => $oldValues,
+            'new_values'     => $membership->fresh()->only(['status', 'suspended_at', 'expiry_date', 'rejection_reason']),
+            'meta'           => [
+                'from_status' => $oldStatus,
+                'to_status'   => $newStatus,
+                'changed_by'  => auth()->user()->email ?? null,
+                'reason'      => $request->reason,
+            ],
+        ]);
+
+        return back()->with('success', 'Membership status updated successfully.');
+    }
+
 public function listMembers(Request $request)
     {
         $query = Membership::where('status', Membership::STATUS_APPROVED)->with('user', 'category');
@@ -334,7 +449,7 @@ Membership::where('category_id', $category->id)
             ));
 
 return redirect()
-            ->route('admin.memberships.categories')
-            ->with('success', "✅ '{$category->name}' updated successfully.");
+            ->route('admin.memberships.categories.index')
+            ->with('success', "'{$category->name}' updated successfully.");
     }
 }

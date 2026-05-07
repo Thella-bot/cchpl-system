@@ -6,10 +6,10 @@
     <title>@yield('title', 'CCHPL Admin')</title>
     @livewireStyles
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+    <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('vendor/fontawesome/css/all.min.css') }}" rel="stylesheet">
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 
 
     <style>
@@ -39,9 +39,9 @@ html, body { height: 100%; }
             left: 0;
             right: 0;
             z-index: 1040;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            background: linear-gradient(90deg, #123b28 0%, #1a6b3c 42%, #2d9b5a 100%);
-            box-shadow: 0 14px 30px rgba(10, 32, 22, 0.18);
+            border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+            background: #ffffff;
+            box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
         }
         .admin-layout { display: flex; padding-top: 76px; min-height: 100vh; }
 .admin-sidebar-wrap {
@@ -83,17 +83,17 @@ html, body { height: 100%; }
             min-height: calc(100vh - 108px);
             padding: 1.5rem;
         }
-        .admin-topbar-brand { color: #f7fff9; font-size: 1.15rem; letter-spacing: 0.01em; }
-        .admin-topbar-brand:hover { color: #ffffff; }
+        .admin-topbar-brand { color: #1a6b3c; font-size: 1.15rem; letter-spacing: 0.01em; }
+        .admin-topbar-brand:hover { color: #155a32; }
         .admin-topbar-pill {
             display: inline-flex;
             align-items: center;
             gap: 0.75rem;
             padding: 0.55rem 0.9rem;
             border-radius: 999px;
-            background: rgba(255, 255, 255, 0.09);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            color: rgba(255, 255, 255, 0.9);
+            background: rgba(26, 107, 60, 0.07);
+            border: 1px solid rgba(26, 107, 60, 0.14);
+            color: #1f2937;
         }
         .admin-topbar-badge {
             width: 36px;
@@ -102,27 +102,29 @@ html, body { height: 100%; }
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            background: rgba(255, 255, 255, 0.14);
-            color: #ffffff;
+            background: rgba(26, 107, 60, 0.12);
+            color: #1a6b3c;
         }
         .admin-topbar-action {
-            border: 1px solid rgba(255, 255, 255, 0.14);
-            background: rgba(255, 255, 255, 0.1);
-            color: #ffffff;
+            border: 1px solid rgba(26, 107, 60, 0.18);
+            background: rgba(26, 107, 60, 0.08);
+            color: #1a6b3c;
             border-radius: 999px;
             padding: 0.55rem 1rem;
             font-weight: 600;
         }
         .admin-topbar-action:hover {
-            background: rgba(255, 255, 255, 0.16);
-            color: #ffffff;
+            background: rgba(26, 107, 60, 0.14);
+            color: #155a32;
         }
         .admin-topbar-action.logout {
-            background: rgba(127, 29, 29, 0.3);
-            border-color: rgba(248, 113, 113, 0.24);
+            background: rgba(220, 38, 38, 0.08);
+            border-color: rgba(220, 38, 38, 0.2);
+            color: #b91c1c;
         }
         .admin-topbar-action.logout:hover {
-            background: rgba(153, 27, 27, 0.48);
+            background: rgba(220, 38, 38, 0.14);
+            color: #991b1b;
         }
         .admin-menu-toggle {
             width: 46px;
@@ -143,9 +145,9 @@ html, body { height: 100%; }
                 <i class="fas fa-bars"></i>
             </button>
             <a href="{{ auth()->user()->adminHome() }}" class="fw-bold text-decoration-none admin-topbar-brand d-flex align-items-center">
-<img src="{{ asset('images/logo/cchpl-official-logo.png') }}" alt="CCHPL Logo" height="40" class="d-inline-block align-top me-3">
+<img src="{{ asset('images/logo/cchpl-alt-logo.png') }}" alt="CCHPL Logo" height="40" class="d-inline-block align-top me-3">
                 <span>
-                    <span class="d-block small fw-normal" style="color: rgba(255, 255, 255, 0.68);">
+                    <span class="d-block small fw-normal" style="color: #64748b;">
                         Operations and oversight panel
                     </span>
                 </span>
@@ -158,7 +160,7 @@ html, body { height: 100%; }
                 </span>
                 <span class="lh-sm">
                     <span class="d-block fw-semibold">{{ auth()->user()->name }}</span>
-                    <span class="small" style="color: rgba(255, 255, 255, 0.68);">
+                    <span class="small" style="color: #64748b;">
                         {{ auth()->user()->isSuperAdmin() ? 'Super Administrator' : 'Admin Account' }}
                     </span>
                 </span>

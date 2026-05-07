@@ -26,7 +26,7 @@
                         <tr>
                             <td class="ps-4">
                                 <div class="fw-semibold">{{ $category->name }}</div>
-                                <div class="small text-muted">{{ Str::limit($category->eligibility_criteria, 80) }}</div>
+                                <div class="small text-muted">{{ \Illuminate\Support\Str::limit($category->eligibility_criteria, 80) }}</div>
                             </td>
                             <td class="text-end fw-bold">M{{ number_format($category->annual_fee, 2) }}</td>
                             <td class="text-center">
@@ -36,7 +36,7 @@
                                     <span class="badge bg-secondary">No</span>
                                 @endif
                             </td>
-                            <td class="small text-muted">{{ Str::limit($category->other_notes, 80) }}</td>
+                            <td class="small text-muted">{{ \Illuminate\Support\Str::limit($category->other_notes, 80) }}</td>
                             <td class="text-end">
                                 <a href="{{ route('admin.memberships.categories.edit', $category->id) }}"
                                    class="btn btn-sm btn-outline-primary">

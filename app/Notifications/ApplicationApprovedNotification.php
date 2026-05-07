@@ -12,18 +12,18 @@ class ApplicationApprovedNotification extends Notification implements ShouldQueu
 {
     use Queueable;
 
-public function __construct(protected Membership $membership)
+    public function __construct(protected Membership $membership)
     {}
 
-public function via($notifiable): array
+    public function via($notifiable): array
     {
         return ['mail'];
     }
 
-public function toMail($notifiable): MailMessage
+    public function toMail($notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('CCHPL — Application Approved')
+            ->subject('CCHPL - Application Approved')
             ->greeting('Dear ' . $notifiable->name . ',')
             ->line('Congratulations! Your application for CCHPL membership has been **APPROVED**.')
             ->line('To activate your membership, please log in to your dashboard and proceed to the payment section to settle your annual membership fee.')

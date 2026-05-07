@@ -48,6 +48,12 @@ Route::get('/payment/initiate', InitiatePayment::class)
         ->middleware(['verified', 'throttle:10,1'])
         ->name('payment.initiate');
 
+Route::prefix('documents')->name('documents.')->group(function () {
+        Route::get('/certificate/{membership}',  [DocumentController::class, 'certificate'])->name('certificate');
+        Route::get('/receipt/{payment}',         [DocumentController::class, 'receipt'])->name('receipt');
+        Route::get('/welcome-pack/{membership}', [DocumentController::class, 'welcomePack'])->name('welcome-pack');
+    });
+
 Route::get('/member/resign', [MemberResignationController::class, 'create'])
         ->name('member.resign.create');
     Route::post('/member/resign', [MemberResignationController::class, 'store'])
@@ -78,12 +84,17 @@ Route::middleware('role:membership_admin,super_admin')
             Route::post('/bulk-reject',  [MembershipAdminController::class, 'bulkReject'])->name('bulk.reject');
             Route::get('/export',        [MembershipAdminController::class, 'export'])->name('export');
 
-Route::get('/{membership}',          [MembershipAdminController::class, 'show'])->name('show');
-            Route::post('/{membership}/approve', [MembershipAdminController::class, 'approve'])->name('approve');
-            Route::post('/{membership}/reject',  [MembershipAdminController::class, 'reject'])->name('reject');
+Route::get('/{membership}',          [MembershipAdminController::class, 'show'])->whereNumber('membership')->name('show');
+            Route::put('/{membership}/email', [MembershipAdminController::class, 'updateMemberEmail'])->whereNumber('membership')->name('email.update');
+            Route::post('/{membership}/approve', [MembershipAdminController::class, 'approve'])->whereNumber('membership')->name('approve');
+            Route::post('/{membership}/reject',  [MembershipAdminController::class, 'reject'])->whereNumber('membership')->name('reject');
 
 Route::post('/{membership}/documents/{document}/review',
-                [MembershipAdminController::class, 'reviewDocument'])->name('document.review');
+                [MembershipAdminController::class, 'reviewDocument'])->whereNumber(['membership', 'document'])->name('document.review');
+
+            Route::post('/{membership}/status', [MembershipAdminController::class, 'updateStatus'])
+                ->whereNumber('membership')
+                ->name('status.update');
         });
 
 Route::middleware('role:finance_admin,super_admin,content_admin')->group(function () {
@@ -98,7 +109,8 @@ Route::middleware('role:membership_admin,super_admin')
         ->group(function () {
             Route::get('/', [ResignationAdminController::class, 'index'])->name('index');
             Route::get('/{resignation}', [ResignationAdminController::class, 'show'])->name('show');
-            Route::post('/{resignation}/acknowledge', [ResignationAdminController::class, 'acknowledge'])->name('acknowledge');
+Route::post('/{resignation}/acknowledge', [ResignationAdminController::class, 'acknowledge'])->name('acknowledge');
+            Route::post('/{resignation}/reject', [ResignationAdminController::class, 'reject'])->name('reject');
         });
 
 Route::middleware('role:payment_admin,super_admin')

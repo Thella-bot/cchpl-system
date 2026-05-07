@@ -4,23 +4,72 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>Official Receipt</title>
     <style>
-        body { font-family: 'Helvetica', 'Arial', sans-serif; font-size: 14px; line-height: 1.4; color: #333; }
-        .header-table { width: 100%; border-bottom: 2px solid #2C3E50; padding-bottom: 20px; margin-bottom: 30px; }
-        .company-name { font-size: 20px; font-weight: bold; color: #2C3E50; text-transform: uppercase; }
-        .doc-title { font-size: 24px; font-weight: bold; color: #B08D55; text-align: right; text-transform: uppercase; }
+        body {
+            font-family: 'Helvetica', 'Arial', sans-serif;
+            font-size: 14px;
+            line-height: 1.4;
+            color: #1f2933;
+        }
 
-.info-table { width: 100%; margin-bottom: 30px; }
-        .info-label { font-weight: bold; color: #555; width: 120px; }
+        .header-table {
+            width: 100%;
+            border-bottom: 3px solid #2446f2;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
 
-.receipt-box { border: 1px solid #ddd; padding: 20px; background-color: #f9f9f9; margin-bottom: 30px; }
-        .amount-row { font-size: 18px; font-weight: bold; color: #2C3E50; padding-top: 10px; border-top: 1px solid #eee; margin-top: 10px; }
+        .doc-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2446f2;
+            text-align: right;
+            text-transform: uppercase;
+        }
 
-.footer { position: fixed; bottom: 30px; left: 0; right: 0; text-align: center; font-size: 10px; color: #777; border-top: 1px solid #eee; padding-top: 10px; }
+        .info-table { width: 100%; margin-bottom: 30px; }
+        .info-label { font-weight: bold; color: #4b5563; width: 120px; }
 
-table.data-grid { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        table.data-grid th { background-color: #2C3E50; color: white; padding: 8px; text-align: left; }
-        table.data-grid td { border-bottom: 1px solid #ddd; padding: 8px; }
+        .receipt-box {
+            border: 1px solid #c9d7ff;
+            padding: 20px;
+            background-color: #f7fbff;
+            margin-bottom: 30px;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 30px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 10px;
+            color: #6b7280;
+            border-top: 1px solid #c9d7ff;
+            padding-top: 10px;
+        }
+
+        table.data-grid {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        table.data-grid th {
+            background-color: #2446f2;
+            color: white;
+            padding: 8px;
+            text-align: left;
+        }
+
+        table.data-grid td {
+            border-bottom: 1px solid #d7defa;
+            padding: 8px;
+        }
+
         .text-right { text-align: right; }
+        .amount-total { color: #06b85f; }
+        .muted { color: #6b7280; }
+        .logo-note { margin-top: 5px; font-size: 12px; color: #06b85f; }
     </style>
 </head>
 <body>
@@ -28,7 +77,7 @@ table.data-grid { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
         <tr>
             <td valign="top">
                 <img src="{{ public_path('images/logo/cchpl-official-logo.png') }}" alt="CCHPL Logo" style="max-height: 70px; margin-bottom: 5px;">
-                <div style="margin-top: 5px; font-size: 12px;">Maseru, Lesotho<br>finance@cchpl.org.ls</div>
+                <div class="logo-note">Maseru, Lesotho<br>finance@cchpl.org.ls</div>
             </td>
             <td valign="top" class="text-right">
                 <div class="doc-title">Official Receipt</div>
@@ -40,7 +89,7 @@ table.data-grid { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
         </tr>
     </table>
 
-<div class="receipt-box">
+    <div class="receipt-box">
         <table class="info-table">
             <tr>
                 <td class="info-label">Received From:</td>
@@ -57,7 +106,7 @@ table.data-grid { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
         </table>
     </div>
 
-<table class="data-grid">
+    <table class="data-grid">
         <thead>
             <tr>
                 <th>Description</th>
@@ -69,26 +118,26 @@ table.data-grid { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
             <tr>
                 <td>
                     Membership Fee - {{ $membership->category?->name ?? 'Unknown category' }}<br>
-                    <small>Payment via {{ ucfirst($payment->provider) }}</small>
+                    <small class="muted">Payment via {{ ucfirst($payment->provider) }}</small>
                 </td>
                 <td>{{ $payment->transaction_reference }}</td>
                 <td class="text-right">{{ number_format($payment->amount, 2) }}</td>
             </tr>
             <tr>
                 <td colspan="2" class="text-right" style="border: none; padding-top: 20px;"><strong>Total Received:</strong></td>
-                <td class="text-right" style="border: none; padding-top: 20px; font-size: 16px; font-weight: bold;">
+                <td class="text-right amount-total" style="border: none; padding-top: 20px; font-size: 16px; font-weight: bold;">
                     M {{ number_format($payment->amount, 2) }}
                 </td>
             </tr>
         </tbody>
     </table>
 
-<p style="margin-top: 40px; text-align: center; font-style: italic; color: #777;">
+    <p style="margin-top: 40px; text-align: center; font-style: italic; color: #6b7280;">
         Thank you for your payment. This document serves as an official proof of payment.
     </p>
 
-<div class="footer">
-        CCHPL-FIN-003 • Generated by CCHPL System
+    <div class="footer">
+        CCHPL-FIN-003 | Generated by CCHPL System
     </div>
 </body>
 </html>

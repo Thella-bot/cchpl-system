@@ -7,13 +7,15 @@ use App\Models\AuditLog;
 use App\Models\Membership;
 use App\Models\Resignation;
 use App\Notifications\ResignationAcknowledgementNotification;
+use App\Services\MembershipService;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class ResignationAdminController extends Controller
 {
 
-public function index(Request $request)
+    public function index(Request $request)
     {
         $query = Resignation::with('user', 'membership.category')
             ->orderByRaw("CASE 
@@ -36,19 +38,25 @@ return view('admin.resignations.index', compact('resignations'));
 public function show(Resignation $resignation)
     {
         $resignation->load('user', 'membership.category', 'acknowledgedBy');
+
+        if ($resignation->membership) {
+            $resignation->balance_outstanding = MembershipService::calculateOutstandingBalance($resignation->membership);
+        }
+
         return view('admin.resignations.show', compact('resignation'));
     }
+
 
 public function acknowledge(Request $request, Resignation $resignation)
     {
         abort_if($resignation->status !== Resignation::STATUS_PENDING, 403, 'This resignation has already been processed.');
 
-$validated = $request->validate([
+        $validated = $request->validate([
             'acknowledgement_notes' => 'nullable|string|max:2000',
             'confirm_acknowledgement' => 'required|accepted',
         ]);
 
-DB::transaction(function () use ($resignation, $validated) {
+        DB::transaction(function () use ($resignation, $validated) {
             $resignation->update([
                 'status' => Resignation::STATUS_ACKNOWLEDGED,
                 'acknowledged_by' => auth()->id(),
@@ -56,11 +64,11 @@ DB::transaction(function () use ($resignation, $validated) {
                 'acknowledgement_notes' => $validated['acknowledgement_notes'],
             ]);
 
-if ($resignation->membership) {
+            if ($resignation->membership) {
                 $resignation->membership->update(['status' => Membership::STATUS_RESIGNED]);
             }
 
-AuditLog::create([
+            AuditLog::create([
                 'user_id' => auth()->id(),
                 'action' => 'resignation.acknowledged',
                 'auditable_id' => $resignation->id,
@@ -68,8 +76,45 @@ AuditLog::create([
             ]);
         });
 
-$resignation->user?->notify(new ResignationAcknowledgementNotification($resignation));
+        $resignation->user?->notify(new ResignationAcknowledgementNotification($resignation));
 
-return redirect()->route('admin.resignations.index')->with('success', 'Resignation for ' . $resignation->user->name . ' has been acknowledged.');
+        return redirect()->route('admin.resignations.index')->with('success', 'Resignation for ' . $resignation->user->name . ' has been acknowledged.');
+    }
+
+    public function reject(Request $request, Resignation $resignation)
+    {
+        abort_if($resignation->status !== Resignation::STATUS_PENDING, 403, 'This resignation has already been processed.');
+
+        $validated = $request->validate([
+            'rejection_notes' => 'nullable|string|max:2000',
+            'confirm_rejection' => 'required|accepted',
+        ]);
+
+        DB::transaction(function () use ($resignation, $validated) {
+            if ($resignation->membership) {
+                // Keep membership as-is for now; resignation has not been acknowledged.
+                // (If you want membership status changes on reject, we can add it here.)
+            }
+
+            $resignation->update([
+                'status' => Resignation::STATUS_REJECTED,
+                'acknowledged_by' => auth()->id(),
+                'acknowledged_at' => now(),
+                'acknowledgement_notes' => $validated['rejection_notes'],
+            ]);
+
+            AuditLog::create([
+                'user_id' => auth()->id(),
+                'action' => 'resignation.rejected',
+                'auditable_id' => $resignation->id,
+                'auditable_type' => Resignation::class,
+                'meta' => [
+                    'rejected_notes' => $validated['rejection_notes'],
+                ],
+            ]);
+        });
+
+        // No rejection email exists yet; only update + audit.
+        return redirect()->route('admin.resignations.index')->with('success', 'Resignation for ' . $resignation->user->name . ' has been rejected.');
     }
 }

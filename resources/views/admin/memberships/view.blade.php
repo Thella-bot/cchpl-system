@@ -27,6 +27,32 @@
                     <dt class="col-5 text-muted">Organisation</dt>
                     <dd class="col-7">{{ $membership->user->organization ?? '—' }}</dd>
                 </dl>
+                @if(auth()->user()->hasAnyRole(['membership_admin', 'super_admin']))
+                    <form method="POST" action="{{ route('admin.memberships.email.update', $membership->id) }}" class="mt-3 pt-3 border-top">
+                        @csrf
+                        @method('PUT')
+                        <label for="member-email-{{ $membership->id }}" class="form-label small fw-semibold text-muted">
+                            Update Email Address
+                        </label>
+                        <div class="input-group input-group-sm">
+                            <input
+                                type="email"
+                                id="member-email-{{ $membership->id }}"
+                                name="email"
+                                value="{{ old('email', $membership->user->email) }}"
+                                class="form-control @error('email') is-invalid @enderror"
+                                required
+                                maxlength="255">
+                            <button type="submit" class="btn btn-outline-primary">
+                                <i class="fas fa-save me-1"></i>Save
+                            </button>
+                        </div>
+                        @error('email')
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                        <div class="form-text small">Changing the address will require the member to verify the new email.</div>
+                    </form>
+                @endif
             </div>
         </div>
     </div>

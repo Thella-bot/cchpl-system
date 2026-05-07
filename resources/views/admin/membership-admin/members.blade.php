@@ -3,13 +3,15 @@
 @section('title', 'All Members')
 
 @section('content')
+@php($canEditMemberEmail = auth()->user()->hasAnyRole(['membership_admin', 'super_admin']))
+
 <div class="mb-4 d-flex flex-column flex-sm-row align-items-sm-center justify-content-sm-between gap-3">
     <div>
         <h1 class="h3 fw-bold mb-1">All Members</h1>
         <p class="text-muted mb-0">View approved members and manage their membership status.</p>
     </div>
     <form class="d-flex align-items-center gap-2" method="GET" action="">
-        <input type="text" name="q" value="{{ request('q') }}" placeholder="Search name or email…"
+        <input type="text" name="q" value="{{ request('q') }}" placeholder="Search name or email..."
                class="form-control form-control-sm" style="min-width: 200px;">
         <button type="submit" class="btn btn-sm btn-primary">
             <i class="fas fa-search"></i>
@@ -51,6 +53,9 @@
                     <thead class="table-light">
                         <tr>
                             <th class="ps-4">Member</th>
+                            @if($canEditMemberEmail)
+                                <th style="min-width: 280px;">Email</th>
+                            @endif
                             <th>Category</th>
                             <th>Annual Fee</th>
                             <th>Expiry Date</th>
@@ -62,11 +67,37 @@
                             <tr>
                                 <td class="ps-4">
                                     <div class="fw-semibold">{{ $member->user->name }}</div>
-                                    <div class="small text-muted">{{ $member->user->email }}</div>
+                                    @if(!$canEditMemberEmail)
+                                        <div class="small text-muted">{{ $member->user->email }}</div>
+                                    @endif
                                     @if($member->member_id)
                                         <div class="small font-monospace text-muted">{{ $member->member_id }}</div>
                                     @endif
                                 </td>
+                                @if($canEditMemberEmail)
+                                    <td>
+                                        <form method="POST" action="{{ route('admin.memberships.email.update', $member->id) }}">
+                                            @csrf
+                                            @method('PUT')
+                                            <div class="input-group input-group-sm">
+                                                <input
+                                                    type="email"
+                                                    name="email"
+                                                    value="{{ old('email', $member->user->email) }}"
+                                                    class="form-control @error('email') is-invalid @enderror"
+                                                    required
+                                                    maxlength="255"
+                                                    aria-label="Email address for {{ $member->user->name }}">
+                                                <button type="submit" class="btn btn-outline-primary" title="Save email">
+                                                    <i class="fas fa-save"></i>
+                                                </button>
+                                            </div>
+                                            @error('email')
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                            @enderror
+                                        </form>
+                                    </td>
+                                @endif
                                 <td>{{ $member->category->name }}</td>
                                 <td>M{{ number_format($member->category->annual_fee, 2) }}</td>
                                 <td>
@@ -80,7 +111,7 @@
                                             <span class="badge bg-warning text-dark ms-1">Soon</span>
                                         @endif
                                     @else
-                                        <span class="text-muted">—</span>
+                                        <span class="text-muted">-</span>
                                     @endif
                                 </td>
                                 <td>

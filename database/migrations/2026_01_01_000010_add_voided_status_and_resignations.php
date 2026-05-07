@@ -34,8 +34,9 @@ $table->foreignId('membership_id')
                 ->constrained()
                 ->onDelete('cascade');
 
-$table->enum('status', ['pending', 'acknowledged', 'cancelled'])
+$table->enum('status', ['pending', 'acknowledged', 'cancelled', 'rejected'])
                 ->default('pending');
+
 
 $table->date('effective_date');
 

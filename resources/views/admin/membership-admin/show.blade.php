@@ -28,6 +28,32 @@
                     <dt class="col-5 text-muted">Organisation</dt>
                     <dd class="col-7">{{ $membership->user->organization ?? '—' }}</dd>
                 </dl>
+                @if(auth()->user()->hasAnyRole(['membership_admin', 'super_admin']))
+                    <form method="POST" action="{{ route('admin.memberships.email.update', $membership->id) }}" class="mt-3 pt-3 border-top">
+                        @csrf
+                        @method('PUT')
+                        <label for="member-email-{{ $membership->id }}" class="form-label small fw-semibold text-muted">
+                            Update Email Address
+                        </label>
+                        <div class="input-group input-group-sm">
+                            <input
+                                type="email"
+                                id="member-email-{{ $membership->id }}"
+                                name="email"
+                                value="{{ old('email', $membership->user->email) }}"
+                                class="form-control @error('email') is-invalid @enderror"
+                                required
+                                maxlength="255">
+                            <button type="submit" class="btn btn-outline-primary">
+                                <i class="fas fa-save me-1"></i>Save
+                            </button>
+                        </div>
+                        @error('email')
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                        <div class="form-text small">Changing the address will require the member to verify the new email.</div>
+                    </form>
+                @endif
             </div>
         </div>
     </div>
@@ -48,6 +74,44 @@
                         <span class="badge {{ $membership->statusBadgeClass() }}">
                             {{ ucfirst($membership->status) }}
                         </span>
+
+                        @if(auth()->user()->hasAnyRole(['membership_admin', 'super_admin']))
+                            <div class="mt-3">
+                                <form method="POST" action="{{ route('admin.memberships.status.update', $membership->id) }}" class="d-flex flex-column gap-2">
+                                    @csrf
+                                    <div class="row g-2 align-items-end">
+                                        <div class="col-12">
+                                            <label class="form-label small text-muted" for="membership-status-{{ $membership->id }}">Update status</label>
+                                            <select id="membership-status-{{ $membership->id }}" name="status" class="form-select form-select-sm" required>
+                                                @php($allowedStatuses = [
+                                                    \App\Models\Membership::STATUS_SUSPENDED,
+                                                    \App\Models\Membership::STATUS_EXPIRED,
+                                                    \App\Models\Membership::STATUS_RESIGNED,
+                                                ])
+                                                @foreach($allowedStatuses as $s)
+                                                    <option value="{{ $s }}" {{ $membership->status === $s ? 'selected' : '' }}>
+                                                        {{ ucfirst($s) }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+
+                                        <div class="col-12">
+                                            <label class="form-label small text-muted" for="membership-status-reason-{{ $membership->id }}">Reason (required)</label>
+                                            <textarea id="membership-status-reason-{{ $membership->id }}" name="reason" class="form-control form-control-sm" required minlength="10" maxlength="500" rows="2" placeholder="Provide a clear reason (min 10 chars) ...">{{ old('reason') }}</textarea>
+                                        </div>
+
+                                        <div class="col-12">
+                                            <button type="submit" class="btn btn-sm btn-outline-primary w-100"
+                                                onclick="return confirm('Change membership status for {{ addslashes($membership->user->name) }}? This action will be audited and requires a reason.');">
+                                                <i class="fas fa-save me-1"></i>Update Status
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        @endif
+
                     </dd>
                     <dt class="col-6 text-muted">Member ID</dt>
                     <dd class="col-6">{{ $membership->member_id ?? '—' }}</dd>
