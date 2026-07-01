@@ -37,7 +37,7 @@ public function show(Payment $payment)
 public function verify(Request $request, Payment $payment)
     {
         $request->validate([
-            'verification_notes' => 'required|string|min:5',
+            'verification_notes' => 'required|string|min:5|max:2000',
         ]);
 
 $oldValues = $payment->only(['status', 'verification_notes']);
@@ -86,7 +86,7 @@ return back()->with('success', "✅ Payment verified for {$user->name}.{$extra}"
 public function reject(Request $request, Payment $payment)
     {
         $request->validate([
-            'rejection_reason' => 'required|string|min:10',
+            'rejection_reason' => 'required|string|min:10|max:2000',
         ]);
 
 $oldValues = $payment->only(['status', 'verification_notes']);

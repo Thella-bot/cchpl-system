@@ -68,7 +68,7 @@ public function approve(Request $request, Membership $membership)
 
     public function reject(Request $request, Membership $membership)
     {
-        $request->validate(['reason' => 'required|string|min:10']);
+        $request->validate(['reason' => 'required|string|min:10|max:1000']);
 
         $this->rejectMembership($membership, $request->reason);
 
@@ -78,7 +78,7 @@ public function approve(Request $request, Membership $membership)
     public function bulkApprove(Request $request)
     {
         $request->validate([
-            'ids'   => 'required|array|min:1',
+            'ids'   => 'required|array|min:1|max:500',
             'ids.*' => 'exists:memberships,id',
         ]);
 
@@ -109,9 +109,9 @@ public function approve(Request $request, Membership $membership)
     public function bulkReject(Request $request)
     {
         $request->validate([
-            'ids'    => 'required|array|min:1',
+            'ids'    => 'required|array|min:1|max:500',
             'ids.*'  => 'exists:memberships,id',
-            'reason' => 'required|string|min:10',
+            'reason' => 'required|string|min:10|max:1000',
         ]);
 
         $memberships = Membership::whereIn('id', $request->ids)

@@ -73,22 +73,47 @@ public function updatedMembershipId($value): void
     {
         $membership = $this->memberships->firstWhere('id', (int) $value);
 
-if ($membership) {
+        if ($membership && $membership->user_id === auth()->id()) {
             $this->amount = $membership->category?->annual_fee;
+        } else {
+            $this->membershipId = null;
+            $this->dispatchBrowserEvent('notify', [
+                'type' => 'error',
+                'message' => 'Invalid membership selected.'
+            ]);
         }
     }
 
-public function submit()
+    public function submit()
     {
         $this->validate();
 
-if (!$this->reference) {
+        // SECURITY: Verify membership ownership before creating payment
+        $membership = Membership::where('id', $this->membershipId)
+            ->where('user_id', auth()->id())
+            ->first();
+
+        if (!$membership) {
+            $this->addError('membershipId', 'You do not have permission to make a payment for this membership.');
+            return;
+        }
+
+        // VALIDATION: Verify filename length to prevent path traversal
+        if ($this->proofFile) {
+            $originalName = $this->proofFile->getClientOriginalName();
+            if (strlen($originalName) > 255) {
+                $this->addError('proofFile', 'Filename is too long (max 255 characters).');
+                return;
+            }
+        }
+
+        if (!$this->reference) {
             $this->generateInstructions();
         }
 
-$proofPath = $this->proofFile->store('payment-proofs', 'public');
+        $proofPath = $this->proofFile->store('payment-proofs', 'public');
 
-$payment = Payment::create([
+        $payment = Payment::create([
             'membership_id' => $this->membershipId,
             'amount' => $this->amount,
             'provider' => $this->provider,
@@ -98,12 +123,12 @@ $payment = Payment::create([
             'status' => 'pending',
         ]);
 
-auth()->user()->notify(new PaymentReceivedNotification($payment));
+        auth()->user()->notify(new PaymentReceivedNotification($payment));
 
-return redirect()->route('member.dashboard')->with('success', 'Payment submitted successfully. It will be reviewed by the finance team.');
+        return redirect()->route('member.dashboard')->with('success', 'Payment submitted successfully. It will be reviewed by the finance team.');
     }
 
-public function render()
+    public function render()
     {
         return view('livewire.payment.initiate-payment')
             ->extends('layouts.app')

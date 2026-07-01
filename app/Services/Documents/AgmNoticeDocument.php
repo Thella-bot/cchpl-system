@@ -21,20 +21,20 @@ class AgmNoticeDocument
     public function store(Request $request)
     {
         $data = $request->validate([
-            'date'                => 'required|string',
-            'time'                => 'required|string',
-            'venue'               => 'required|string',
+            'date'                => 'required|string|max:50|regex:/^[A-Za-z]+,?\s+\d{1,2}\s+[A-Za-z]+\s+\d{4}$/',
+            'time'                => 'required|string|max:20|regex:/^\d{1,2}:\d{2}\s?(AM|PM)?$/',
+            'venue'               => 'required|string|max:255',
             'format'              => 'required|in:in-person,hybrid,online',
-            'online_link'         => 'nullable|string',
-            'contact_name'        => 'required|string',
-            'contact_email'       => 'required|email',
-            'contact_phone'       => 'required|string',
-            'notice_date'         => 'required|string',
-            'issued_by'           => 'required|string',
-            'paid_up_deadline'    => 'required|string',
-            'proxy_deadline'      => 'required|string',
-            'nomination_deadline' => 'required|string',
-            'agm_year'            => 'required|integer',
+            'online_link'         => 'nullable|url|max:500',
+            'contact_name'        => 'required|string|max:255',
+            'contact_email'       => 'required|email|max:255',
+            'contact_phone'       => 'required|string|max:30|regex:/^(\+|[0-9])[0-9\s\-\(\)]{7,20}$/',
+            'notice_date'         => 'required|string|max:50',
+            'issued_by'           => 'required|string|max:255',
+            'paid_up_deadline'    => 'required|string|max:50',
+            'proxy_deadline'      => 'required|string|max:50',
+            'nomination_deadline' => 'required|string|max:50',
+            'agm_year'            => 'required|integer|min:2000|max:2100',
         ]);
 
         // Create a new document review for the AGM notice
