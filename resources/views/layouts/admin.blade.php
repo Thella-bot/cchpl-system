@@ -16,13 +16,9 @@
         <div class="container-fluid">
             <div class="d-flex justify-content-between align-items-center">
                 <div class="d-flex align-items-center">
-                    <button id="admin-menu-toggle" class="btn btn-sm admin-topbar-action" aria-label="Toggle admin menu">
+                    <button id="admin-menu-toggle" class="btn btn-sm" aria-label="Toggle admin menu">
                         <i class="fas fa-bars"></i>
                     </button>
-                    <a href="{{ auth()->user()->adminHome() }}" class="admin-topbar-brand">
-                        <img src="{{ asset('images/logo/cchpl-alt-logo.png') }}" alt="CCHPL Logo">
-                        <span>Admin Panel</span>
-                    </a>
                 </div>
                 <div class="d-flex align-items-center">
                     <div class="admin-topbar-pill d-none d-md-flex">
@@ -73,9 +69,22 @@
             const toggle = document.getElementById('admin-menu-toggle');
 
             if (sidebar && backdrop && toggle) {
+                const topbar = document.querySelector('.admin-topbar');
+                const mainContent = document.querySelector('.admin-content');
+                
                 const setSidebarOpen = (isOpen) => {
                     document.body.classList.toggle('admin-sidebar-open', isOpen);
+                    if (isOpen) {
+                        backdrop.setAttribute('aria-hidden', 'false');
+                        sidebar.setAttribute('aria-expanded', 'true');
+                    } else {
+                        backdrop.setAttribute('aria-hidden', 'true');
+                        sidebar.setAttribute('aria-expanded', 'false');
+                    }
                 };
+
+                // Initialize ARIA attributes
+                setSidebarOpen(false);
 
                 toggle.addEventListener('click', () => {
                     setSidebarOpen(!document.body.classList.contains('admin-sidebar-open'));
@@ -88,6 +97,13 @@
                         setSidebarOpen(false);
                     }
                 });
+
+                // Close sidebar when clicking on links (mobile only)
+                if (window.innerWidth < 992) {
+                    sidebar.querySelectorAll('a').forEach(link => {
+                        link.addEventListener('click', () => setSidebarOpen(false));
+                    });
+                }
             }
         });
     </script>

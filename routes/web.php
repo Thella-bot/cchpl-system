@@ -18,16 +18,20 @@ use App\Models\MembershipCategory;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
-Route::get('/', function () {
-    return view('welcome', [
-        'categories' => MembershipCategory::query()
-            ->where('name', '!=', 'Honorary')
-            ->orderBy('annual_fee')
-            ->get(),
-    ]);
+Route::middleware('guest')->group(function () {
+    Route::get('/', function () {
+        return view('welcome', [
+            'categories' => MembershipCategory::query()
+                ->where('name', '!=', 'Honorary')
+                ->orderBy('annual_fee')
+                ->get(),
+        ]);
+    });
 });
 
-Auth::routes(['verify' => true]);
+Route::middleware('guest')->group(function () {
+    Auth::routes(['verify' => true]);
+});
 
 Route::middleware('auth')->group(function () {
 

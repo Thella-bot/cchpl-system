@@ -1,3 +1,9 @@
+<div class="sidebar-brand">
+    <a href="{{ route('admin.dashboard') }}" class="sidebar-brand-link">
+        <img src="{{ asset('images/logo/cchpl-alt-logo.png') }}" alt="CCHPL Logo" class="sidebar-logo">
+        <span class="sidebar-brand-text">Admin</span>
+    </a>
+</div>
 <nav class="admin-nav">
     {{-- Super Admin --}}
     @if(auth()->user()->isSuperAdmin())

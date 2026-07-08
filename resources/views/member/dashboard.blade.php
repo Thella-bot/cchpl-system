@@ -7,17 +7,17 @@
 
     {{-- Welcome Header --}}
     <div class="col-12">
-        <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #1a6b3c 0%, #2d9b5a 100%);">
-            <div class="card-body p-4">
-                <div class="d-flex align-items-center gap-3">
+        <div class="card border-0 shadow-sm animate-fade-in" style="background: linear-gradient(135deg, #1a6b3c 0%, #2d9b5a 100%);">
+            <div class="card-body p-4 p-lg-5">
+                <div class="d-flex flex-column flex-md-row align-items-center gap-4">
                     <div class="rounded-circle bg-white bg-opacity-25 d-flex align-items-center justify-content-center"
-                         style="width: 56px; height: 56px; flex-shrink: 0;">
-                        <i class="fas fa-user text-white fs-4"></i>
+                         style="width: 72px; height: 72px; flex-shrink: 0;">
+                        <i class="fas fa-user text-white fs-1"></i>
                     </div>
-                    <div>
-                        <h2 class="text-white fw-bold mb-1">Welcome, {{ Auth::user()->name }}!</h2>
-                        <p class="text-white text-opacity-75 mb-0 small">
-                            This is your central hub for managing your CCHPL membership.
+                    <div class="text-center text-md-start">
+                        <h1 class="text-white fw-bold mb-2 fs-2">Welcome, {{ Auth::user()->name }}!</h1>
+                        <p class="text-white text-opacity-90 mb-0 lead">
+                            This is your central hub for managing your CCHPL membership and accessing exclusive professional resources.
                         </p>
                     </div>
                 </div>
@@ -27,10 +27,10 @@
 
     @if ($membership)
         {{-- Membership Status --}}
-        <div class="col-md-6">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-header bg-white fw-semibold">
-                    <i class="fas fa-id-card text-muted me-2"></i>Membership Status
+        <div class="col-12 col-lg-6">
+            <div class="card border-0 shadow-sm h-100 animate-fade-in" style="animation-delay: 0.1s;">
+                <div class="card-header bg-white border-bottom-0 fw-semibold fs-5">
+                    <i class="fas fa-id-card text-green-600 me-2"></i>Membership Status
                 </div>
                 <div class="card-body">
                     <div class="d-flex align-items-center justify-content-between mb-3">
@@ -92,12 +92,12 @@
         </div>
 
         {{-- Payment History --}}
-        <div class="col-md-6">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-header bg-white fw-semibold d-flex align-items-center justify-content-between">
-                    <span><i class="fas fa-credit-card text-muted me-2"></i>Payment History</span>
+        <div class="col-12 col-lg-6">
+            <div class="card border-0 shadow-sm h-100 animate-fade-in" style="animation-delay: 0.2s;">
+                <div class="card-header bg-white border-bottom-0 fw-semibold fs-5 d-flex align-items-center justify-content-between">
+                    <span><i class="fas fa-credit-card text-green-600 me-2"></i>Payment History</span>
                     @if($membership->status === 'approved')
-                        <a href="{{ route('payment.initiate') }}" class="btn btn-sm btn-outline-success">
+                        <a href="{{ route('payment.initiate') }}" class="btn btn-sm btn-brand-green transition-all hover:shadow-md">
                             <i class="fas fa-plus me-1"></i>Make a Payment
                         </a>
                     @endif
@@ -201,9 +201,7 @@
                 </div>
             </div>
         </div>
-    </div>
-</div>
-@endsection
+                    <div class="col-sm-6 col-md-4">
                         <form action="{{ route('logout') }}" method="POST" class="h-100">
                             @csrf
                             <button type="submit"
@@ -214,8 +212,8 @@
                         </form>
                     </div>
 
-@if ($membership && in_array($membership->status, ['approved', 'suspended', 'expired']))
-                        <div class="col-sm-6 col-md-3">
+                    @if ($membership && in_array($membership->status, ['approved', 'suspended', 'expired']))
+                        <div class="col-sm-6 col-md-4">
                             <a href="{{ route('member.resign.create') }}"
                                class="card text-center border text-decoration-none h-100 p-3">
                                 <div class="text-secondary mb-2"><i class="fas fa-door-open fa-lg"></i></div>
