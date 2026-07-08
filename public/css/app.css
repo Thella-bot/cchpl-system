@@ -1,0 +1,126 @@
+/* General Body and Typography */
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background-color: #f8f9fa;
+}
+
+/* Brand Colors */
+.bg-brand-green { background-color: #1a6b3c; }
+.bg-brand-green-light { background-color: #2d9b5a; }
+.bg-brand-green-dark { background-color: #123b28; }
+.text-brand-green { color: #1a6b3c; }
+.text-brand-green-light { color: #2d9b5a; }
+.border-brand-green { border-color: #1a6b3c; }
+
+/* Buttons */
+.btn-brand-green {
+    background-color: #1a6b3c;
+    border-color: #1a6b3c;
+    color: #fff;
+}
+.btn-brand-green:hover {
+    background-color: #155a32;
+    border-color: #155a32;
+    color: #fff;
+}
+
+/* Navbar */
+.navbar-brand-cchpl {
+    color: #1a6b3c !important;
+    font-weight: 700;
+}
+.navbar-brand-cchpl:hover {
+    color: #155a32 !important;
+}
+.nav-topbar {
+    border-bottom: 3px solid #1a6b3c;
+}
+
+/* Utility Classes from Admin Layout */
+.bg-green-50 { background-color: rgba(26, 107, 60, 0.08) !important; }
+.bg-green-100 { background-color: rgba(26, 107, 60, 0.15) !important; }
+.bg-green-200 { background-color: rgba(26, 107, 60, 0.25) !important; }
+.bg-green-600 { background-color: #1a6b3c !important; }
+.bg-green-700 { background-color: #155a32 !important; }
+.bg-green-800 { background-color: #123b28 !important; }
+.text-green-500 { color: #2d9b5a !important; }
+.text-green-600 { color: #1a6b3c !important; }
+.text-green-700 { color: #155a32 !important; }
+.text-green-800 { color: #123b28 !important; }
+.border-green-500 { border-color: #2d9b5a !important; }
+.border-green-600 { border-color: #1a6b3c !important; }
+.border-green-200 { border-color: rgba(26, 107, 60, 0.25) !important; }
+/* Welcome Page Specific Styles */
+.site-hero {
+    background:
+        radial-gradient(circle at top left, rgba(255, 255, 255, 0.18), transparent 38%),
+        linear-gradient(135deg, #123b28 0%, #1a6b3c 45%, #2d9b5a 100%);
+}
+
+.site-glass-card {
+    background: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(6px);
+}
+
+.site-section-title {
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: #1a6b3c;
+    font-weight: 700;
+}
+
+/* General Body and Typography */
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background-color: #f8f9fa;
+}
+
+/* Brand Colors */
+.bg-brand-green { background-color: #1a6b3c; }
+.bg-brand-green-light { background-color: #2d9b5a; }
+.bg-brand-green-dark { background-color: #123b28; }
+.text-brand-green { color: #1a6b3c; }
+.text-brand-green-light { color: #2d9b5a; }
+.border-brand-green { border-color: #1a6b3c; }
+
+/* Buttons */
+.btn-brand-green {
+    background-color: #1a6b3c;
+    border-color: #1a6b3c;
+    color: #fff;
+}
+.btn-brand-green:hover {
+    background-color: #155a32;
+    border-color: #155a32;
+    color: #fff;
+}
+
+/* Navbar */
+.navbar-brand-cchpl {
+    color: #1a6b3c !important;
+    font-weight: 700;
+}
+.navbar-brand-cchpl:hover {
+    color: #155a32 !important;
+}
+.nav-topbar {
+    border-bottom: 3px solid #1a6b3c;
+}
+
+/* Utility Classes from Admin Layout */
+.bg-green-50 { background-color: rgba(26, 107, 60, 0.08) !important; }
+.bg-green-100 { background-color: rgba(26, 107, 60, 0.15) !important; }
+.bg-green-200 { background-color: rgba(26, 107, 60, 0.25) !important; }
+.bg-green-600 { background-color: #1a6b3c !important; }
+.bg-green-700 { background-color: #155a32 !important; }
+.bg-green-800 { background-color: #123b28 !important; }
+.text-green-500 { color: #2d9b5a !important; }
+.text-green-600 { color: #1a6b3c !important; }
+.text-green-700 { color: #155a32 !important; }
+.text-green-800 { color: #123b28 !important; }
+.border-green-500 { border-color: #2d9b5a !important; }
+.border-green-600 { border-color: #1a6b3c !important; }
+.border-green-200 { border-color: rgba(26, 107, 60, 0.25) !important; }
+.focus\:ring-green-500:focus { --tw-ring-color: #2d9b5a !important; }

@@ -1,0 +1,218 @@
+/*
+ * CCHPL Admin Panel Styles
+ *
+ * This stylesheet defines the layout and appearance of the administrative backend,
+ * ensuring a consistent and user-friendly experience for site administrators.
+ */
+
+:root {
+    --admin-sidebar-width: 260px;
+    --admin-sidebar-bg: #ffffff;
+    --admin-sidebar-link-color: #475569;
+    --admin-sidebar-link-hover-bg: #f1f5f9;
+    --admin-sidebar-link-active-bg: #e2e8f0;
+    --admin-sidebar-link-active-color: #1e293b;
+    --admin-topbar-height: 64px;
+    --admin-topbar-bg: #ffffff;
+    --admin-topbar-border-color: #e2e8f0;
+    --admin-content-bg: #f8fafc;
+}
+
+body {
+    background-color: var(--admin-content-bg);
+    transition: padding-left 0.3s ease;
+}
+
+/* Top Bar */
+.admin-topbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--admin-topbar-height);
+    background-color: var(--admin-topbar-bg);
+    border-bottom: 1px solid var(--admin-topbar-border-color);
+    z-index: 1030;
+    padding: 0 1.5rem;
+}
+
+.admin-topbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 600;
+    color: #1e293b;
+    text-decoration: none;
+    font-size: 1.125rem;
+}
+
+.admin-topbar-brand img {
+    height: 36px;
+}
+
+.admin-topbar-action {
+    color: #475569;
+    background-color: transparent;
+    border: 1px solid transparent;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.375rem;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.admin-topbar-action:hover {
+    background-color: #f1f5f9;
+    color: #1e293b;
+}
+
+.admin-topbar-action.logout {
+    color: #dc3545;
+}
+
+.admin-topbar-action.logout:hover {
+    background-color: #f8d7da;
+    color: #842029;
+}
+
+.admin-topbar-pill {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background-color: #f1f5f9;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    color: #475569;
+}
+
+.admin-topbar-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: #e2e8f0;
+    color: #475569;
+}
+
+/* Main Layout */
+.admin-layout {
+    display: flex;
+    padding-top: var(--admin-topbar-height);
+}
+
+/* Sidebar */
+.admin-sidebar {
+    position: fixed;
+    top: var(--admin-topbar-height);
+    left: 0;
+    bottom: 0;
+    width: var(--admin-sidebar-width);
+    background-color: var(--admin-sidebar-bg);
+    border-right: 1px solid var(--admin-topbar-border-color);
+    z-index: 1020;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    overflow-y: auto;
+    padding: 1rem;
+}
+
+.admin-sidebar-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1010;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* Sidebar Open State */
+body.admin-sidebar-open .admin-sidebar {
+    transform: translateX(0);
+}
+
+body.admin-sidebar-open .admin-sidebar-backdrop {
+    opacity: 1;
+    visibility: visible;
+}
+
+@media (min-width: 992px) {
+    body {
+        padding-left: var(--admin-sidebar-width);
+    }
+    .admin-sidebar {
+        transform: translateX(0);
+    }
+    .admin-sidebar-backdrop {
+        display: none;
+    }
+    #admin-menu-toggle {
+        display: none;
+    }
+    .admin-topbar {
+        left: var(--admin-sidebar-width);
+    }
+}
+
+/* Sidebar Navigation */
+.admin-nav-heading {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.5rem 0.75rem;
+    margin-top: 1.5rem;
+}
+
+.admin-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 0.375rem;
+    color: var(--admin-sidebar-link-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.admin-nav-link:hover {
+    background-color: var(--admin-sidebar-link-hover-bg);
+    color: var(--admin-sidebar-link-active-color);
+}
+
+.admin-nav-link.active {
+    background-color: var(--admin-sidebar-link-active-bg);
+    color: var(--admin-sidebar-link-active-color);
+    font-weight: 600;
+}
+
+.admin-nav-link .fa-fw {
+    width: 1.25em;
+    text-align: center;
+    color: #94a3b8;
+}
+
+.admin-nav-link.active .fa-fw {
+    color: var(--admin-sidebar-link-active-color);
+}
+
+/* Main Content */
+.admin-content {
+    flex-grow: 1;
+    padding: 2rem;
+    width: 100%;
+}
+
+.admin-shell-card {
+    background-color: #ffffff;
+    border-radius: 0.5rem;
+    border: 1px solid var(--admin-topbar-border-color);
+    padding: 2rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+}

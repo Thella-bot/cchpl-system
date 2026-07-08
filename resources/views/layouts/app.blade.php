@@ -10,31 +10,8 @@
     <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('vendor/fontawesome/css/all.min.css') }}" rel="stylesheet">
 
-
-
-    <style>
-        body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background-color: #f8f9fa; }
-        .navbar-brand-cchpl { color: #1a6b3c !important; font-weight: 700; }
-        .navbar-brand-cchpl:hover { color: #155a32 !important; }
-        .nav-topbar { border-bottom: 3px solid #1a6b3c; }
-
-        .bg-brand-green { background-color: #1a6b3c; }
-        .bg-brand-green-light { background-color: #2d9b5a; }
-        .bg-brand-green-dark { background-color: #123b28; }
-        .text-brand-green { color: #1a6b3c; }
-        .text-brand-green-light { color: #2d9b5a; }
-        .border-brand-green { border-color: #1a6b3c; }
-        .btn-brand-green { background-color: #1a6b3c; border-color: #1a6b3c; }
-        .btn-brand-green:hover { background-color: #155a32; border-color: #155a32; }
-
-        .bg-green-50 { background-color: rgba(26, 107, 60, 0.08) !important; }
-        .bg-green-100 { background-color: rgba(26, 107, 60, 0.15) !important; }
-        .bg-green-600 { background-color: #1a6b3c !important; }
-        .bg-green-700 { background-color: #155a32 !important; }
-        .text-green-600 { color: #1a6b3c !important; }
-        .text-green-700 { color: #155a32 !important; }
-        .border-green-600 { border-color: #1a6b3c !important; }
-    </style>
+    {{-- Application-specific styles --}}
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
 <body>
     <nav class="navbar navbar-expand-lg bg-white shadow-sm nav-topbar">
