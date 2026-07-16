@@ -36,12 +36,34 @@ body {
 .navbar-brand-cchpl {
     color: #1a6b3c !important;
     font-weight: 700;
+    font-size: 1.15rem;
+    letter-spacing: 0.02em;
 }
 .navbar-brand-cchpl:hover {
     color: #155a32 !important;
 }
 .nav-topbar {
     border-bottom: 3px solid #1a6b3c;
+}
+
+/* Nav links (the markup uses Tailwind-style hover utilities that are not loaded) */
+.navbar .nav-link {
+    color: #334155;
+    border-radius: 0.75rem;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+.navbar .nav-link:hover,
+.navbar .nav-link:focus-visible {
+    background-color: #f1f5f9;
+    color: #1a6b3c;
+}
+.navbar .nav-link.bg-green-50 {
+    color: #155a32;
+}
+
+/* Anchor scroll offset for sticky navbar */
+.scroll-mt-6 {
+    scroll-margin-top: 6rem;
 }
 
 /* Sticky navbar improvements */
@@ -158,4 +180,189 @@ body {
 /* Loading state animation */
 .loading {
     animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Password visibility toggle */
+.password-field {
+    position: relative;
+}
+
+.password-field .form-control {
+    padding-right: 3rem;
+}
+
+.password-toggle-btn {
+    position: absolute;
+    top: 50%;
+    right: 0.75rem;
+    transform: translateY(-50%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border: none;
+    background: transparent;
+    color: #64748b;
+    cursor: pointer;
+    border-radius: 0.5rem;
+    transition: color 0.2s ease, background-color 0.2s ease;
+    z-index: 3;
+}
+
+.password-toggle-btn:hover {
+    color: #1a6b3c;
+    background-color: rgba(26, 107, 60, 0.08);
+}
+
+.password-toggle-btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(26, 107, 60, 0.2);
+}
+
+.password-toggle-btn .fa-eye-slash {
+    display: none;
+}
+
+.password-toggle-btn.show .fa-eye {
+    display: none;
+}
+
+.password-toggle-btn.show .fa-eye-slash {
+    display: inline-block;
+}
+
+/* Flash messages */
+.flash-messages {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.flash-messages .alert {
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.alert-progress {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 3px;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.12);
+    transform-origin: left center;
+    animation: alertProgress 5s linear forwards;
+}
+
+@keyframes alertProgress {
+    from { transform: scaleX(1); }
+    to { transform: scaleX(0); }
+}
+
+/* Outline brand button */
+.btn-outline-brand-green {
+    color: #1a6b3c;
+    border-color: #1a6b3c;
+    background-color: transparent;
+    transition: all 0.2s ease-in-out;
+}
+.btn-outline-brand-green:hover,
+.btn-outline-brand-green:focus-visible {
+    color: #fff;
+    background-color: #1a6b3c;
+    border-color: #1a6b3c;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+.btn-outline-brand-green:active {
+    transform: scale(0.98);
+}
+
+/* Membership pricing cards */
+.pricing-card {
+    border-top: 4px solid #1a6b3c !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.pricing-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px -8px rgba(26, 107, 60, 0.25) !important;
+}
+.pricing-price {
+    font-size: 1.6rem;
+    color: #1a6b3c;
+    line-height: 1.2;
+}
+
+/* Site footer */
+.site-footer {
+    background-color: #123b28;
+    color: rgba(255, 255, 255, 0.82);
+}
+.site-footer-topbar {
+    height: 4px;
+    background: linear-gradient(90deg, #1a6b3c 0%, #2d9b5a 100%);
+}
+.site-footer-brand {
+    color: #fff;
+    font-weight: 800;
+    font-size: 1.2rem;
+    letter-spacing: 0.04em;
+}
+.site-footer-text {
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.6;
+}
+.site-footer-heading {
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+.site-footer-links li,
+.site-footer-contact li {
+    margin-bottom: 0.6rem;
+}
+.site-footer-links a {
+    color: rgba(255, 255, 255, 0.78);
+    text-decoration: none;
+    transition: color 0.2s ease, padding-left 0.2s ease;
+}
+.site-footer-links a:hover,
+.site-footer-links a:focus-visible {
+    color: #fff;
+    padding-left: 4px;
+}
+.site-footer-contact a {
+    color: rgba(255, 255, 255, 0.82);
+    text-decoration: none;
+}
+.site-footer-contact a:hover {
+    color: #fff;
+}
+.site-footer-social {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    text-decoration: none;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+.site-footer-social:hover,
+.site-footer-social:focus-visible {
+    background-color: #2d9b5a;
+    color: #fff;
+    transform: translateY(-2px);
+}
+.site-footer-divider {
+    border-color: rgba(255, 255, 255, 0.15);
+    margin: 2rem 0 1.25rem;
 }

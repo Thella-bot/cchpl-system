@@ -1,33 +1,14 @@
-    }
-}
-        $this->logger->info('Payment transaction', [
-            'user_id' => auth()->id(),
-            'transaction_id' => $data['transaction_id'],
-            'amount' => $data['amount'],
-            'status' => $data['status'],
-            'ip' => request()->ip(),
-            'user_agent' => request()->userAgent(),
-        ]);
-    }
+<?php
 
-    public function logError(string $message, array $context = []): void
-    {
-        $this->logger->error($message, array_merge($context, [
-            'user_id' => auth()->id(),
-            'ip' => request()->ip(),
-        ]));
-    }
+namespace App\Services;
 
-    public function logSuspiciousActivity(array $data): void
-    {
-        $this->logger->warning('Suspicious payment activity detected', [
-            'user_id' => auth()->id(),
-            'ip' => request()->ip(),
-        ]);
-    }
-}
+use Illuminate\Support\Facades\Log;
+use Psr\Log\LoggerInterface;
+
+class PaymentLogger
+{
+    /**
      * Logger instance for the payment channel.
-     * @var LoggerInterface
      */
     protected LoggerInterface $logger;
 
@@ -43,15 +24,14 @@
      * Log a successful payment transaction.
      *
      * @param array $data Transaction data (transaction_id, amount, status, etc).
-     * @return void
      */
     public function logTransaction(array $data): void
     {
         $this->logger->info('Payment transaction', [
             'user_id' => auth()->id(),
-            'transaction_id' => $data['transaction_id'],
-            'amount' => $data['amount'],
-            'status' => $data['status'],
+            'transaction_id' => $data['transaction_id'] ?? null,
+            'amount' => $data['amount'] ?? null,
+            'status' => $data['status'] ?? null,
             'ip' => request()->ip(),
             'user_agent' => request()->userAgent(),
         ]);
@@ -62,7 +42,6 @@
      *
      * @param string $message Error message.
      * @param array $context Additional context for the error.
-     * @return void
      */
     public function logError(string $message, array $context = []): void
     {
@@ -76,7 +55,6 @@
      * Log suspicious payment activity for security monitoring.
      *
      * @param array $data Details of the suspicious activity.
-     * @return void
      */
     public function logSuspiciousActivity(array $data): void
     {
@@ -87,3 +65,4 @@
         ]);
     }
 }
+

@@ -9,6 +9,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+// Public webhook endpoints for payment gateways
+Route::middleware(['api', 'throttle:payment-webhooks'])->prefix('v1/webhooks')->group(function () {
+    Route::post('/mpesa', [\App\Http\Controllers\Api\PaymentWebhookController::class, 'handleMpesa']);
+    Route::post('/ecocash', [\App\Http\Controllers\Api\PaymentWebhookController::class, 'handleEcoCash']);
+});
+
 Route::middleware(['auth:sanctum', 'admin'])->prefix('v1/admin')->name('api.admin.')->group(function () {
 
 Route::middleware('role:membership_admin,reports_admin,super_admin')

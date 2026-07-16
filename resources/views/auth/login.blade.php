@@ -29,12 +29,16 @@
                         @enderror
                     </div>
 
-                    <div>
+                    <div class="password-field">
                         <label for="password" class="form-label fw-semibold small text-muted">Password</label>
                         <input id="password" type="password"
                                class="form-control form-control-lg @error('password') is-invalid @enderror"
                                name="password" required autocomplete="current-password"
                                placeholder="Enter your password">
+                        <button type="button" class="password-toggle-btn" data-target="password" aria-label="Show password">
+                            <i class="fas fa-eye"></i>
+                            <i class="fas fa-eye-slash"></i>
+                        </button>
                         @error('password')
                             <span class="invalid-feedback d-block" role="alert">
                                 <strong>{{ $message }}</strong>

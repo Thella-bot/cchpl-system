@@ -17,8 +17,9 @@
 <body>
     <nav class="navbar navbar-expand-lg bg-white shadow-sm nav-topbar sticky-top">
         <div class="container">
-            <a class="navbar-brand navbar-brand-cchpl" href="{{ url('/') }}">
+            <a class="navbar-brand navbar-brand-cchpl d-flex align-items-center gap-2" href="{{ url('/') }}">
                 <img src="{{ asset('images/logo/cchpl-alt-logo.png') }}" alt="CCHPL Logo" height="36" class="d-inline-block align-top">
+                <span class="d-none d-sm-inline fw-bold">CCHPL</span>
             </a>
             <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,6 +77,8 @@
         @yield('content')
     </div>
 
+    @include('components.site-footer')
+
     {{-- Bootstrap JS (required for navbar toggling, dropdowns, modals, etc.) --}}
     <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 
@@ -83,5 +86,20 @@
     @livewireScripts
 
     @stack('scripts')
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.password-toggle-btn').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    const input = document.getElementById(btn.dataset.target);
+                    if (!input) return;
+                    const show = input.type === 'password';
+                    input.type = show ? 'text' : 'password';
+                    btn.classList.toggle('show', show);
+                    btn.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+                });
+            });
+        });
+    </script>
 </body>
 </html>

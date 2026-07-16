@@ -198,9 +198,7 @@
                             <div class="fw-semibold text-dark">Edit Your Profile</div>
                         </a>
                     </div>
-                </div>
-            </div>
-        </div>
+
                     <div class="col-sm-6 col-md-4">
                         <form action="{{ route('logout') }}" method="POST" class="h-100">
                             @csrf

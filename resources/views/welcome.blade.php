@@ -24,7 +24,7 @@
     </section>
 
     {{-- About Section --}}
-    <section class="card border-0 shadow-sm">
+    <section id="about" class="card border-0 shadow-sm scroll-mt-6">
         <div class="card-body p-4 p-lg-5">
             <div class="text-center">
                 <div class="site-section-title mb-2">About CCHPL</div>
@@ -60,7 +60,7 @@
     </section>
 
     {{-- How to Join & Benefits --}}
-    <section class="card border-0 shadow-sm">
+    <section id="join" class="card border-0 shadow-sm scroll-mt-6">
         <div class="card-body p-4 p-lg-5">
             <div class="row g-5">
                 <div class="col-lg-6">
@@ -144,8 +144,64 @@
         </div>
     </section>
 
+    {{-- Membership Tiers Section --}}
+    @if ($categories->isNotEmpty())
+        <section id="membership" class="card border-0 shadow-sm scroll-mt-6">
+            <div class="card-body p-4 p-lg-5">
+                <div class="text-center mb-4">
+                    <div class="site-section-title mb-2">Membership Tiers</div>
+                    <h2 class="fw-bold mb-3">Choose the right membership</h2>
+                    <p class="text-muted mx-auto" style="max-width: 800px;">
+                        Transparent annual fees across our membership categories. Select the tier that fits your professional standing when you apply.
+                    </p>
+                </div>
+                <div class="row g-4 justify-content-center">
+                    @foreach ($categories as $category)
+                        <div class="col-sm-6 col-lg-4">
+                            <div class="card h-100 border-0 shadow-sm pricing-card text-center">
+                                <div class="card-body d-flex flex-column p-4">
+                                    <h3 class="h5 fw-bold mb-1">{{ $category->name }}</h3>
+                                    <div class="pricing-price mb-1">
+                                        <span class="fw-bold">M{{ number_format($category->annual_fee, 2) }}</span>
+                                        <span class="text-muted small">/year</span>
+                                    </div>
+                                    @if ($category->joining_fee)
+                                        <div class="small text-muted mb-3">Joining fee: M{{ number_format($category->joining_fee, 2) }}</div>
+                                    @else
+                                        <div class="small text-muted mb-3">&nbsp;</div>
+                                    @endif
+                                    <ul class="list-unstyled text-start small mb-4 flex-grow-1">
+                                        <li class="d-flex align-items-start gap-2 mb-2">
+                                            <i class="fas fa-{{ $category->voting_rights ? 'check' : 'xmark' }} mt-1 {{ $category->voting_rights ? 'text-brand-green' : 'text-muted' }}"></i>
+                                            <span>{{ $category->voting_rights ? 'Voting rights' : 'No voting rights' }}</span>
+                                        </li>
+                                        @if ($category->eligibility_criteria)
+                                            <li class="d-flex align-items-start gap-2 mb-2">
+                                                <i class="fas fa-circle-info mt-1 text-brand-green"></i>
+                                                <span>{{ $category->eligibility_criteria }}</span>
+                                            </li>
+                                        @endif
+                                        @if ($category->other_notes)
+                                            <li class="d-flex align-items-start gap-2">
+                                                <i class="fas fa-circle-info mt-1 text-brand-green"></i>
+                                                <span>{{ $category->other_notes }}</span>
+                                            </li>
+                                        @endif
+                                    </ul>
+                                    <a href="{{ route('register') }}" class="btn btn-outline-brand-green w-100">
+                                        Apply for this tier
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+    @endif
+
     {{-- Contact Section --}}
-    <section class="card border-0 shadow-sm">
+    <section id="contact" class="card border-0 shadow-sm scroll-mt-6">
         <div class="card-body p-4 p-lg-5">
             <div class="row align-items-center">
                 <div class="col-lg-8">

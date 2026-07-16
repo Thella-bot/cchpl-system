@@ -4,6 +4,7 @@ namespace App\Console;
 use App\Console\Commands\CheckMembershipRenewals;
 use App\Console\Commands\MarkExpiredMemberships;
 use App\Console\Commands\SuspendOverdueMembers;
+use App\Console\Commands\SystemHealthCheckCommand;
 use App\Console\Commands\VoidAbandonedPayments;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -38,6 +39,12 @@ $schedule->command(VoidAbandonedPayments::class)
             ->timezone('Africa/Maseru')
             ->withoutOverlapping()
             ->appendOutputTo(storage_path('logs/expiry-reminders.log'));
+
+        // Automated backups
+        $schedule->command('backup:clean')->dailyAt('03:00')->timezone('Africa/Maseru');
+        $schedule->command('backup:run')->dailyAt('03:15')->timezone('Africa/Maseru')
+            ->withoutOverlapping()
+            ->appendOutputTo(storage_path('logs/backup.log'));
     }
 
 protected function commands(): void

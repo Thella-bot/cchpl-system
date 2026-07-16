@@ -33,5 +33,12 @@ protected function configureRateLimiting(): void
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
         });
 
-}
+        RateLimiter::for('auth', function (Request $request) {
+            return Limit::perMinute(5)->by($request->ip());
+        });
+
+        RateLimiter::for('payment-webhooks', function (Request $request) {
+            return Limit::perMinute(100)->by($request->ip());
+        });
+    }
 }

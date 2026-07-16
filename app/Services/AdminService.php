@@ -1,12 +1,17 @@
-/**
+<?php
 
-return self::createAdmin($data);
-    }
+namespace App\Services;
 
-public static function getAllAdmins(): Collection
+use App\Exceptions\RoleManagementException;
+use App\Models\Role;
+use App\Models\User;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+
 class AdminService
 {
-
     /**
      * Create a new admin user with the given data and assign roles.
      *
@@ -16,7 +21,6 @@ class AdminService
     public static function createAdmin(array $data): ?User
     {
         try {
-            // Create the user with admin privileges
             $user = User::create([
                 'name' => $data['name'],
                 'email' => $data['email'],
@@ -25,16 +29,17 @@ class AdminService
                 'is_admin' => true,
             ]);
 
-            // Assign roles if provided
             if ($user && !empty($data['roles'])) {
                 $validRoles = Role::whereIn('id', $data['roles'])->pluck('id');
                 $user->roles()->sync($validRoles);
             }
 
             return $user;
-        } catch (\Exception $e) {
-            // Log error for maintainability
-            Log::error('Failed to create admin user: ' . $e->getMessage());
+        } catch (\Throwable $e) {
+            Log::error('Failed to create admin user: ' . $e->getMessage(), [
+                'email' => $data['email'] ?? null,
+            ]);
+
             return null;
         }
     }
@@ -52,7 +57,6 @@ class AdminService
         $superAdminRole = Role::where('name', 'super_admin')->first();
 
         if (!$superAdminRole) {
-            // Critical log if super_admin role is missing
             Log::critical("Super Admin role not found. Ensure 'php artisan db:seed --class=RoleSeeder' has been run.");
             return null;
         }
@@ -81,54 +85,58 @@ class AdminService
     public static function getAdminsByRole(string $roleName): Collection
     {
         return User::where('is_admin', true)
-    {
-        return User::where('is_admin', true)->with('roles')->orderBy('name')->get();
-    }
-
-public static function getAdminsByRole(string $roleName): Collection
-    {
-        return User::where('is_admin', true)
-            ->whereHas('roles', fn($query) => $query->where('name', $roleName))
+            ->whereHas('roles', fn ($query) => $query->where('name', $roleName))
+            ->with('roles')
+            ->orderBy('name')
             ->get();
     }
 
-public static function updateUserRoles(User $user, array $roleIds): void
+    /**
+     * Update roles for an admin user with guardrails for last super admin.
+     */
+    public static function updateUserRoles(User $user, array $roleIds): void
     {
         $superAdminRole = Role::where('name', 'super_admin')->first();
 
-if (
+        if (
             $superAdminRole &&
             $user->roles->contains($superAdminRole) &&
-            !in_array($superAdminRole->id, $roleIds) &&
+            !in_array($superAdminRole->id, $roleIds, true) &&
             self::isLastSuperAdmin($user)
         ) {
             throw new RoleManagementException('Cannot remove the Super Admin role from the last Super Admin.');
         }
 
-$validRoles = Role::whereIn('id', $roleIds)->pluck('id');
+        $validRoles = Role::whereIn('id', $roleIds)->pluck('id');
         $user->roles()->sync($validRoles);
     }
 
-public static function revokeAdminAccess(User $user): void
+    /**
+     * Revoke admin access (disable is_admin and clear role assignments) with guardrails.
+     */
+    public static function revokeAdminAccess(User $user): void
     {
         if (self::isLastSuperAdmin($user)) {
             throw new RoleManagementException('Cannot deactivate the last Super Admin.');
         }
 
-$user->roles()->sync([]);
+        $user->roles()->sync([]);
         $user->update(['is_admin' => false]);
     }
 
-private static function isLastSuperAdmin(User $user): bool
+    private static function isLastSuperAdmin(User $user): bool
     {
         $superAdminRole = Role::where('name', 'super_admin')->first();
 
-if (!$superAdminRole || !$user->roles->contains($superAdminRole)) {
-            return false; 
+        if (!$superAdminRole || !$user->roles->contains($superAdminRole)) {
+            return false;
         }
 
-$superAdminCount = DB::table('user_roles')->where('role_id', $superAdminRole->id)->count();
+        $superAdminCount = DB::table('user_roles')
+            ->where('role_id', $superAdminRole->id)
+            ->count();
 
-return $superAdminCount <= 1;
+        return $superAdminCount <= 1;
     }
 }
+

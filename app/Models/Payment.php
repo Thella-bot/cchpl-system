@@ -8,12 +8,12 @@ use App\Presenters\StatusPresenter;
 class Payment extends Model
 {
 
-const STATUS_PENDING  = 'pending';
-    const STATUS_VERIFIED = 'verified';
-    const STATUS_REJECTED = 'rejected';
-    const STATUS_VOIDED   = 'voided'; 
+    public const STATUS_PENDING  = 'pending';
+    public const STATUS_VERIFIED = 'verified';
+    public const STATUS_REJECTED = 'rejected';
+    public const STATUS_VOIDED   = 'voided'; 
 
-protected $fillable = [
+    protected $fillable = [
         'membership_id',
         'amount',
         'provider',
@@ -24,6 +24,16 @@ protected $fillable = [
         'verification_notes',
         'verified_at',
         'receipt_number',
+
+        // Provider transaction id(s)
+        'transaction_id',
+
+        // M-Pesa identifiers (from STK callback)
+        'mpesa_checkout_request_id',
+        'mpesa_merchant_request_id',
+        'mpesa_receipt_number',
+
+        // NOTE: keep transaction_reference unique; never overwrite on retries.
     ];
 
 protected $casts = [

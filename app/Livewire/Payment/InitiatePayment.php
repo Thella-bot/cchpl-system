@@ -5,7 +5,9 @@ namespace App\Livewire\Payment;
 use App\Models\Membership;
 use App\Models\Payment;
 use App\Notifications\PaymentReceivedNotification;
+use App\Services\DocumentProcessingService;
 use App\Services\PaymentService;
+use App\Services\Payments\PaymentGatewayFactory;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -22,13 +24,16 @@ public $amount;
     public $membershipId;
     public $memberships;
     public $proofFile;
+    public $useApiPayment = false;
+    public $paymentInitiated = false;
+    public $stkResponse = null;
 
 protected $rules = [
         'amount' => 'required|numeric|min:0.01',
         'provider' => 'required|in:mpesa,ecocash',
         'purpose' => 'required|string|max:255',
         'membershipId' => 'required|exists:memberships,id',
-        'proofFile' => 'required|file|mimes:jpg,jpeg,png|max:5120',
+        'proofFile' => 'nullable|file|mimes:jpg,jpeg,png|max:5120',
     ];
 
 public array $purposeOptions = [
@@ -67,6 +72,63 @@ public function generateInstructions()
         $this->reference = PaymentService::generateReference();
         $this->paymentInstructions = PaymentService::getPaymentInstructions($this->provider, $this->amount, $this->reference);
         $this->showInstructions = true;
+    }
+
+    /**
+     * Initiate API-driven mobile payment
+     */
+    public function initiateApiPayment()
+    {
+        $this->validate();
+        
+        // Verify membership ownership
+        $membership = Membership::where('id', $this->membershipId)
+            ->where('user_id', auth()->id())
+            ->first();
+
+        if (!$membership) {
+            $this->addError('membershipId', 'Invalid membership selected.');
+            return;
+        }
+
+        $this->reference = PaymentService::generateReference();
+        
+        // Create pending payment record
+        $payment = Payment::create([
+            'membership_id' => $this->membershipId,
+            'amount' => $this->amount,
+            'provider' => $this->provider,
+            'purpose' => $this->purpose,
+            'transaction_reference' => $this->reference,
+            'proof_file' => null,
+            'status' => 'pending',
+        ]);
+
+        // Initiate payment with gateway API
+        try {
+            $gateway = PaymentGatewayFactory::make($this->provider);
+            
+            if ($this->provider === 'mpesa') {
+                $response = $gateway->initiateStkPush($payment);
+            } else {
+                $response = $gateway->initiatePayment($payment);
+            }
+
+            if ($response && isset($response['ResponseCode']) && $response['ResponseCode'] === '0') {
+                $this->paymentInitiated = true;
+                $this->stkResponse = $response;
+                $this->dispatchBrowserEvent('notify', [
+                    'type' => 'success',
+                    'message' => 'Payment initiated! Check your phone to complete the transaction.'
+                ]);
+            } else {
+                $payment->delete();
+                $this->addError('provider', 'Failed to initiate payment. Please try again or upload proof manually.');
+            }
+        } catch (\Exception $e) {
+            $payment->delete();
+            $this->addError('provider', 'Payment service unavailable. Please upload proof manually.');
+        }
     }
 
 public function updatedMembershipId($value): void
@@ -111,7 +173,11 @@ public function updatedMembershipId($value): void
             $this->generateInstructions();
         }
 
-        $proofPath = $this->proofFile->store('payment-proofs', 'public');
+        // Only store proof file if manually uploaded
+        $proofPath = null;
+        if ($this->proofFile) {
+            $proofPath = DocumentProcessingService::processDocument($this->proofFile, 'payment-proofs');
+        }
 
         $payment = Payment::create([
             'membership_id' => $this->membershipId,
