@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Livewire\Membership;
 
 use App\Models\Membership;
@@ -51,8 +52,9 @@ class ApplicationForm extends Component
     {
         $this->validate();
 
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             session()->flash('error', 'You must be logged in to apply.');
+
             return;
         }
 
@@ -62,6 +64,7 @@ class ApplicationForm extends Component
 
         if ($existing) {
             session()->flash('error', 'You already have an active or pending membership application.');
+
             return;
         }
 

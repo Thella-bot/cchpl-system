@@ -1,27 +1,34 @@
 <?php
 
+use App\Models\User;
+
 return [
 
-'defaults' => [
+    'defaults' => [
         'guard' => env('AUTH_GUARD', 'web'),
         'passwords' => env('AUTH_PASSWORD_BROKER', 'users'),
     ],
 
-'guards' => [
+    'guards' => [
         'web' => [
             'driver' => 'session',
             'provider' => 'users',
         ],
-    ],
 
-'providers' => [
-        'users' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\User::class,
+        'api' => [
+            'driver' => 'sanctum',
+            'provider' => 'users',
         ],
     ],
 
-'passwords' => [
+    'providers' => [
+        'users' => [
+            'driver' => 'eloquent',
+            'model' => User::class,
+        ],
+    ],
+
+    'passwords' => [
         'users' => [
             'provider' => 'users',
             'table' => env('PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
@@ -30,6 +37,6 @@ return [
         ],
     ],
 
-'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
+    'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
 
 ];

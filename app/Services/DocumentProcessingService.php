@@ -14,7 +14,7 @@ class DocumentProcessingService
     public static function processDocument(UploadedFile $file, string $path): string
     {
         $filename = $file->hashName();
-        $fullPath = rtrim($path, '/') . '/' . $filename;
+        $fullPath = rtrim($path, '/').'/'.$filename;
 
         // Only optimize image files
         if (in_array($file->getMimeType(), ['image/jpeg', 'image/png', 'image/webp'])) {
@@ -40,7 +40,7 @@ class DocumentProcessingService
      */
     public static function generateThumbnail(string $sourcePath, string $thumbnailPath): ?string
     {
-        if (!Storage::exists($sourcePath)) {
+        if (! Storage::exists($sourcePath)) {
             return null;
         }
 

@@ -2,6 +2,4 @@
 
 namespace App\Http\Controllers\Auth;
 
-class VerificationController extends VerifyEmailController
-{
-}
+class VerificationController extends VerifyEmailController {}

@@ -9,22 +9,28 @@ use Illuminate\Support\Facades\Log;
 class MpesaService
 {
     protected $client;
+
     protected $baseUrl;
+
     protected $consumerKey;
+
     protected $consumerSecret;
+
     protected $shortcode;
+
     protected $passkey;
+
     protected $callbackUrl;
 
     public function __construct()
     {
-        $this->client = new Client();
+        $this->client = new Client;
         $environment = config('payments.mpesa.environment', 'sandbox');
-        
-        $this->baseUrl = $environment === 'production' 
-            ? 'https://api.safaricom.co.ke' 
+
+        $this->baseUrl = $environment === 'production'
+            ? 'https://api.safaricom.co.ke'
             : 'https://sandbox.safaricom.co.ke';
-            
+
         $this->consumerKey = config('payments.mpesa.consumer_key');
         $this->consumerSecret = config('payments.mpesa.consumer_secret');
         $this->shortcode = config('payments.mpesa.shortcode');
@@ -38,19 +44,21 @@ class MpesaService
     public function getAccessToken(): ?string
     {
         try {
-            $credentials = base64_encode($this->consumerKey . ':' . $this->consumerSecret);
-            
-            $response = $this->client->get($this->baseUrl . '/oauth/v1/generate?grant_type=client_credentials', [
+            $credentials = base64_encode($this->consumerKey.':'.$this->consumerSecret);
+
+            $response = $this->client->get($this->baseUrl.'/oauth/v1/generate?grant_type=client_credentials', [
                 'headers' => [
-                    'Authorization' => 'Basic ' . $credentials,
+                    'Authorization' => 'Basic '.$credentials,
                 ],
             ]);
 
             $result = json_decode($response->getBody(), true);
+
             return $result['access_token'] ?? null;
-            
+
         } catch (\Exception $e) {
             Log::error('M-Pesa token generation failed', ['error' => $e->getMessage()]);
+
             return null;
         }
     }
@@ -61,17 +69,17 @@ class MpesaService
     public function initiateStkPush(Payment $payment): ?array
     {
         $accessToken = $this->getAccessToken();
-        if (!$accessToken) {
+        if (! $accessToken) {
             return null;
         }
 
         $timestamp = now()->format('YmdHis');
-        $password = base64_encode($this->shortcode . $this->passkey . $timestamp);
+        $password = base64_encode($this->shortcode.$this->passkey.$timestamp);
 
         try {
-            $response = $this->client->post($this->baseUrl . '/mpesa/stkpush/v1/processrequest', [
+            $response = $this->client->post($this->baseUrl.'/mpesa/stkpush/v1/processrequest', [
                 'headers' => [
-                    'Authorization' => 'Bearer ' . $accessToken,
+                    'Authorization' => 'Bearer '.$accessToken,
                     'Content-Type' => 'application/json',
                 ],
                 'json' => [
@@ -95,14 +103,15 @@ class MpesaService
 
             $result = json_decode($response->getBody(), true);
             Log::info('M-Pesa STK push initiated', ['payment_id' => $payment->id, 'response' => $result]);
-            
+
             return $result;
-            
+
         } catch (\Exception $e) {
             Log::error('M-Pesa STK push failed', [
                 'payment_id' => $payment->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
+
             return null;
         }
     }
@@ -113,17 +122,17 @@ class MpesaService
     public function queryTransaction(string $checkoutRequestId): ?array
     {
         $accessToken = $this->getAccessToken();
-        if (!$accessToken) {
+        if (! $accessToken) {
             return null;
         }
 
         $timestamp = now()->format('YmdHis');
-        $password = base64_encode($this->shortcode . $this->passkey . $timestamp);
+        $password = base64_encode($this->shortcode.$this->passkey.$timestamp);
 
         try {
-            $response = $this->client->post($this->baseUrl . '/mpesa/stkpushquery/v1/query', [
+            $response = $this->client->post($this->baseUrl.'/mpesa/stkpushquery/v1/query', [
                 'headers' => [
-                    'Authorization' => 'Bearer ' . $accessToken,
+                    'Authorization' => 'Bearer '.$accessToken,
                     'Content-Type' => 'application/json',
                 ],
                 'json' => [
@@ -135,9 +144,10 @@ class MpesaService
             ]);
 
             return json_decode($response->getBody(), true);
-            
+
         } catch (\Exception $e) {
             Log::error('M-Pesa transaction query failed', ['error' => $e->getMessage()]);
+
             return null;
         }
     }

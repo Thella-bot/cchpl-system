@@ -10,26 +10,25 @@ use Illuminate\Support\Facades\Validator;
 
 class RegisterController extends Controller
 {
+    use RegistersUsers;
 
-use RegistersUsers;
-
-protected function redirectTo(): string
+    protected function redirectTo(): string
     {
         $user = auth()->user();
 
-if ($user && $user->isAdmin()) {
+        if ($user && $user->isAdmin()) {
             return $user->adminHome();
         }
 
-return '/member/dashboard';
+        return '/member/dashboard';
     }
 
-public function __construct()
+    public function __construct()
     {
         $this->middleware('guest');
     }
 
-protected function validator(array $data)
+    protected function validator(array $data)
     {
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
@@ -38,7 +37,7 @@ protected function validator(array $data)
         ]);
     }
 
-protected function create(array $data)
+    protected function create(array $data)
     {
         return User::create([
             'name' => $data['name'],

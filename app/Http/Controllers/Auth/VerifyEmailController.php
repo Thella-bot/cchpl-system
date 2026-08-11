@@ -7,21 +7,20 @@ use Illuminate\Foundation\Auth\VerifiesEmails;
 
 class VerifyEmailController extends Controller
 {
+    use VerifiesEmails;
 
-use VerifiesEmails;
-
-protected function redirectTo(): string
+    protected function redirectTo(): string
     {
         $user = auth()->user();
 
-if ($user && $user->isAdmin()) {
+        if ($user && $user->isAdmin()) {
             return $user->adminHome();
         }
 
-return '/member/dashboard';
+        return '/member/dashboard';
     }
 
-public function __construct()
+    public function __construct()
     {
         $this->middleware('auth');
         $this->middleware('signed')->only('verify');

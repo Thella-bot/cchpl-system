@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
@@ -9,21 +10,21 @@ class EcMinutesController extends Controller
 {
     protected $document;
 
-public function __construct(EcMinutesDocument $document)
+    public function __construct(EcMinutesDocument $document)
     {
         $this->document = $document;
     }
 
-public function create()
+    public function create()
     {
         return view('admin.document-review.compose-minutes');
     }
 
-public function store(Request $request)
+    public function store(Request $request)
     {
         $review = $this->document->store($request);
 
-return redirect()
+        return redirect()
             ->route('admin.documents.show', $review)
             ->with('success', 'EC Minutes saved. Preview and approve when ready.');
     }

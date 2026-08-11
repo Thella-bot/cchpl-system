@@ -1,17 +1,23 @@
 <?php
+
 namespace App\Models;
 
+use App\Presenters\StatusPresenter;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Presenters\StatusPresenter;
 
 class Payment extends Model
 {
+    use HasFactory;
 
-    public const STATUS_PENDING  = 'pending';
+    public const STATUS_PENDING = 'pending';
+
     public const STATUS_VERIFIED = 'verified';
+
     public const STATUS_REJECTED = 'rejected';
-    public const STATUS_VOIDED   = 'voided'; 
+
+    public const STATUS_VOIDED = 'voided';
 
     protected $fillable = [
         'membership_id',
@@ -36,27 +42,27 @@ class Payment extends Model
         // NOTE: keep transaction_reference unique; never overwrite on retries.
     ];
 
-protected $casts = [
+    protected $casts = [
         'verified_at' => 'datetime',
-        'amount'      => 'decimal:2',
+        'amount' => 'decimal:2',
     ];
 
-public function membership(): BelongsTo
+    public function membership(): BelongsTo
     {
         return $this->belongsTo(Membership::class)->withDefault();
     }
 
-public function isVerified(): bool
+    public function isVerified(): bool
     {
         return $this->status === self::STATUS_VERIFIED;
     }
 
-public function isPending(): bool
+    public function isPending(): bool
     {
         return $this->status === self::STATUS_PENDING;
     }
 
-public function statusBadgeClass(): string
+    public function statusBadgeClass(): string
     {
         return StatusPresenter::paymentStatusBadge($this->status);
     }

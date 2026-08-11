@@ -10,24 +10,23 @@ use Illuminate\Support\Facades\Route;
 
 class RouteServiceProvider extends ServiceProvider
 {
+    public const HOME = '/member/dashboard';
 
-public const HOME = '/member/dashboard';
-
-public function boot(): void
+    public function boot(): void
     {
         $this->configureRateLimiting();
 
-$this->routes(function () {
+        $this->routes(function () {
             Route::middleware('api')
                 ->prefix('api')
                 ->group(base_path('routes/api.php'));
 
-Route::middleware('web')
+            Route::middleware('web')
                 ->group(base_path('routes/web.php'));
         });
     }
 
-protected function configureRateLimiting(): void
+    protected function configureRateLimiting(): void
     {
         RateLimiter::for('api', function (Request $request) {
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());

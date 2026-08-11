@@ -15,7 +15,7 @@ class AdminService
     /**
      * Create a new admin user with the given data and assign roles.
      *
-     * @param array $data User data including name, email, password, and roles.
+     * @param  array  $data  User data including name, email, password, and roles.
      * @return User|null The created user or null on failure.
      */
     public static function createAdmin(array $data): ?User
@@ -29,14 +29,14 @@ class AdminService
                 'is_admin' => true,
             ]);
 
-            if ($user && !empty($data['roles'])) {
+            if ($user && ! empty($data['roles'])) {
                 $validRoles = Role::whereIn('id', $data['roles'])->pluck('id');
                 $user->roles()->sync($validRoles);
             }
 
             return $user;
         } catch (\Throwable $e) {
-            Log::error('Failed to create admin user: ' . $e->getMessage(), [
+            Log::error('Failed to create admin user: '.$e->getMessage(), [
                 'email' => $data['email'] ?? null,
             ]);
 
@@ -49,15 +49,16 @@ class AdminService
      *
      * Ensures the super_admin role exists and assigns it to the new user.
      *
-     * @param array $data User data including name, email, and password.
+     * @param  array  $data  User data including name, email, and password.
      * @return User|null The created super admin or null on failure.
      */
     public static function createSuperAdmin(array $data): ?User
     {
         $superAdminRole = Role::where('name', 'super_admin')->first();
 
-        if (!$superAdminRole) {
+        if (! $superAdminRole) {
             Log::critical("Super Admin role not found. Ensure 'php artisan db:seed --class=RoleSeeder' has been run.");
+
             return null;
         }
 
@@ -79,7 +80,7 @@ class AdminService
     /**
      * Retrieve all admin users by a specific role name.
      *
-     * @param string $roleName The name of the role to filter admins by.
+     * @param  string  $roleName  The name of the role to filter admins by.
      * @return Collection List of admin users with the specified role.
      */
     public static function getAdminsByRole(string $roleName): Collection
@@ -101,7 +102,7 @@ class AdminService
         if (
             $superAdminRole &&
             $user->roles->contains($superAdminRole) &&
-            !in_array($superAdminRole->id, $roleIds, true) &&
+            ! in_array($superAdminRole->id, $roleIds, true) &&
             self::isLastSuperAdmin($user)
         ) {
             throw new RoleManagementException('Cannot remove the Super Admin role from the last Super Admin.');
@@ -128,7 +129,7 @@ class AdminService
     {
         $superAdminRole = Role::where('name', 'super_admin')->first();
 
-        if (!$superAdminRole || !$user->roles->contains($superAdminRole)) {
+        if (! $superAdminRole || ! $user->roles->contains($superAdminRole)) {
             return false;
         }
 
@@ -139,4 +140,3 @@ class AdminService
         return $superAdminCount <= 1;
     }
 }
-

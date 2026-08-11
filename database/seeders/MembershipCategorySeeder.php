@@ -2,13 +2,12 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\MembershipCategory;
+use Illuminate\Database\Seeder;
 
 class MembershipCategorySeeder extends Seeder
 {
-
-public function run()
+    public function run()
     {
         $categories = [
             [
@@ -48,7 +47,7 @@ public function run()
             ],
         ];
 
-foreach ($categories as $category) {
+        foreach ($categories as $category) {
             MembershipCategory::updateOrCreate(
                 ['name' => $category['name']],
                 $category

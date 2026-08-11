@@ -9,7 +9,7 @@ return new class extends Migration
     {
         $driver = DB::getDriverName();
 
-if ($driver === 'mysql') {
+        if ($driver === 'mysql') {
             DB::statement("
                 ALTER TABLE memberships
                 MODIFY COLUMN status
@@ -20,15 +20,15 @@ if ($driver === 'mysql') {
             DB::statement("ALTER TYPE memberships_status_enum ADD VALUE IF NOT EXISTS 'resigned'");
         }
 
-}
+    }
 
-public function down(): void
+    public function down(): void
     {
         DB::statement("UPDATE memberships SET status = 'rejected' WHERE status = 'resigned'");
 
-$driver = DB::getDriverName();
+        $driver = DB::getDriverName();
 
-if ($driver === 'mysql') {
+        if ($driver === 'mysql') {
             DB::statement("
                 ALTER TABLE memberships
                 MODIFY COLUMN status
@@ -37,7 +37,7 @@ if ($driver === 'mysql') {
             ");
         } elseif ($driver === 'pgsql') {
 
-}
+        }
 
-}
+    }
 };

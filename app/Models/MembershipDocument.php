@@ -1,17 +1,20 @@
 <?php
+
 namespace App\Models;
+
 use Illuminate\Database\Eloquent\Model;
 
 class MembershipDocument extends Model
 {
+    const STATUS_PENDING = 'pending';
 
-const STATUS_PENDING   = 'pending';
-    const STATUS_APPROVED  = 'approved';
-    const STATUS_REJECTED  = 'rejected';
+    const STATUS_APPROVED = 'approved';
 
-protected $fillable = ["membership_id", "document_type", "file_path", "original_name", "status"];
+    const STATUS_REJECTED = 'rejected';
 
-public function membership()
+    protected $fillable = ['membership_id', 'document_type', 'file_path', 'original_name', 'status'];
+
+    public function membership()
     {
         return $this->belongsTo(Membership::class);
     }

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
@@ -13,52 +14,51 @@ use App\Notifications\DocumentReviewNotification;
 use App\Notifications\FeeChangedNotification;
 use App\Services\DocumentService;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Log;
-
+use Illuminate\Validation\Rule;
 
 class MembershipAdminController extends Controller
 {
-
-public function index(Request $request)
+    public function index(Request $request)
     {
-        $pendingCount  = Membership::where('status', Membership::STATUS_PENDING)->count();
+        $pendingCount = Membership::where('status', Membership::STATUS_PENDING)->count();
         $approvedCount = Membership::where('status', Membership::STATUS_APPROVED)->count();
         $rejectedCount = Membership::where('status', Membership::STATUS_REJECTED)->count();
 
-$query = Membership::where('status', Membership::STATUS_PENDING);
+        $query = Membership::where('status', Membership::STATUS_PENDING);
 
-if ($request->filled('q')) {
+        if ($request->filled('q')) {
             $search = $request->q;
             $query->whereHas('user', fn ($q) => $q
                 ->where('name', 'like', "%{$search}%")
                 ->orWhere('email', 'like', "%{$search}%"));
         }
 
-$memberships = $query
+        $memberships = $query
             ->with('user', 'category', 'documents')
             ->orderBy('created_at', 'desc')
             ->paginate(15)
             ->withQueryString();
 
-return view('admin.membership-admin.index', compact(
+        return view('admin.membership-admin.index', compact(
             'memberships', 'pendingCount', 'approvedCount', 'rejectedCount'
         ));
     }
 
-public function show(Membership $membership)
+    public function show(Membership $membership)
     {
         $membership->load('user', 'category', 'documents', 'payments');
+
         return view('admin.membership-admin.show', compact('membership'));
     }
 
-public function approve(Request $request, Membership $membership)
+    public function approve(Request $request, Membership $membership)
     {
         $result = $this->approveMembership($membership);
 
         $message = "✅ Application for {$membership->user->name} approved. Member ID: {$membership->member_id}.";
         if ($result['cert_error']) {
-            $message .= " Certificate could not be emailed due to a technical issue (full details logged). Check logs if needed.";
+            $message .= ' Certificate could not be emailed due to a technical issue (full details logged). Check logs if needed.';
         } else {
             $message .= ' Certificate emailed.';
         }
@@ -78,7 +78,7 @@ public function approve(Request $request, Membership $membership)
     public function bulkApprove(Request $request)
     {
         $request->validate([
-            'ids'   => 'required|array|min:1|max:500',
+            'ids' => 'required|array|min:1|max:500',
             'ids.*' => 'exists:memberships,id',
         ]);
 
@@ -97,7 +97,7 @@ public function approve(Request $request, Membership $membership)
 
         $count = $memberships->count();
         $message = "✅ Approved {$count} application(s).";
-        if (!empty($certFailures)) {
+        if (! empty($certFailures)) {
             $message .= ' Certificate emails could not be sent for some members due to technical issues (full details logged).';
         } else {
             $message .= ' Certificates emailed.';
@@ -109,8 +109,8 @@ public function approve(Request $request, Membership $membership)
     public function bulkReject(Request $request)
     {
         $request->validate([
-            'ids'    => 'required|array|min:1|max:500',
-            'ids.*'  => 'exists:memberships,id',
+            'ids' => 'required|array|min:1|max:500',
+            'ids.*' => 'exists:memberships,id',
             'reason' => 'required|string|min:10|max:1000',
         ]);
 
@@ -133,15 +133,15 @@ public function approve(Request $request, Membership $membership)
         $memberId = $membership->generateMemberId();
 
         AuditLog::create([
-            'user_id'        => auth()->id(),
-            'action'         => 'membership.application.approved',
+            'user_id' => auth()->id(),
+            'action' => 'membership.application.approved',
             'auditable_type' => Membership::class,
-            'auditable_id'   => $membership->id,
-            'old_values'     => $oldValues,
-            'new_values'     => $membership->fresh()->only(['status', 'member_id']),
-            'meta'           => [
+            'auditable_id' => $membership->id,
+            'old_values' => $oldValues,
+            'new_values' => $membership->fresh()->only(['status', 'member_id']),
+            'meta' => [
                 'approved_by' => auth()->user()->email ?? null,
-                'member_id'   => $memberId,
+                'member_id' => $memberId,
             ],
         ]);
 
@@ -157,7 +157,6 @@ public function approve(Request $request, Membership $membership)
             Log::warning("Certificate email failed for membership #{$membership->id}: {$certError}");
         }
 
-
         return ['cert_error' => $certError];
     }
 
@@ -167,15 +166,15 @@ public function approve(Request $request, Membership $membership)
         $membership->update(['status' => Membership::STATUS_REJECTED]);
 
         AuditLog::create([
-            'user_id'        => auth()->id(),
-            'action'         => 'membership.application.rejected',
+            'user_id' => auth()->id(),
+            'action' => 'membership.application.rejected',
             'auditable_type' => Membership::class,
-            'auditable_id'   => $membership->id,
-            'old_values'     => $oldValues,
-            'new_values'     => $membership->only(['status']),
-            'meta'           => [
+            'auditable_id' => $membership->id,
+            'old_values' => $oldValues,
+            'new_values' => $membership->only(['status']),
+            'meta' => [
                 'rejected_by' => auth()->user()->email ?? null,
-                'reason'      => $reason,
+                'reason' => $reason,
             ],
         ]);
 
@@ -184,25 +183,25 @@ public function approve(Request $request, Membership $membership)
         );
     }
 
-public function export(Request $request)
+    public function export(Request $request)
     {
         $query = Membership::where('status', Membership::STATUS_PENDING);
 
-if ($request->filled('q')) {
+        if ($request->filled('q')) {
             $search = $request->q;
             $query->whereHas('user', fn ($q) => $q
                 ->where('name', 'like', "%{$search}%")
                 ->orWhere('email', 'like', "%{$search}%"));
         }
 
-$memberships = $query->with('user', 'category')->orderBy('created_at', 'desc')->get();
+        $memberships = $query->with('user', 'category')->orderBy('created_at', 'desc')->get();
 
-$headers = [
-            'Content-Type'        => 'text/csv',
+        $headers = [
+            'Content-Type' => 'text/csv',
             'Content-Disposition' => 'attachment; filename="pending-memberships.csv"',
         ];
 
-$callback = function () use ($memberships) {
+        $callback = function () use ($memberships) {
             $handle = fopen('php://output', 'w');
             fputcsv($handle, ['Name', 'Email', 'Category', 'Fee (M)', 'Applied At', 'Status']);
             foreach ($memberships as $m) {
@@ -212,16 +211,16 @@ $callback = function () use ($memberships) {
                     $m->category->name,
                     number_format($m->category->annual_fee, 2),
                     $m->created_at->format('Y-m-d H:i:s'),
-                    ucfirst($m->status)
+                    ucfirst($m->status),
                 ]);
             }
             fclose($handle);
         };
 
-return response()->stream($callback, 200, $headers);
+        return response()->stream($callback, 200, $headers);
     }
 
-public function reviewDocument(Request $request, Membership $membership, MembershipDocument $document)
+    public function reviewDocument(Request $request, Membership $membership, MembershipDocument $document)
     {
         if ($document->membership_id !== $membership->id) {
             abort(404);
@@ -229,33 +228,33 @@ public function reviewDocument(Request $request, Membership $membership, Members
 
         $request->validate([
             'status' => ['required', Rule::in([MembershipDocument::STATUS_APPROVED, MembershipDocument::STATUS_REJECTED])],
-            'reason' => 'nullable|string|max:500'
+            'reason' => 'nullable|string|max:500',
         ]);
 
-$oldValues = $document->only(['status']);
+        $oldValues = $document->only(['status']);
         $document->update(['status' => $request->status]);
 
-AuditLog::create([
-            'user_id'        => auth()->id(),
-            'action'         => "membership.document.{$request->status}",
+        AuditLog::create([
+            'user_id' => auth()->id(),
+            'action' => "membership.document.{$request->status}",
             'auditable_type' => $document::class,
-            'auditable_id'   => $document->id,
-            'old_values'     => $oldValues,
-            'new_values'     => $document->only(['status']),
-            'meta'           => [
+            'auditable_id' => $document->id,
+            'old_values' => $oldValues,
+            'new_values' => $document->only(['status']),
+            'meta' => [
                 'reviewed_by' => auth()->user()->email ?? null,
-                'reason'      => $request->reason,
+                'reason' => $request->reason,
             ],
         ]);
 
-$membership->user->notify(
+        $membership->user->notify(
             new DocumentReviewNotification($document, $request->status, $request->reason)
         );
 
-return back()->with('success', "Document status updated to {$request->status}.");
+        return back()->with('success', "Document status updated to {$request->status}.");
     }
 
-public function updateMemberEmail(Request $request, Membership $membership)
+    public function updateMemberEmail(Request $request, Membership $membership)
     {
         $membership->load('user');
         $user = $membership->user;
@@ -284,15 +283,15 @@ public function updateMemberEmail(Request $request, Membership $membership)
         ])->save();
 
         AuditLog::create([
-            'user_id'        => auth()->id(),
-            'action'         => 'member.email.updated',
+            'user_id' => auth()->id(),
+            'action' => 'member.email.updated',
             'auditable_type' => User::class,
-            'auditable_id'   => $user->id,
-            'old_values'     => ['email' => $oldEmail],
-            'new_values'     => ['email' => $newEmail],
-            'meta'           => [
+            'auditable_id' => $user->id,
+            'old_values' => ['email' => $oldEmail],
+            'new_values' => ['email' => $newEmail],
+            'meta' => [
                 'membership_id' => $membership->id,
-                'changed_by'    => auth()->user()->email ?? null,
+                'changed_by' => auth()->user()->email ?? null,
             ],
         ]);
 
@@ -329,7 +328,7 @@ public function updateMemberEmail(Request $request, Membership $membership)
 
         // Only allow admins to move approved members between operational states.
         // (This route is used from the approved members area.)
-        if ($oldStatus !== Membership::STATUS_APPROVED && !in_array($oldStatus, [Membership::STATUS_SUSPENDED, Membership::STATUS_EXPIRED, Membership::STATUS_RESIGNED], true)) {
+        if ($oldStatus !== Membership::STATUS_APPROVED && ! in_array($oldStatus, [Membership::STATUS_SUSPENDED, Membership::STATUS_EXPIRED, Membership::STATUS_RESIGNED], true)) {
             return back()->with('error', 'Cannot manage status from the current membership state.');
         }
 
@@ -349,98 +348,99 @@ public function updateMemberEmail(Request $request, Membership $membership)
         $membership->save();
 
         AuditLog::create([
-            'user_id'        => auth()->id(),
-            'action'         => 'membership.status.updated',
+            'user_id' => auth()->id(),
+            'action' => 'membership.status.updated',
             'auditable_type' => Membership::class,
-            'auditable_id'   => $membership->id,
-            'old_values'     => $oldValues,
-            'new_values'     => $membership->fresh()->only(['status', 'suspended_at', 'expiry_date', 'rejection_reason']),
-            'meta'           => [
+            'auditable_id' => $membership->id,
+            'old_values' => $oldValues,
+            'new_values' => $membership->fresh()->only(['status', 'suspended_at', 'expiry_date', 'rejection_reason']),
+            'meta' => [
                 'from_status' => $oldStatus,
-                'to_status'   => $newStatus,
-                'changed_by'  => auth()->user()->email ?? null,
-                'reason'      => $request->reason,
+                'to_status' => $newStatus,
+                'changed_by' => auth()->user()->email ?? null,
+                'reason' => $request->reason,
             ],
         ]);
 
         return back()->with('success', 'Membership status updated successfully.');
     }
 
-public function listMembers(Request $request)
+    public function listMembers(Request $request)
     {
         $query = Membership::where('status', Membership::STATUS_APPROVED)->with('user', 'category');
 
-if ($request->filled('q')) {
+        if ($request->filled('q')) {
             $search = $request->q;
             $query->whereHas('user', fn ($q) => $q
                 ->where('name', 'like', "%{$search}%")
                 ->orWhere('email', 'like', "%{$search}%"));
         }
 
-$members = $query
+        $members = $query
             ->orderBy('expiry_date', 'asc')
             ->paginate(20)
             ->withQueryString();
 
-$expiringCount = $members->filter(fn ($m) => $m->isExpiringSoon())->count();
-        $expiredCount  = $members->filter(fn ($m) => $m->isExpired())->count();
+        $expiringCount = $members->filter(fn ($m) => $m->isExpiringSoon())->count();
+        $expiredCount = $members->filter(fn ($m) => $m->isExpired())->count();
 
-return view('admin.membership-admin.members', compact('members', 'expiringCount', 'expiredCount'));
+        return view('admin.membership-admin.members', compact('members', 'expiringCount', 'expiredCount'));
     }
 
-public function listRejected()
+    public function listRejected()
     {
         $rejected = Membership::where('status', Membership::STATUS_REJECTED)
             ->with('user', 'category')
             ->orderBy('updated_at', 'desc')
             ->paginate(20);
 
-return view('admin.membership-admin.rejected', compact('rejected'));
+        return view('admin.membership-admin.rejected', compact('rejected'));
     }
 
-public function categories()
+    public function categories()
     {
         $categories = MembershipCategory::orderBy('name')->get();
+
         return view('admin.memberships.categories', compact('categories'));
     }
 
-public function editCategory(MembershipCategory $category)
+    public function editCategory(MembershipCategory $category)
     {
         return view('admin.memberships.edit-category', compact('category'));
     }
 
-public function updateCategory(Request $request, MembershipCategory $category)
+    public function updateCategory(Request $request, MembershipCategory $category)
     {
         $request->validate([
-            'name'                 => 'required|string|max:255',
-            'annual_fee'           => 'required|numeric|min:0',
-            'joining_fee'          => 'nullable|numeric|min:0',
-            'voting_rights'        => 'required|boolean',
+            'name' => 'required|string|max:255',
+            'annual_fee' => 'required|numeric|min:0',
+            'joining_fee' => 'nullable|numeric|min:0',
+            'voting_rights' => 'required|boolean',
             'eligibility_criteria' => 'nullable|string',
-            'other_notes'          => 'nullable|string',
+            'other_notes' => 'nullable|string',
         ]);
 
-$oldValues = $category->only([
+        $oldValues = $category->only([
             'name', 'annual_fee', 'joining_fee', 'voting_rights', 'eligibility_criteria', 'other_notes',
         ]);
 
-$category->update($request->only([
+        $category->update($request->only([
             'name', 'annual_fee', 'joining_fee', 'voting_rights', 'eligibility_criteria', 'other_notes',
         ]));
 
-AuditLog::create([
-            'user_id'        => auth()->id(),
-            'action'         => 'membership_category.updated',
+        AuditLog::create([
+            'user_id' => auth()->id(),
+            'action' => 'membership_category.updated',
             'auditable_type' => MembershipCategory::class,
-            'auditable_id'   => $category->id,
-            'old_values'     => $oldValues,
-            'new_values'     => $category->only([
+            'auditable_id' => $category->id,
+            'old_values' => $oldValues,
+            'new_values' => $category->only([
                 'name', 'annual_fee', 'joining_fee', 'voting_rights', 'eligibility_criteria', 'other_notes',
             ]),
             'meta' => ['changed_by' => auth()->user()->email ?? null],
         ]);
 
-Membership::where('category_id', $category->id)
+        Membership::where('category_id', $category->id)
             ->where('status', Membership::STATUS_APPROVED)
             ->with('user')
             ->get()
@@ -448,7 +448,7 @@ Membership::where('category_id', $category->id)
                 new FeeChangedNotification($category, $oldValues['annual_fee'])
             ));
 
-return redirect()
+        return redirect()
             ->route('admin.memberships.categories.index')
             ->with('success', "'{$category->name}' updated successfully.");
     }

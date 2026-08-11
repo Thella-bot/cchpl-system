@@ -16,6 +16,11 @@ class PaymentService
     public static function verifyPayment(Payment $payment, bool $approved = true): bool
     {
         if ($approved) {
+            // Idempotency: never re-verify an already verified payment.
+            if (! $payment->isPending()) {
+                return true;
+            }
+
             return DB::transaction(function () use ($payment) {
                 // Generate a new receipt number
                 $receiptNumber = self::generateReceiptNumber();
@@ -43,6 +48,11 @@ class PaymentService
             });
         }
 
+        // Idempotency: only flip to rejected from pending.
+        if (! $payment->isPending()) {
+            return false;
+        }
+
         // Mark payment as rejected
         $payment->update([
             'status' => 'rejected',
@@ -54,6 +64,10 @@ class PaymentService
 
     /**
      * Calculate the next March 31 expiry date for a membership.
+     *
+     * A fresh membership (no current expiry) expires at the next billing March,
+     * which is at least ~1 year ahead. When given a future expiry, the following
+     * March is used so renewals extend the membership by one cycle.
      */
     public static function nextMarchExpiry(?Carbon $currentExpiry = null): Carbon
     {
@@ -90,7 +104,7 @@ class PaymentService
 
             $sequenceNumber = str_pad((string) $sequence->last_sequence, 4, '0', STR_PAD_LEFT);
 
-            return $prefix . $sequenceNumber;
+            return $prefix.$sequenceNumber;
         });
     }
 
@@ -100,7 +114,7 @@ class PaymentService
     public static function generateReference(): string
     {
         do {
-            $ref = 'CCHPL-' . now()->format('Ymd') . '-' . str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT);
+            $ref = 'CCHPL-'.now()->format('Ymd').'-'.str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT);
         } while (Payment::where('transaction_reference', $ref)->exists());
 
         return $ref;
@@ -112,12 +126,12 @@ class PaymentService
     public static function getPaymentInstructions(string $provider, string $amount, string $reference): string
     {
         if ($provider === 'mpesa') {
-            return "Pay M{$amount} to:\nM-Pesa Shortcode: " . config('payments.mpesa_shortcode', 'CONTACT_SUPPORT')
-                . "\nReference: {$reference}";
+            return "Pay M{$amount} to:\nM-Pesa Shortcode: ".config('payments.mpesa_shortcode', 'CONTACT_SUPPORT')
+                ."\nReference: {$reference}";
         }
 
-        return "Pay M{$amount} to:\nEcoCash Merchant: " . config('payments.ecocash_merchant', 'CONTACT_SUPPORT')
-            . "\nReference: {$reference}";
+        return "Pay M{$amount} to:\nEcoCash Merchant: ".config('payments.ecocash_merchant', 'CONTACT_SUPPORT')
+            ."\nReference: {$reference}";
     }
 
     /**
@@ -142,4 +156,3 @@ class PaymentService
             && $membership->expiry_date->diffInMonths(now()) >= 6;
     }
 }
-

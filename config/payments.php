@@ -8,14 +8,14 @@ return [
         'consumer_secret' => env('MPESA_CONSUMER_SECRET'),
         'passkey' => env('MPESA_PASSKEY'),
         'environment' => env('MPESA_ENVIRONMENT', 'sandbox'),
-        'callback_url' => env('APP_URL') . '/api/v1/webhooks/mpesa',
+        'callback_url' => env('APP_URL').'/api/v1/webhooks/mpesa',
     ],
-    
+
     // EcoCash API Configuration
     'ecocash' => [
         'merchant_id' => env('ECOCASH_MERCHANT_ID'),
         'merchant_key' => env('ECOCASH_MERCHANT_KEY'),
         'environment' => env('ECOCASH_ENVIRONMENT', 'sandbox'),
-        'callback_url' => env('APP_URL') . '/api/v1/webhooks/ecocash',
+        'callback_url' => env('APP_URL').'/api/v1/webhooks/ecocash',
     ],
 ];

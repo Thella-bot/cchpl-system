@@ -1,22 +1,30 @@
 <?php
+
 namespace App\Models;
 
 use App\Services\MembershipService;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Membership extends Model
 {
+    use HasFactory;
 
-const STATUS_PENDING   = 'pending';
-    const STATUS_APPROVED  = 'approved';
-    const STATUS_REJECTED  = 'rejected';
+    const STATUS_PENDING = 'pending';
+
+    const STATUS_APPROVED = 'approved';
+
+    const STATUS_REJECTED = 'rejected';
+
     const STATUS_SUSPENDED = 'suspended';
-    const STATUS_EXPIRED   = 'expired';
-    const STATUS_RESIGNED  = 'resigned';
 
-protected $fillable = [
+    const STATUS_EXPIRED = 'expired';
+
+    const STATUS_RESIGNED = 'resigned';
+
+    protected $fillable = [
         'user_id',
         'category_id',
         'status',
@@ -26,12 +34,12 @@ protected $fillable = [
         'rejection_reason',
     ];
 
-protected $casts = [
-        'expiry_date'  => 'datetime',
+    protected $casts = [
+        'expiry_date' => 'datetime',
         'suspended_at' => 'datetime',
     ];
 
-public function user(): BelongsTo
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class)->withDefault([
             'name' => 'Unknown User',
@@ -39,7 +47,7 @@ public function user(): BelongsTo
         ]);
     }
 
-public function category(): BelongsTo
+    public function category(): BelongsTo
     {
         return $this->belongsTo(MembershipCategory::class)->withDefault([
             'name' => 'Uncategorized',
@@ -47,63 +55,64 @@ public function category(): BelongsTo
         ]);
     }
 
-public function payments(): HasMany
+    public function payments(): HasMany
     {
         return $this->hasMany(Payment::class);
     }
 
-public function documents(): HasMany
+    public function documents(): HasMany
     {
         return $this->hasMany(MembershipDocument::class);
     }
 
-public function isActive(): bool
+    public function isActive(): bool
     {
         return $this->status === self::STATUS_APPROVED
             && $this->expiry_date
             && $this->expiry_date->isFuture();
     }
 
-public function isExpired(): bool
+    public function isExpired(): bool
     {
         return $this->expiry_date && $this->expiry_date->isPast();
     }
 
-public function isExpiringSoon(int $days = 30): bool
+    public function isExpiringSoon(int $days = 30): bool
     {
         return $this->expiry_date
             && $this->expiry_date->isFuture()
             && $this->expiry_date->diffInDays(now()) <= $days;
     }
 
-public function daysUntilExpiry(): ?int
+    public function daysUntilExpiry(): ?int
     {
-        if (!$this->expiry_date) {
+        if (! $this->expiry_date) {
             return null;
         }
+
         return (int) now()->diffInDays($this->expiry_date, false);
     }
 
-public function statusBadgeClass(): string
+    public function statusBadgeClass(): string
     {
         return match ($this->status) {
-            self::STATUS_APPROVED  => 'bg-success',
-            self::STATUS_PENDING   => 'bg-warning text-dark',
-            self::STATUS_REJECTED  => 'bg-danger',
+            self::STATUS_APPROVED => 'bg-success',
+            self::STATUS_PENDING => 'bg-warning text-dark',
+            self::STATUS_REJECTED => 'bg-danger',
             self::STATUS_SUSPENDED => 'bg-secondary',
-            self::STATUS_EXPIRED   => 'bg-dark',
-            self::STATUS_RESIGNED  => 'bg-info text-dark',
-            default                => 'bg-light text-dark',
+            self::STATUS_EXPIRED => 'bg-dark',
+            self::STATUS_RESIGNED => 'bg-info text-dark',
+            default => 'bg-light text-dark',
         };
     }
 
-public function generateMemberId(): string
+    public function generateMemberId(): string
     {
-        return (new MembershipService())->generateMemberId($this);
+        return (new MembershipService)->generateMemberId($this);
     }
 
-public function isPenaltyApplicable(): bool
+    public function isPenaltyApplicable(): bool
     {
-        return (new MembershipService())->isPenaltyApplicable($this);
+        return (new MembershipService)->isPenaltyApplicable($this);
     }
 }

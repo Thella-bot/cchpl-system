@@ -8,34 +8,32 @@ use App\Models\Membership;
 use App\Models\Resignation;
 use App\Notifications\ResignationAcknowledgementNotification;
 use App\Services\MembershipService;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class ResignationAdminController extends Controller
 {
-
     public function index(Request $request)
     {
         $query = Resignation::with('user', 'membership.category')
             ->orderByRaw("CASE 
-                WHEN status='" . Resignation::STATUS_PENDING . "' THEN 0 
-                WHEN status='" . Resignation::STATUS_ACKNOWLEDGED . "' THEN 1 
-                WHEN status='" . Resignation::STATUS_CANCELLED . "' THEN 2 
+                WHEN status='".Resignation::STATUS_PENDING."' THEN 0 
+                WHEN status='".Resignation::STATUS_ACKNOWLEDGED."' THEN 1 
+                WHEN status='".Resignation::STATUS_CANCELLED."' THEN 2 
                 ELSE 3 
             END")
             ->orderBy('created_at', 'desc');
 
-if ($request->filled('status')) {
+        if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
 
-$resignations = $query->paginate(20)->withQueryString();
+        $resignations = $query->paginate(20)->withQueryString();
 
-return view('admin.resignations.index', compact('resignations'));
+        return view('admin.resignations.index', compact('resignations'));
     }
 
-public function show(Resignation $resignation)
+    public function show(Resignation $resignation)
     {
         $resignation->load('user', 'membership.category', 'acknowledgedBy');
 
@@ -46,8 +44,7 @@ public function show(Resignation $resignation)
         return view('admin.resignations.show', compact('resignation'));
     }
 
-
-public function acknowledge(Request $request, Resignation $resignation)
+    public function acknowledge(Request $request, Resignation $resignation)
     {
         abort_if($resignation->status !== Resignation::STATUS_PENDING, 403, 'This resignation has already been processed.');
 
@@ -78,7 +75,7 @@ public function acknowledge(Request $request, Resignation $resignation)
 
         $resignation->user?->notify(new ResignationAcknowledgementNotification($resignation));
 
-        return redirect()->route('admin.resignations.index')->with('success', 'Resignation for ' . $resignation->user->name . ' has been acknowledged.');
+        return redirect()->route('admin.resignations.index')->with('success', 'Resignation for '.$resignation->user->name.' has been acknowledged.');
     }
 
     public function reject(Request $request, Resignation $resignation)
@@ -115,6 +112,6 @@ public function acknowledge(Request $request, Resignation $resignation)
         });
 
         // No rejection email exists yet; only update + audit.
-        return redirect()->route('admin.resignations.index')->with('success', 'Resignation for ' . $resignation->user->name . ' has been rejected.');
+        return redirect()->route('admin.resignations.index')->with('success', 'Resignation for '.$resignation->user->name.' has been rejected.');
     }
 }

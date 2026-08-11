@@ -23,7 +23,7 @@ class PaymentLogger
     /**
      * Log a successful payment transaction.
      *
-     * @param array $data Transaction data (transaction_id, amount, status, etc).
+     * @param  array  $data  Transaction data (transaction_id, amount, status, etc).
      */
     public function logTransaction(array $data): void
     {
@@ -40,8 +40,8 @@ class PaymentLogger
     /**
      * Log an error related to payment processing.
      *
-     * @param string $message Error message.
-     * @param array $context Additional context for the error.
+     * @param  string  $message  Error message.
+     * @param  array  $context  Additional context for the error.
      */
     public function logError(string $message, array $context = []): void
     {
@@ -54,7 +54,7 @@ class PaymentLogger
     /**
      * Log suspicious payment activity for security monitoring.
      *
-     * @param array $data Details of the suspicious activity.
+     * @param  array  $data  Details of the suspicious activity.
      */
     public function logSuspiciousActivity(array $data): void
     {
@@ -65,4 +65,3 @@ class PaymentLogger
         ]);
     }
 }
-

@@ -12,8 +12,7 @@ class PaymentRejectedNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public function __construct(protected Payment $payment)
-    {}
+    public function __construct(protected Payment $payment) {}
 
     public function via($notifiable): array
     {
@@ -25,11 +24,11 @@ class PaymentRejectedNotification extends Notification implements ShouldQueue
         $message = (new MailMessage)
             ->subject('CCHPL - Payment Verification Failed')
             ->level('error')
-            ->greeting('Dear ' . $notifiable->name . ',')
-            ->line('We were unable to verify your payment for reference **' . $this->payment->transaction_reference . '**.');
+            ->greeting('Dear '.$notifiable->name.',')
+            ->line('We were unable to verify your payment for reference **'.$this->payment->transaction_reference.'**.');
 
         if ($this->payment->verification_notes) {
-            $message->line('**Reason:** ' . $this->payment->verification_notes);
+            $message->line('**Reason:** '.$this->payment->verification_notes);
         }
 
         return $message->line('Please check your transaction details and try uploading the proof again, or contact us if you believe this is a mistake.')

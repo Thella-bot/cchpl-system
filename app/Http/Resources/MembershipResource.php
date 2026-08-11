@@ -18,7 +18,7 @@ class MembershipResource extends JsonResource
             'user' => new UserResource($this->whenLoaded('user')),
             'category' => new MembershipCategoryResource($this->whenLoaded('category')),
 
-'documents' => MembershipDocumentResource::collection($this->whenLoaded('documents')),
+            'documents' => MembershipDocumentResource::collection($this->whenLoaded('documents')),
             'payments' => PaymentResource::collection($this->whenLoaded('payments')),
         ];
     }

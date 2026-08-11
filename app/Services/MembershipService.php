@@ -1,16 +1,17 @@
 <?php
+
 namespace App\Services;
 
 use App\Models\Membership;
-use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class MembershipService
 {
     /**
      * Generate a unique member ID for a membership.
      *
-     * @param Membership $membership The membership instance.
+     * @param  Membership  $membership  The membership instance.
      * @return string The generated member ID.
      */
     public function generateMemberId(Membership $membership): string
@@ -31,6 +32,7 @@ class MembershipService
             $memberId = "CCHPL-{$code}-{$year}-{$sequence}";
 
             $membership->update(['member_id' => $memberId]);
+
             return $memberId;
         });
     }
@@ -38,12 +40,12 @@ class MembershipService
     /**
      * Determine if a penalty is applicable for a membership.
      *
-     * @param Membership $membership The membership instance.
+     * @param  Membership  $membership  The membership instance.
      * @return bool True if penalty applies, false otherwise.
      */
     public function isPenaltyApplicable(Membership $membership): bool
     {
-        if (!$membership->isExpired()) {
+        if (! $membership->isExpired()) {
             return false;
         }
 
@@ -56,7 +58,7 @@ class MembershipService
     /**
      * Calculate the outstanding balance for a membership.
      *
-     * @param Membership $membership The membership instance.
+     * @param  Membership  $membership  The membership instance.
      * @return float The outstanding balance.
      */
     public static function calculateOutstandingBalance(Membership $membership): float
@@ -69,23 +71,24 @@ class MembershipService
                 $balance += $balance * 0.10;
             }
         }
+
         return $balance;
     }
 
     /**
      * Get the code for a membership category name.
      *
-     * @param string $categoryName The category name.
+     * @param  string  $categoryName  The category name.
      * @return string The code for the category.
      */
     public static function categoryCode(string $categoryName): string
     {
         return match (true) {
             str_contains(strtolower($categoryName), 'professional') => 'PRO',
-            str_contains(strtolower($categoryName), 'associate')    => 'ASC',
-            str_contains(strtolower($categoryName), 'student')      => 'STU',
-            str_contains(strtolower($categoryName), 'corporate')    => 'COR',
-            default                                                 => 'MEM',
+            str_contains(strtolower($categoryName), 'associate') => 'ASC',
+            str_contains(strtolower($categoryName), 'student') => 'STU',
+            str_contains(strtolower($categoryName), 'corporate') => 'COR',
+            default => 'MEM',
         };
     }
 }

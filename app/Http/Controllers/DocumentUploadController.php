@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Membership;
 use App\Models\MembershipDocument;
 use App\Models\Payment;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class DocumentUploadController extends Controller
@@ -61,8 +60,7 @@ class DocumentUploadController extends Controller
 
         return Storage::disk('local')->response(
             $payment->proof_file,
-            $payment->receipt_number ? ($payment->receipt_number . '.jpg') : 'payment-proof'
+            $payment->receipt_number ? ($payment->receipt_number.'.jpg') : 'payment-proof'
         );
     }
 }
-

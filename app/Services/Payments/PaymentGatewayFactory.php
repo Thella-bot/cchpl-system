@@ -12,8 +12,8 @@ class PaymentGatewayFactory
     public static function make(string $provider)
     {
         return match (strtolower($provider)) {
-            'mpesa' => new MpesaService(),
-            'ecocash' => new EcoCashService(),
+            'mpesa' => new MpesaService,
+            'ecocash' => new EcoCashService,
             default => throw new InvalidArgumentException("Unsupported payment provider: {$provider}"),
         };
     }

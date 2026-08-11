@@ -9,21 +9,20 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RedirectIfAuthenticated
 {
-
-public function handle(Request $request, Closure $next, string ...$guards): Response
+    public function handle(Request $request, Closure $next, string ...$guards): Response
     {
         $guards = empty($guards) ? [null] : $guards;
 
-foreach ($guards as $guard) {
+        foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
                 $user = Auth::guard($guard)->user();
 
-return redirect($user && $user->isAdmin()
-                    ? $user->adminHome()
-                    : '/member/dashboard');
+                return redirect($user && $user->isAdmin()
+                                    ? $user->adminHome()
+                                    : '/member/dashboard');
             }
         }
 
-return $next($request);
+        return $next($request);
     }
 }

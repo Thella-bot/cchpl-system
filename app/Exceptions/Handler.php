@@ -7,17 +7,14 @@ use Throwable;
 
 class Handler extends ExceptionHandler
 {
-
-protected $dontFlash = [
+    protected $dontFlash = [
         'current_password',
         'password',
         'password_confirmation',
     ];
 
-public function register(): void
+    public function register(): void
     {
-        $this->reportable(function (Throwable $e) {
-
-});
+        $this->reportable(function (Throwable $e) {});
     }
 }

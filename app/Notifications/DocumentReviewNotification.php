@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Notifications;
 
 use App\Models\MembershipDocument;
@@ -11,38 +12,38 @@ class DocumentReviewNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
-public function __construct(
+    public function __construct(
         protected MembershipDocument $document,
-        protected string             $status,
-        protected ?string            $reason = null
+        protected string $status,
+        protected ?string $reason = null
     ) {}
 
-public function via($notifiable): array
+    public function via($notifiable): array
     {
         return ['mail'];
     }
 
-public function toMail($notifiable): MailMessage
+    public function toMail($notifiable): MailMessage
     {
         $label = ucfirst($this->status);
 
-$mail = (new MailMessage)
-            ->subject('CCHPL — Document Review Update: ' . $this->document->document_type)
-            ->greeting('Dear ' . $notifiable->name . ',')
-            ->line('Your document **"' . $this->document->document_type . '"** has been reviewed.')
-            ->line('Status: **' . $label . '**');
+        $mail = (new MailMessage)
+            ->subject('CCHPL — Document Review Update: '.$this->document->document_type)
+            ->greeting('Dear '.$notifiable->name.',')
+            ->line('Your document **"'.$this->document->document_type.'"** has been reviewed.')
+            ->line('Status: **'.$label.'**');
 
-if ($this->status === 'rejected') {
+        if ($this->status === 'rejected') {
             if ($this->reason) {
-                $mail->line('Reason: ' . $this->reason);
+                $mail->line('Reason: '.$this->reason);
             }
             $mail->line('Please upload a corrected version by visiting your dashboard.');
         }
 
-$mail->action('View Application', url(route('member.dashboard')))
+        $mail->action('View Application', url(route('member.dashboard')))
             ->line('If you have questions please contact membership@cchpl.org.ls.')
             ->salutation('CCHPL Membership Committee');
 
-return $mail;
+        return $mail;
     }
 }

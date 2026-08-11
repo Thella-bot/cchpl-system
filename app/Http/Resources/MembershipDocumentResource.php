@@ -15,7 +15,7 @@ class MembershipDocumentResource extends JsonResource
             'document_type' => $this->document_type,
             'original_name' => $this->original_name,
 
-'url' => $this->file_path ? Storage::url($this->file_path) : null,
+            'url' => $this->file_path ? Storage::url($this->file_path) : null,
             'uploaded_at' => $this->created_at->toIso8601String(),
         ];
     }

@@ -19,26 +19,27 @@ class PaymentWebhookController extends Controller
     {
         try {
             $payload = $request->all();
-            
+
             // Extract M-Pesa's specific callback structure
             $stkCallback = $payload['Body']['stkCallback'] ?? null;
-            if (!$stkCallback) {
+            if (! $stkCallback) {
                 Log::warning('Invalid M-Pesa webhook - missing stkCallback', $payload);
+
                 return response()->json(['ResultCode' => 1, 'ResultDesc' => 'Invalid payload'], Response::HTTP_OK);
             }
 
             $resultCode = $stkCallback['ResultCode'] ?? 1; // 0 = success, other = fail
             $merchantRequestId = $stkCallback['MerchantRequestID'] ?? null;
             $checkoutRequestId = $stkCallback['CheckoutRequestID'] ?? null;
-            
+
             // Extract transaction metadata from callback
             $metadata = $stkCallback['CallbackMetadata']['Item'] ?? [];
             $reference = null;
             $amount = null;
             $mpesaReceipt = null;
-            
+
             foreach ($metadata as $item) {
-                match($item['Key']) {
+                match ($item['Key']) {
                     'AccountReference' => $reference = $item['Value'],
                     'Amount' => $amount = $item['Value'],
                     'MpesaReceiptNumber' => $mpesaReceipt = $item['Value'],
@@ -50,7 +51,7 @@ class PaymentWebhookController extends Controller
                 'reference' => $reference,
                 'result_code' => $resultCode,
                 'receipt' => $mpesaReceipt,
-                'checkout_id' => $checkoutRequestId
+                'checkout_id' => $checkoutRequestId,
             ]);
 
             // Find matching payment record
@@ -58,8 +59,9 @@ class PaymentWebhookController extends Controller
                 ->where('status', 'pending')
                 ->first();
 
-            if (!$payment) {
+            if (! $payment) {
                 Log::warning('M-Pesa webhook for unknown payment', compact('reference'));
+
                 return response()->json(['ResultCode' => 0, 'ResultDesc' => 'Accepted'], Response::HTTP_OK);
             }
 
@@ -91,7 +93,7 @@ class PaymentWebhookController extends Controller
                 if ($payment->isPending()) {
                     $payment->update([
                         'status' => 'rejected',
-                        'verification_notes' => 'M-Pesa failed: ' . ($stkCallback['ResultDesc'] ?? 'Unknown error'),
+                        'verification_notes' => 'M-Pesa failed: '.($stkCallback['ResultDesc'] ?? 'Unknown error'),
                     ]);
                 }
 
@@ -105,17 +107,18 @@ class PaymentWebhookController extends Controller
                     'payment_id' => $payment->id,
                     'reference' => $reference,
                     'checkout_id' => $checkoutRequestId,
-                    'reason' => $stkCallback['ResultDesc']
+                    'reason' => $stkCallback['ResultDesc'],
                 ]);
             }
 
             return response()->json(['ResultCode' => 0, 'ResultDesc' => 'Processed'], Response::HTTP_OK);
-            
+
         } catch (\Exception $e) {
             Log::error('M-Pesa webhook error', [
                 'error' => $e->getMessage(),
-                'payload' => $request->all()
+                'payload' => $request->all(),
             ]);
+
             return response()->json(['ResultCode' => 1, 'ResultDesc' => 'Error'], Response::HTTP_OK);
         }
     }
@@ -128,7 +131,7 @@ class PaymentWebhookController extends Controller
     {
         try {
             $payload = $request->all();
-            
+
             // EcoCash webhook structure
             $reference = $payload['reference'] ?? null;
             $status = $payload['status'] ?? null;
@@ -138,8 +141,9 @@ class PaymentWebhookController extends Controller
 
             Log::info('EcoCash webhook received', compact('reference', 'status', 'transactionId'));
 
-            if (!$reference) {
+            if (! $reference) {
                 Log::warning('Invalid EcoCash webhook - missing reference', $payload);
+
                 return response()->json(['status' => 'error'], Response::HTTP_OK);
             }
 
@@ -148,14 +152,15 @@ class PaymentWebhookController extends Controller
                 ->where('status', 'pending')
                 ->first();
 
-            if (!$payment) {
+            if (! $payment) {
                 Log::warning('EcoCash webhook for unknown payment', compact('reference'));
+
                 return response()->json(['status' => 'accepted'], Response::HTTP_OK);
             }
 
             $normalizedStatus = strtolower((string) $status);
             $normalizedAmount = is_numeric($amount) ? (float) $amount : null;
-            
+
             // ---- Idempotency + crash-safety (EcoCash) ----
             // Use the provider transaction_id as the idempotency key.
             // If we've already stored this transaction_id for the payment, do nothing.
@@ -166,10 +171,10 @@ class PaymentWebhookController extends Controller
                         ->where('transaction_id', $transactionId)
                         ->exists();
 
-                    if (!$alreadyProcessed && $payment->isPending()) {
+                    if (! $alreadyProcessed && $payment->isPending()) {
                         PaymentService::verifyPayment($payment, true);
                         $payment->update(['transaction_id' => $transactionId]);
-                    } elseif ($payment->isPending() && !$alreadyProcessed) {
+                    } elseif ($payment->isPending() && ! $alreadyProcessed) {
                         // Pending but transaction_id differs; still treat as a successful callback.
                         $payment->update(['transaction_id' => $transactionId]);
                         PaymentService::verifyPayment($payment, true);
@@ -190,7 +195,7 @@ class PaymentWebhookController extends Controller
                 if ($payment->isPending()) {
                     $payment->update([
                         'status' => 'rejected',
-                        'verification_notes' => 'EcoCash failed: ' . ($failureReason ?? 'Unknown error'),
+                        'verification_notes' => 'EcoCash failed: '.($failureReason ?? 'Unknown error'),
                     ]);
                 }
 
@@ -207,12 +212,13 @@ class PaymentWebhookController extends Controller
             }
 
             return response()->json(['status' => 'processed'], Response::HTTP_OK);
-            
+
         } catch (\Exception $e) {
             Log::error('EcoCash webhook error', [
                 'error' => $e->getMessage(),
-                'payload' => $request->all()
+                'payload' => $request->all(),
             ]);
+
             return response()->json(['status' => 'error'], Response::HTTP_OK);
         }
     }

@@ -1,34 +1,39 @@
 <?php
+
 namespace App\Models;
+
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 /**
  * User model representing council members and administrators.
- * 
+ *
  * Handles authentication, role-based access control, and membership relationships.
- * 
- * @package App\Models
  */
-class User extends Authenticatable implements MustVerifyEmail {
+class User extends Authenticatable implements MustVerifyEmail
+{
+    use HasFactory;
     use Notifiable;
-    
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = ["name", "email", "password", "phone", "organization", "is_admin"];
-    
+    protected $fillable = ['name', 'email', 'password', 'phone', 'organization', 'is_admin'];
+
     /**
      * The attributes that should be hidden for arrays.
      *
      * @var array
      */
-    protected $hidden = ["password", "remember_token"];
-    
+    protected $hidden = ['password', 'remember_token'];
+
     /**
      * The attributes that should be mutated to dates.
      *
@@ -43,7 +48,7 @@ class User extends Authenticatable implements MustVerifyEmail {
     /**
      * Get the memberships belonging to this user.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function memberships()
     {
@@ -53,7 +58,7 @@ class User extends Authenticatable implements MustVerifyEmail {
     /**
      * Many-to-many relationship between user and roles through user_roles pivot table.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return BelongsToMany
      */
     public function roles()
     {
@@ -63,21 +68,23 @@ class User extends Authenticatable implements MustVerifyEmail {
     /**
      * Check if user has specific role.
      *
-     * @param string $roleName
+     * @param  string  $roleName
      * @return bool
      */
-public function hasRole($roleName) {
+    public function hasRole($roleName)
+    {
         return $this->roles()->where('name', $roleName)->exists();
     }
 
-/**
+    /**
      * Check if user has any of the specified roles.
      *
-     * @param array|string $roleNames
+     * @param  array|string  $roleNames
      * @return bool
      */
-public function hasAnyRole($roleNames) {
-        return $this->roles()->whereIn('name', (array)$roleNames)->exists();
+    public function hasAnyRole($roleNames)
+    {
+        return $this->roles()->whereIn('name', (array) $roleNames)->exists();
     }
 
     /**
@@ -85,46 +92,49 @@ public function hasAnyRole($roleNames) {
      *
      * @return bool
      */
-public function isSuperAdmin() {
+    public function isSuperAdmin()
+    {
         return $this->hasRole('super_admin');
     }
 
-/**
+    /**
      * Check if user has admin flag enabled (legacy boolean flag).
-     * 
+     *
      * @return bool
      */
-public function isAdmin() {
+    public function isAdmin()
+    {
         return $this->is_admin;
     }
 
     /**
      * Determine the appropriate dashboard route based on user roles.
-     * 
+     *
      * Role hierarchy: super_admin > specific admin roles > member dashboard
-     * 
+     *
      * @return string Named route
      */
-public function adminHome() {
+    public function adminHome()
+    {
         // Super admins get full dashboard access
         if ($this->isSuperAdmin()) {
             return route('admin.dashboard');
         }
 
         // Role-specific admin dashboards
-if ($this->hasRole('membership_admin')) {
+        if ($this->hasRole('membership_admin')) {
             return route('admin.memberships.index');
         }
 
-if ($this->hasRole('payment_admin')) {
+        if ($this->hasRole('payment_admin')) {
             return route('admin.payments.index');
         }
 
-if ($this->hasRole('finance_admin')) {
+        if ($this->hasRole('finance_admin')) {
             return route('admin.memberships.categories.index');
         }
 
-if ($this->hasRole('reports_admin')) {
+        if ($this->hasRole('reports_admin')) {
             return route('admin.reports.index');
         }
 
@@ -132,36 +142,39 @@ if ($this->hasRole('reports_admin')) {
             return route('admin.content.dashboard');
         }
 
-return route('member.dashboard');
+        return route('member.dashboard');
     }
 
     /**
      * Assign role to user (idempotent - won't duplicate).
      * Chainable method.
      *
-     * @param string $roleName
+     * @param  string  $roleName
      * @return $this
      */
     public function assignRole($roleName)
     {
         $role = Role::where('name', $roleName)->first();
-        if ($role && !$this->hasRole($roleName)) {
+        if ($role && ! $this->hasRole($roleName)) {
             $this->roles()->attach($role->id);
         }
+
         return $this;
     }
 
-/**
+    /**
      * Remove a role from the user.
-     * 
-     * @param string $roleName
+     *
+     * @param  string  $roleName
      * @return $this
      */
-public function removeRole($roleName) {
+    public function removeRole($roleName)
+    {
         $role = Role::where('name', $roleName)->first();
         if ($role) {
             $this->roles()->detach($role->id);
         }
+
         return $this;
     }
 }

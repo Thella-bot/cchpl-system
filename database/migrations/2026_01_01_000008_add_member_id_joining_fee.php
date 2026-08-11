@@ -10,26 +10,26 @@ return new class extends Migration
     {
         Schema::table('memberships', function (Blueprint $table) {
 
-$table->string('member_id', 30)->nullable()->unique()->after('id');
+            $table->string('member_id', 30)->nullable()->unique()->after('id');
 
-$table->timestamp('suspended_at')->nullable()->after('expiry_date');
+            $table->timestamp('suspended_at')->nullable()->after('expiry_date');
 
-$table->text('rejection_reason')->nullable()->after('suspended_at');
+            $table->text('rejection_reason')->nullable()->after('suspended_at');
         });
 
-Schema::table('membership_categories', function (Blueprint $table) {
+        Schema::table('membership_categories', function (Blueprint $table) {
 
-$table->decimal('joining_fee', 10, 2)->nullable()->after('annual_fee');
+            $table->decimal('joining_fee', 10, 2)->nullable()->after('annual_fee');
         });
     }
 
-public function down(): void
+    public function down(): void
     {
         Schema::table('memberships', function (Blueprint $table) {
             $table->dropColumn(['member_id', 'suspended_at', 'rejection_reason']);
         });
 
-Schema::table('membership_categories', function (Blueprint $table) {
+        Schema::table('membership_categories', function (Blueprint $table) {
             $table->dropColumn('joining_fee');
         });
     }

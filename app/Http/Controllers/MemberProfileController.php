@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -7,40 +8,39 @@ use Illuminate\Validation\Rules\Password;
 
 class MemberProfileController extends Controller
 {
-
-public function edit()
+    public function edit()
     {
         return view('member.profile', ['user' => auth()->user()]);
     }
 
-public function update(Request $request)
+    public function update(Request $request)
     {
         $user = auth()->user();
 
-$validated = $request->validate([
-            'name'         => 'required|string|max:255',
-            'phone'        => 'nullable|string|max:30',
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'phone' => 'nullable|string|max:30',
             'organization' => 'nullable|string|max:255',
         ]);
 
-$user->update($validated);
+        $user->update($validated);
 
-return back()->with('success', '✅ Your profile has been updated.');
+        return back()->with('success', '✅ Your profile has been updated.');
     }
 
-public function updatePassword(Request $request)
+    public function updatePassword(Request $request)
     {
         $request->validate([
             'current_password' => ['required', 'current_password'],
-            'password'         => ['required', 'confirmed', Password::min(8)->mixedCase()->numbers()],
+            'password' => ['required', 'confirmed', Password::min(8)->mixedCase()->numbers()],
         ], [
             'current_password.current_password' => 'The current password you entered is incorrect.',
         ]);
 
-auth()->user()->update([
+        auth()->user()->update([
             'password' => Hash::make($request->password),
         ]);
 
-return back()->with('success', '✅ Password updated successfully.');
+        return back()->with('success', '✅ Password updated successfully.');
     }
 }

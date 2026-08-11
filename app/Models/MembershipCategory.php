@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class MembershipCategory extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'name',
         'annual_fee',
@@ -16,12 +19,12 @@ class MembershipCategory extends Model
         'other_notes',
     ];
 
-protected $casts = [
+    protected $casts = [
         'annual_fee' => 'decimal:2',
         'voting_rights' => 'boolean',
     ];
 
-public function memberships(): HasMany
+    public function memberships(): HasMany
     {
         return $this->hasMany(Membership::class, 'category_id');
     }

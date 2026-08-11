@@ -9,24 +9,24 @@ use Illuminate\Database\Seeder;
 
 class ResignationSeeder extends Seeder
 {
-
-public function run(): void
+    public function run(): void
     {
 
-$membersToResign = Membership::where('status', 'approved')
+        $membersToResign = Membership::where('status', 'approved')
             ->with('user')
             ->inRandomOrder()
             ->take(3)
             ->get();
 
-if ($membersToResign->isEmpty()) {
+        if ($membersToResign->isEmpty()) {
             $this->command->warn('No approved members found to create sample resignations. Skipping ResignationSeeder.');
+
             return;
         }
 
-$admin = User::where('is_admin', true)->inRandomOrder()->first();
+        $admin = User::where('is_admin', true)->inRandomOrder()->first();
 
-$member1 = $membersToResign->first();
+        $member1 = $membersToResign->first();
         if ($member1) {
             Resignation::create([
                 'user_id' => $member1->user_id,
@@ -39,7 +39,7 @@ $member1 = $membersToResign->first();
             ]);
         }
 
-$member2 = $membersToResign->get(1);
+        $member2 = $membersToResign->get(1);
         if ($member2 && $admin) {
             Resignation::create([
                 'user_id' => $member2->user_id,
@@ -55,7 +55,7 @@ $member2 = $membersToResign->get(1);
             ]);
         }
 
-$member3 = $membersToResign->get(2);
+        $member3 = $membersToResign->get(2);
         if ($member3) {
             Resignation::create([
                 'user_id' => $member3->user_id,
@@ -68,6 +68,6 @@ $member3 = $membersToResign->get(2);
             ]);
         }
 
-$this->command->info('Sample resignations seeded successfully.');
+        $this->command->info('Sample resignations seeded successfully.');
     }
 }
