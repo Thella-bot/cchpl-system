@@ -8,7 +8,7 @@
                     <img src="{{ asset('images/logo/cchpl-alt-logo.png') }}" alt="CCHPL Logo" height="40">
                     <span class="site-footer-brand">CCHPL</span>
                 </a>
-                <p class="site-footer-text mb-3">
+                <p class="site-footer-text mb-4">
                     The professional home for culinary and hospitality practitioners, students, and institutions in Lesotho — fostering standards, growth, and service excellence.
                 </p>
                 <div class="d-flex gap-2">
@@ -46,9 +46,6 @@
                     @else
                         <li><a href="{{ route('member.dashboard') }}">Dashboard</a></li>
                         <li><a href="{{ route('member.profile') }}">My Profile</a></li>
-                        @if (Auth::user()->isAdmin())
-                            <li><a href="{{ auth()->user()->adminHome() }}">Admin Panel</a></li>
-                        @endif
                     @endguest
                     <li><a href="{{ route('membership.apply') }}">Apply for Membership</a></li>
                 </ul>

@@ -4,9 +4,14 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\AuditLog;
+use App\Models\Event;
+use App\Models\Internship;
+use App\Models\JobListing;
 use App\Models\Membership;
+use App\Models\MeetingMinute;
 use App\Models\Payment;
 use App\Models\Role;
+use App\Models\Scholarship;
 use App\Models\User;
 use App\Services\AdminService;
 use Illuminate\Http\Request;
@@ -23,6 +28,16 @@ class SuperAdminController extends Controller
             'pending_payments' => Payment::where('status', 'pending')->count(),
             'verified_payments' => Payment::where('status', 'verified')->count(),
             'total_revenue' => Payment::where('status', 'verified')->sum('amount'),
+            'total_meeting_minutes' => MeetingMinute::count(),
+            'total_events' => Event::count(),
+            'total_jobs' => JobListing::count(),
+            'total_scholarships' => Scholarship::count(),
+            'total_internships' => Internship::count(),
+            'published_meeting_minutes' => MeetingMinute::where('is_published', true)->count(),
+            'published_events' => Event::where('is_published', true)->count(),
+            'published_jobs' => JobListing::where('is_published', true)->count(),
+            'published_scholarships' => Scholarship::where('is_published', true)->count(),
+            'published_internships' => Internship::where('is_published', true)->count(),
         ];
 
         $recentApplications = Membership::with('user', 'category')

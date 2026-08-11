@@ -15,67 +15,85 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg bg-white shadow-sm nav-topbar sticky-top">
-        <div class="container">
-            <a class="navbar-brand navbar-brand-cchpl d-flex align-items-center gap-2" href="{{ url('/') }}">
-                <img src="{{ asset('images/logo/cchpl-alt-logo.png') }}" alt="CCHPL Logo" height="36" class="d-inline-block align-top">
-                <span class="d-none d-sm-inline fw-bold">CCHPL</span>
-            </a>
-            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto align-items-center gap-2 mt-3 mt-lg-0">
-                    @guest
-                        <li class="nav-item">
-                            <a class="nav-link px-3 py-2 rounded-3 transition-all hover:bg-light" href="{{ route('login') }}">
-                                <i class="fas fa-sign-in-alt me-1"></i>Login
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link px-3 py-2 rounded-3 transition-all hover:bg-light" href="{{ route('register') }}">
-                                <i class="fas fa-user-plus me-1"></i>Register
-                            </a>
-                        </li>
-                    @else
-                        <li class="nav-item">
-                            <a class="nav-link px-3 py-2 rounded-3 transition-all hover:bg-light {{ request()->routeIs('member.dashboard') ? 'bg-green-50 text-green-700 fw-semibold' : '' }}"
-                               href="{{ route('member.dashboard') }}">
-                                <i class="fas fa-home me-1"></i>Dashboard
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link px-3 py-2 rounded-3 transition-all hover:bg-light {{ request()->routeIs('member.profile') ? 'bg-green-50 text-green-700 fw-semibold' : '' }}"
-                               href="{{ route('member.profile') }}">
-                                <i class="fas fa-user-circle me-1"></i>Profile
-                            </a>
-                        </li>
-                        @if (Auth::user()->isAdmin())
+    <header class="member-header">
+        <nav class="navbar navbar-expand-lg">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center" href="{{ url('/') }}">
+                    <img src="{{ asset('images/logo/cchpl-alt-logo.png') }}" alt="CCHPL Logo" height="48" class="header-logo">
+                </a>
+
+                <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto align-items-center gap-1 mt-3 mt-lg-0">
+                        @guest
                             <li class="nav-item">
-                                <a class="nav-link px-3 py-2 rounded-3 bg-green-50 text-green-700 fw-semibold transition-all hover:bg-green-100" href="{{ auth()->user()->adminHome() }}">
-                                    <i class="fas fa-cog me-1"></i>Admin Panel
+                                <a class="nav-link" href="{{ route('login') }}">
+                                    <i class="fas fa-sign-in-alt me-1"></i>Login
                                 </a>
                             </li>
-                        @endif
-                        <li class="nav-item mt-2 mt-lg-0">
-                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="m-0">
-                                @csrf
-                                <button type="submit" class="btn btn-sm btn-outline-danger ms-2 px-4 py-2 rounded-3 transition-all hover:bg-danger hover:text-white">
-                                    <i class="fas fa-sign-out-alt me-1"></i>Logout
-                                </button>
-                            </form>
-                        </li>
-                    @endguest
-                </ul>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('register') }}">
+                                    <i class="fas fa-user-plus me-1"></i>Register
+                                </a>
+                            </li>
+                        @else
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->routeIs('member.dashboard') ? 'active' : '' }}"
+                                   href="{{ route('member.dashboard') }}">
+                                    <i class="fas fa-home me-1"></i>Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->routeIs('member.profile') ? 'active' : '' }}"
+                                   href="{{ route('member.profile') }}">
+                                    <i class="fas fa-user-circle me-1"></i>Profile
+                                </a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle {{ request()->routeIs('member.services.*') ? 'active' : '' }}"
+                                   href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-briefcase me-1"></i>Services
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="{{ route('member.services.minutes') }}"><i class="fas fa-file-lines me-2 text-muted"></i>Meeting Minutes</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('member.services.events') }}"><i class="fas fa-calendar-star me-2 text-muted"></i>Events</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('member.services.jobs') }}"><i class="fas fa-briefcase me-2 text-muted"></i>Job Listings</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('member.services.scholarships') }}"><i class="fas fa-graduation-cap me-2 text-muted"></i>Scholarships</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('member.services.internships') }}"><i class="fas fa-handshake me-2 text-muted"></i>Internships</a></li>
+                                </ul>
+                            </li>
+                            @if (Auth::user()->isAdmin())
+                                <li class="nav-item">
+                                    <a class="nav-link nav-link-admin" href="{{ auth()->user()->adminHome() }}">
+                                        <i class="fas fa-cog me-1"></i>Admin Panel
+                                    </a>
+                                </li>
+                            @endif
+                            <li class="nav-item nav-item-logout">
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="m-0">
+                                    @csrf
+                                    <button type="submit" class="btn btn-logout">
+                                        <i class="fas fa-sign-out-alt me-1"></i>Logout
+                                    </button>
+                                </form>
+                            </li>
+                        @endguest
+                    </ul>
+                </div>
             </div>
-        </div>
-    </nav>
+        </nav>
+    </header>
 
-    <div class="container py-4">
-        @include('components.flash-messages')
-        @yield('content')
-    </div>
+    <main class="main-content">
+        <div class="container py-4">
+            @include('components.flash-messages')
+            @yield('content')
+        </div>
+    </main>
 
     @include('components.site-footer')
 

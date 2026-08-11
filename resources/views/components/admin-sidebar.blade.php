@@ -1,9 +1,3 @@
-<div class="sidebar-brand">
-    <a href="{{ route('admin.dashboard') }}" class="sidebar-brand-link">
-        <img src="{{ asset('images/logo/cchpl-alt-logo.png') }}" alt="CCHPL Logo" class="sidebar-logo">
-        <span class="sidebar-brand-text">Admin</span>
-    </a>
-</div>
 <nav class="admin-nav">
     {{-- Super Admin --}}
     @if(auth()->user()->isSuperAdmin())
@@ -109,6 +103,31 @@
         <a href="{{ route('admin.reports.index') }}" class="admin-nav-link {{ request()->routeIs('admin.reports.index') ? 'active' : '' }}">
             <i class="fas fa-fw fa-chart-line"></i>
             <span>Report Dashboard</span>
+        </a>
+    @endif
+
+    {{-- Services --}}
+    @if(auth()->user()->hasAnyRole(['content_admin', 'super_admin']))
+        <h2 class="admin-nav-heading">Services</h2>
+        <a href="{{ route('admin.services.index', 'minutes') }}" class="admin-nav-link {{ request()->routeIs('admin.services.index') && request('type') === 'minutes' ? 'active' : '' }}">
+            <i class="fas fa-fw fa-file-lines"></i>
+            <span>Meeting Minutes</span>
+        </a>
+        <a href="{{ route('admin.services.index', 'events') }}" class="admin-nav-link {{ request()->routeIs('admin.services.index') && request('type') === 'events' ? 'active' : '' }}">
+            <i class="fas fa-fw fa-calendar-star"></i>
+            <span>Events</span>
+        </a>
+        <a href="{{ route('admin.services.index', 'jobs') }}" class="admin-nav-link {{ request()->routeIs('admin.services.index') && request('type') === 'jobs' ? 'active' : '' }}">
+            <i class="fas fa-fw fa-briefcase"></i>
+            <span>Job Listings</span>
+        </a>
+        <a href="{{ route('admin.services.index', 'scholarships') }}" class="admin-nav-link {{ request()->routeIs('admin.services.index') && request('type') === 'scholarships' ? 'active' : '' }}">
+            <i class="fas fa-fw fa-graduation-cap"></i>
+            <span>Scholarships</span>
+        </a>
+        <a href="{{ route('admin.services.index', 'internships') }}" class="admin-nav-link {{ request()->routeIs('admin.services.index') && request('type') === 'internships' ? 'active' : '' }}">
+            <i class="fas fa-fw fa-handshake"></i>
+            <span>Internships</span>
         </a>
     @endif
 </nav>

@@ -22,7 +22,9 @@ use Illuminate\Pagination\PaginationServiceProvider;
 use Illuminate\Pipeline\PipelineServiceProvider;
 use Illuminate\Queue\QueueServiceProvider;
 use Illuminate\Redis\RedisServiceProvider;
+use Illuminate\Routing\RoutingServiceProvider;
 use Illuminate\Session\SessionServiceProvider;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Arr;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
@@ -63,14 +65,23 @@ use Livewire\LivewireServiceProvider;
 return [
 
     'name' => env('APP_NAME', 'CCHPL'),
+
     'env' => env('APP_ENV', 'production'),
-    'debug' => env('APP_DEBUG', false),
+
+    'debug' => (bool) env('APP_DEBUG', false),
+
     'url' => env('APP_URL', 'http://localhost'),
+
     'timezone' => 'Africa/Maseru',
+
     'locale' => 'en',
+
     'fallback_locale' => 'en',
+
     'key' => env('APP_KEY'),
+
     'cipher' => 'AES-256-CBC',
+
     'providers' => [
         AuthServiceProvider::class,
         BroadcastServiceProvider::class,
@@ -94,12 +105,14 @@ return [
         TranslationServiceProvider::class,
         ValidationServiceProvider::class,
         ViewServiceProvider::class,
+        RoutingServiceProvider::class,
         RouteServiceProvider::class,
         LivewireServiceProvider::class,
         ServiceProvider::class,
     ],
+
     'aliases' => [
-        'App' => Illuminate\Support\Facades\App::class,
+        'App' => App::class,
         'Arr' => Arr::class,
         'Artisan' => Artisan::class,
         'Auth' => Auth::class,
@@ -135,4 +148,5 @@ return [
         'View' => View::class,
         'Pdf' => Pdf::class,
     ],
+
 ];

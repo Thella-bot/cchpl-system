@@ -17,24 +17,19 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\VerificationController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MemberDashboardController;
 use App\Http\Controllers\MemberProfileController;
+use App\Http\Controllers\MemberServicesController;
 use App\Http\Controllers\ResignationController as MemberResignationController;
 use App\Livewire\Membership\ApplicationForm;
 use App\Livewire\Payment\InitiatePayment;
 use App\Models\MembershipCategory;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('guest')->group(function () {
-    Route::get('/', function () {
-        return view('welcome', [
-            'categories' => MembershipCategory::query()
-                ->where('name', '!=', 'Honorary')
-                ->orderBy('annual_fee')
-                ->get(),
-        ]);
-    });
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
+Route::middleware('guest')->group(function () {
     Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
     Route::post('login', [LoginController::class, 'login']);
     Route::get('register', [RegisterController::class, 'showRegistrationForm'])->name('register');
@@ -84,6 +79,13 @@ Route::middleware('auth')->group(function () {
         ->name('member.resign.create');
     Route::post('/member/resign', [MemberResignationController::class, 'store'])
         ->name('member.resign.store');
+
+    Route::get('/services/minutes', [MemberServicesController::class, 'minutes'])->name('member.services.minutes');
+    Route::get('/services/events', [MemberServicesController::class, 'events'])->name('member.services.events');
+    Route::get('/services/jobs', [MemberServicesController::class, 'jobs'])->name('member.services.jobs');
+    Route::get('/services/scholarships', [MemberServicesController::class, 'scholarships'])->name('member.services.scholarships');
+    Route::get('/services/internships', [MemberServicesController::class, 'internships'])->name('member.services.internships');
+    Route::get('/services/redirect/{type}/{id}', [MemberServicesController::class, 'redirect'])->name('member.services.redirect');
 });
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -187,4 +189,16 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::middleware('role:content_admin,super_admin')->group(function () {
         Route::get('/content-dashboard', [ContentAdminController::class, 'dashboard'])->name('content.dashboard');
     });
+
+    Route::middleware('role:content_admin,super_admin')
+        ->prefix('services')
+        ->name('services.')
+        ->group(function () {
+            Route::get('/{type}', [\App\Http\Controllers\Admin\ServicesController::class, 'index'])->name('index');
+            Route::get('/{type}/create', [\App\Http\Controllers\Admin\ServicesController::class, 'create'])->name('create');
+            Route::post('/{type}', [\App\Http\Controllers\Admin\ServicesController::class, 'store'])->name('store');
+            Route::get('/{type}/{id}/edit', [\App\Http\Controllers\Admin\ServicesController::class, 'edit'])->name('edit');
+            Route::put('/{type}/{id}', [\App\Http\Controllers\Admin\ServicesController::class, 'update'])->name('update');
+            Route::delete('/{type}/{id}', [\App\Http\Controllers\Admin\ServicesController::class, 'destroy'])->name('destroy');
+        });
 });

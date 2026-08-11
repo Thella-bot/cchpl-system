@@ -33,7 +33,7 @@ class InitiatePayment extends Component
 
     public $proofFile;
 
-    public $useApiPayment = false;
+    public $paymentType = 'manual';
 
     public $paymentInitiated = false;
 
@@ -44,6 +44,7 @@ class InitiatePayment extends Component
         'provider' => 'required|in:mpesa,ecocash',
         'purpose' => 'required|string|max:255',
         'membershipId' => 'required|exists:memberships,id',
+        'paymentType' => 'required|in:manual,api',
         'proofFile' => 'nullable|file|mimes:jpg,jpeg,png|max:5120',
     ];
 
@@ -79,7 +80,11 @@ class InitiatePayment extends Component
 
     public function generateInstructions()
     {
-        $this->validate(['amount' => 'required|numeric|min:0.01', 'provider' => 'required|in:mpesa,ecocash']);
+        $this->validate([
+            'amount' => 'required|numeric|min:0.01',
+            'provider' => 'required|in:mpesa,ecocash',
+        ]);
+
         $this->reference = PaymentService::generateReference();
         $this->paymentInstructions = PaymentService::getPaymentInstructions($this->provider, $this->amount, $this->reference);
         $this->showInstructions = true;
@@ -90,9 +95,13 @@ class InitiatePayment extends Component
      */
     public function initiateApiPayment()
     {
-        $this->validate();
+        $this->validate([
+            'amount' => 'required|numeric|min:0.01',
+            'provider' => 'required|in:mpesa,ecocash',
+            'purpose' => 'required|string|max:255',
+            'membershipId' => 'required|exists:memberships,id',
+        ]);
 
-        // Verify membership ownership
         $membership = Membership::where('id', $this->membershipId)
             ->where('user_id', auth()->id())
             ->first();
@@ -105,18 +114,17 @@ class InitiatePayment extends Component
 
         $this->reference = PaymentService::generateReference();
 
-        // Create pending payment record
         $payment = Payment::create([
             'membership_id' => $this->membershipId,
             'amount' => $this->amount,
             'provider' => $this->provider,
+            'payment_type' => 'api',
             'purpose' => $this->purpose,
             'transaction_reference' => $this->reference,
             'proof_file' => null,
             'status' => 'pending',
         ]);
 
-        // Initiate payment with gateway API
         try {
             $gateway = PaymentGatewayFactory::make($this->provider);
 
@@ -162,7 +170,6 @@ class InitiatePayment extends Component
     {
         $this->validate();
 
-        // SECURITY: Verify membership ownership before creating payment
         $membership = Membership::where('id', $this->membershipId)
             ->where('user_id', auth()->id())
             ->first();
@@ -173,39 +180,42 @@ class InitiatePayment extends Component
             return;
         }
 
-        // VALIDATION: Verify filename length to prevent path traversal
-        if ($this->proofFile) {
+        if ($this->paymentType === 'manual') {
+            $this->validate([
+                'proofFile' => 'required|file|mimes:jpg,jpeg,png|max:5120',
+            ]);
+
             $originalName = $this->proofFile->getClientOriginalName();
             if (strlen($originalName) > 255) {
                 $this->addError('proofFile', 'Filename is too long (max 255 characters).');
 
                 return;
             }
-        }
 
-        if (! $this->reference) {
-            $this->generateInstructions();
-        }
+            if (! $this->reference) {
+                $this->generateInstructions();
+            }
 
-        // Only store proof file if manually uploaded
-        $proofPath = null;
-        if ($this->proofFile) {
             $proofPath = DocumentProcessingService::processDocument($this->proofFile, 'payment-proofs');
+
+            Payment::create([
+                'membership_id' => $this->membershipId,
+                'amount' => $this->amount,
+                'provider' => $this->provider,
+                'payment_type' => 'manual',
+                'purpose' => $this->purpose,
+                'transaction_reference' => $this->reference,
+                'proof_file' => $proofPath,
+                'status' => 'pending',
+            ]);
+
+            auth()->user()->notify(new PaymentReceivedNotification($membership));
+
+            return redirect()->route('member.dashboard')->with('success', 'Payment proof submitted successfully. It will be reviewed by the finance team.');
         }
 
-        $payment = Payment::create([
-            'membership_id' => $this->membershipId,
-            'amount' => $this->amount,
-            'provider' => $this->provider,
-            'purpose' => $this->purpose,
-            'transaction_reference' => $this->reference,
-            'proof_file' => $proofPath,
-            'status' => 'pending',
-        ]);
-
-        auth()->user()->notify(new PaymentReceivedNotification($payment));
-
-        return redirect()->route('member.dashboard')->with('success', 'Payment submitted successfully. It will be reviewed by the finance team.');
+        // API payment type
+        $this->initiateApiPayment();
     }
 
     public function render()

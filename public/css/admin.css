@@ -25,10 +25,19 @@
 }
 
 
+/* Modern Page Scrolling */
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: var(--admin-topbar-height);
+}
+
 body {
     background-color: var(--admin-content-bg);
     transition: padding-left 0.3s ease;
+    overflow: hidden;
 }
+
+
 
 /* Top Bar */
 .admin-topbar {
@@ -40,7 +49,7 @@ body {
     background-color: var(--admin-topbar-bg);
     border-bottom: 1px solid var(--admin-topbar-border-color);
     z-index: 1030;
-    padding: 0 2rem;
+    padding: 0 1.5rem;
     transition: left 0.3s ease;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
@@ -53,6 +62,23 @@ body {
     color: var(--brand-primary);
     text-decoration: none;
     font-size: 1.25rem;
+}
+
+.admin-topbar-brand:hover {
+    color: var(--brand-primary);
+}
+
+.sidebar-logo {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    object-fit: contain;
+}
+
+.sidebar-brand-text {
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    color: #0f172a;
 }
 
 #admin-menu-toggle {
@@ -68,23 +94,6 @@ body {
 #admin-menu-toggle:hover {
     transform: translateY(-1px);
     box-shadow: 0 6px 16px rgba(26, 107, 60, 0.4);
-}
-
-.admin-topbar-action {
-    color: #64748b;
-    background-color: #f8fafc;
-    border: 1px solid #e2e8f0;
-    padding: 0.625rem 1rem;
-    border-radius: 10px;
-    transition: all 0.2s ease;
-    font-weight: 500;
-}
-
-.admin-topbar-action:hover {
-    background-color: #f1f5f9;
-    color: #1e293b;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .admin-topbar-action {
@@ -135,7 +144,8 @@ body {
 /* Main Layout */
 .admin-layout {
     display: flex;
-    padding-top: var(--admin-topbar-height);
+    height: 100vh;
+    overflow: hidden;
 }
 
 /* Sidebar */
@@ -152,6 +162,7 @@ body {
     transition: transform 0.3s ease;
     overflow-y: auto;
     padding: 1rem;
+    scroll-behavior: smooth;
 }
 
 .admin-sidebar-backdrop {
@@ -179,10 +190,11 @@ body.admin-sidebar-open .admin-sidebar-backdrop {
 
 /* Desktop sidebar always open */
 @media (min-width: 992px) {
-    body {
-        padding-left: var(--admin-sidebar-width);
+    .admin-content {
+        margin-left: var(--admin-sidebar-width);
     }
     .admin-sidebar {
+        top: var(--admin-topbar-height);
         transform: translateX(0);
     }
     .admin-sidebar-backdrop {
@@ -192,8 +204,32 @@ body.admin-sidebar-open .admin-sidebar-backdrop {
         display: none;
     }
     .admin-topbar {
-        left: var(--admin-sidebar-width);
+        left: 0;
     }
+}
+
+/* Modern Scrollbar Styling */
+.admin-sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.admin-sidebar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.admin-sidebar::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+}
+
+.admin-sidebar::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* Firefox scrollbar */
+.admin-sidebar {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
 }
 
 /* Enhanced sidebar link transitions */
@@ -207,10 +243,38 @@ body.admin-sidebar-open .admin-sidebar-backdrop {
 
 /* Main Content Area */
 .admin-content {
+    flex: 1;
+    height: 100vh;
+    overflow-y: auto;
     padding: 2rem;
     background-color: var(--admin-content-bg);
-    min-height: 100vh;
     transition: margin-left 0.3s ease;
+    scroll-behavior: smooth;
+    scroll-padding-top: var(--admin-topbar-height);
+}
+
+/* Modern Scrollbar for Page Content */
+.admin-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.admin-content::-webkit-scrollbar-track {
+    background: #f1f5f9;
+}
+
+.admin-content::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+.admin-content::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* Firefox scrollbar for page content */
+.admin-content {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 #f1f5f9;
 }
 
 /* Admin card improvements */
@@ -346,12 +410,6 @@ body.admin-sidebar-open .admin-sidebar-backdrop {
 .badge.bg-info {
     background: linear-gradient(135deg, #3b82f6, #2563eb) !important;
     color: white;
-}
-
-/* Badge improvements in admin */
-.badge {
-    font-weight: 500;
-    letter-spacing: 0.025em;
 }
 
 /* Modern Buttons */
@@ -539,27 +597,7 @@ body::-webkit-scrollbar-thumb:hover {
     margin-top: 0.5rem;
 }
 
-@media (min-width: 992px) {
-    body {
-        padding-left: var(--admin-sidebar-width);
-    }
-    .admin-sidebar {
-        transform: translateX(0);
-    }
-    .admin-sidebar-backdrop {
-        display: none;
-    }
-    #admin-menu-toggle {
-        display: none;
-    }
-    .admin-topbar {
-        left: var(--admin-sidebar-width);
-    }
-}
 
-/* Sidebar heading spacing */
-
-/* Mobile sidebar integration */
 @media (max-width: 991px) {
     body.admin-sidebar-open .admin-sidebar {
         transform: translateX(0);
@@ -581,32 +619,7 @@ body::-webkit-scrollbar-thumb:hover {
 }
 
 
-/* Sidebar Brand */
-.sidebar-brand {
-    padding: 0.75rem 1rem;
-    margin: 0 -1rem 0.75rem;
-    border-bottom: 1px solid var(--admin-topbar-border-color);
-}
-
-.sidebar-brand-link {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    text-decoration: none;
-}
-
-.sidebar-logo {
-    width: 38px;
-    height: 38px;
-    border-radius: 10px;
-    object-fit: contain;
-}
-
-.sidebar-brand-text {
-    font-weight: 800;
-    letter-spacing: 0.02em;
-    color: #0f172a;
-}
+/* Sidebar */
 .admin-nav-heading {
     font-size: 0.7rem;
     font-weight: 800;
@@ -691,12 +704,4 @@ body::-webkit-scrollbar-thumb:hover {
     flex-grow: 1;
     padding: 2rem;
     width: 100%;
-}
-
-.admin-shell-card {
-    background-color: #ffffff;
-    border-radius: 0.75rem;
-    border: 1px solid var(--admin-topbar-border-color);
-    padding: 2rem;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
 }

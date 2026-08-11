@@ -22,32 +22,41 @@
                     <dt class="col-sm-5 text-muted">Transaction Reference</dt>
                     <dd class="col-sm-7 font-monospace">{{ $payment->transaction_reference }}</dd>
 
-<dt class="col-sm-5 text-muted">Amount</dt>
+                    <dt class="col-sm-5 text-muted">Amount</dt>
                     <dd class="col-sm-7 fw-bold fs-5 text-success">M{{ number_format($payment->amount, 2) }}</dd>
 
-<dt class="col-sm-5 text-muted">Provider</dt>
+                    <dt class="col-sm-5 text-muted">Provider</dt>
                     <dd class="col-sm-7">{{ ucfirst($payment->provider) }}</dd>
 
-<dt class="col-sm-5 text-muted">Purpose</dt>
+                    <dt class="col-sm-5 text-muted">Payment Type</dt>
+                    <dd class="col-sm-7">
+                        @if($payment->payment_type === 'api')
+                            <span class="badge bg-info">Instant Payment</span>
+                        @else
+                            <span class="badge bg-secondary">Manual Proof</span>
+                        @endif
+                    </dd>
+
+                    <dt class="col-sm-5 text-muted">Purpose</dt>
                     <dd class="col-sm-7">{{ $payment->purpose ?? '—' }}</dd>
 
-<dt class="col-sm-5 text-muted">Status</dt>
+                    <dt class="col-sm-5 text-muted">Status</dt>
                     <dd class="col-sm-7">
                         <span class="badge {{ $payment->statusBadgeClass() }}">{{ ucfirst($payment->status) }}</span>
                     </dd>
 
-<dt class="col-sm-5 text-muted">Submitted</dt>
+                    <dt class="col-sm-5 text-muted">Submitted</dt>
                     <dd class="col-sm-7">{{ $payment->created_at->format('M d, Y H:i') }}</dd>
 
-@if($payment->verified_at)
+                    @if($payment->verified_at)
                         <dt class="col-sm-5 text-muted">Verified At</dt>
                         <dd class="col-sm-7">{{ $payment->verified_at->format('M d, Y H:i') }}</dd>
 
-<dt class="col-sm-5 text-muted">Receipt No.</dt>
+                    <dt class="col-sm-5 text-muted">Receipt No.</dt>
                         <dd class="col-sm-7 font-monospace">{{ $payment->receipt_number ?? '—' }}</dd>
                     @endif
 
-@if($payment->verification_notes)
+                    @if($payment->verification_notes)
                         <dt class="col-sm-5 text-muted">Notes</dt>
                         <dd class="col-sm-7">{{ $payment->verification_notes }}</dd>
                     @endif

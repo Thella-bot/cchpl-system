@@ -23,6 +23,7 @@ class Payment extends Model
         'membership_id',
         'amount',
         'provider',
+        'payment_type',
         'purpose',
         'transaction_reference',
         'proof_file',

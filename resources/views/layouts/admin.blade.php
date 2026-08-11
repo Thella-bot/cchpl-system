@@ -15,10 +15,14 @@
     <header class="admin-topbar">
         <div class="container-fluid">
             <div class="d-flex justify-content-between align-items-center">
-                <div class="d-flex align-items-center">
+                <div class="d-flex align-items-center gap-3">
                     <button id="admin-menu-toggle" class="btn btn-sm" aria-label="Toggle admin menu">
                         <i class="fas fa-bars"></i>
                     </button>
+                    <a href="{{ route('admin.dashboard') }}" class="admin-topbar-brand d-flex align-items-center gap-2 text-decoration-none">
+                        <img src="{{ asset('images/logo/cchpl-alt-logo.png') }}" alt="CCHPL Logo" class="sidebar-logo">
+                        <span class="sidebar-brand-text d-none d-sm-inline">Admin</span>
+                    </a>
                 </div>
                 <div class="d-flex align-items-center">
                     <div class="admin-topbar-pill d-none d-md-flex">
@@ -51,12 +55,8 @@
         <div class="admin-sidebar-backdrop" id="admin-sidebar-backdrop"></div>
 
         <main class="admin-content">
-            <div class="container-fluid">
-                <div class="admin-shell-card">
-                    @include('components.flash-messages')
-                    @yield('content')
-                </div>
-            </div>
+            @include('components.flash-messages')
+            @yield('content')
         </main>
     </div>
 

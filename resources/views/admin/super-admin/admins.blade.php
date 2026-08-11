@@ -1,69 +1,68 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="container-fluid py-4">
-
-<div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="h4 mb-0 text-gray-800">
+<div class="mb-4 d-flex align-items-center justify-content-between flex-wrap gap-3">
+    <div>
+        <h1 class="h3 fw-bold mb-1">
             <i class="fas fa-users-cog text-muted me-2"></i>Admin Management
-        </h2>
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createAdminModal">
-            <i class="fas fa-plus me-1"></i> Create New Admin
-        </button>
+        </h1>
+        <p class="text-muted mb-0">Manage administrator accounts and roles.</p>
     </div>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createAdminModal">
+        <i class="fas fa-plus me-1"></i> Create New Admin
+    </button>
+</div>
 
-<div class="card shadow-sm border-0">
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover mb-0 align-middle">
-                    <thead class="bg-light text-uppercase small text-muted">
-                        <tr>
-                            <th class="ps-4">Admin User</th>
-                            <th>Roles</th>
-                            <th>Last Login</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($admins as $admin)
-                        <tr>
-                            <td class="ps-4">
-                                <div class="fw-bold text-dark">{{ $admin->name }}</div>
-                                <div class="small text-muted">{{ $admin->email }}</div>
-                            </td>
-                            <td>
-                                @forelse($admin->roles as $role)
-                                    <span class="badge bg-info me-1">{{ $role->display_name }}</span>
-                                @empty
-                                    <span class="badge bg-secondary">No Roles</span>
-                                @endforelse
-                            </td>
-                            <td>
-                                @if($admin->last_login_at)
-                                    <div class="small">{{ $admin->last_login_at->format('d M Y, H:i') }}</div>
-                                    <div class="small text-muted">({{ $admin->last_login_at->diffForHumans() }})</div>
-                                @else
-                                    <span class="text-muted small">Never</span>
-                                @endif
-                            </td>
-                            <td>
-                                <a href="{{ route('admin.admins.show', $admin) }}" class="btn btn-sm btn-outline-primary">
-                                    <i class="fas fa-edit me-1"></i> Manage
-                                </a>
-                            </td>
-                        </tr>
+<div class="admin-shell-card">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th class="ps-4">Admin User</th>
+                    <th>Roles</th>
+                    <th>Last Login</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($admins as $admin)
+                <tr>
+                    <td class="ps-4">
+                        <div class="fw-bold">{{ $admin->name }}</div>
+                        <div class="small text-muted">{{ $admin->email }}</div>
+                    </td>
+                    <td>
+                        @forelse($admin->roles as $role)
+                            <span class="badge bg-info">{{ $role->display_name }}</span>
                         @empty
-                        <tr>
-                            <td colspan="4" class="text-center py-5 text-muted">
-                                <p class="mb-0">No admin users found. Create the first one!</p>
-                            </td>
-                        </tr>
+                            <span class="badge bg-secondary">No Roles</span>
                         @endforelse
-                    </tbody>
-                </table>
-            </div>
-        </div>
+                    </td>
+                    <td>
+                        @if($admin->last_login_at)
+                            <div class="small">{{ $admin->last_login_at->format('d M Y, H:i') }}</div>
+                            <div class="small text-muted">({{ $admin->last_login_at->diffForHumans() }})</div>
+                        @else
+                            <span class="text-muted small">Never</span>
+                        @endif
+                    </td>
+                    <td>
+                        <a href="{{ route('admin.admins.show', $admin) }}" class="btn btn-sm btn-primary">
+                            <i class="fas fa-edit me-1"></i> Manage
+                        </a>
+                    </td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="4" class="text-center py-5 text-muted">
+                        <p class="mb-0">No admin users found. Create the first one!</p>
+                    </td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
     </div>
+</div>
 </div>
 
 <div class="modal fade" id="createAdminModal" tabindex="-1" aria-labelledby="createAdminModalLabel" aria-hidden="true">
