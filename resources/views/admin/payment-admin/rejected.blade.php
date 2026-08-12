@@ -13,8 +13,7 @@
     </a>
 </div>
 
-<div class="card border-0 shadow-sm">
-    <div class="card-body p-0">
+<div class="admin-shell-card">
         @if ($payments->isEmpty())
             <div class="text-center py-5 text-muted">
                 <i class="fas fa-check-circle fa-3x mb-3 text-secondary opacity-50"></i>
@@ -57,5 +56,4 @@
             <div class="p-3">{{ $payments->links() }}</div>
         @endif
     </div>
-</div>
 @endsection

@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'CCHPL Admin')</title>
+    <link rel="icon" type="image/png" href="{{ asset('images/logo/cchpl-official-logo.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('images/logo/cchpl-official-logo.png') }}">
     @livewireStyles
 
     <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
@@ -20,8 +22,7 @@
                         <i class="fas fa-bars"></i>
                     </button>
                     <a href="{{ route('admin.dashboard') }}" class="admin-topbar-brand d-flex align-items-center gap-2 text-decoration-none">
-                        <img src="{{ asset('images/logo/cchpl-alt-logo.png') }}" alt="CCHPL Logo" class="sidebar-logo">
-                        <span class="sidebar-brand-text d-none d-sm-inline">Admin</span>
+                        <img src="{{ asset('images/logo/cchpl-official-logo.png') }}" alt="CCHPL Logo" class="sidebar-logo">
                     </a>
                 </div>
                 <div class="d-flex align-items-center">
@@ -95,6 +96,32 @@
                 document.addEventListener('keydown', (event) => {
                     if (event.key === 'Escape' && document.body.classList.contains('admin-sidebar-open')) {
                         setSidebarOpen(false);
+                    }
+                });
+
+                // Sidebar section collapsible headers
+                document.querySelectorAll('.admin-nav-section-header').forEach(header => {
+                    header.addEventListener('click', () => {
+                        const section = header.closest('.admin-nav-section');
+                        const isExpanded = section.classList.contains('expanded');
+
+                        if (isExpanded) {
+                            section.classList.remove('expanded');
+                            header.setAttribute('aria-expanded', 'false');
+                        } else {
+                            section.classList.add('expanded');
+                            header.setAttribute('aria-expanded', 'true');
+                        }
+                    });
+                });
+
+                // Auto-expand sections with active items
+                document.querySelectorAll('.admin-nav-section').forEach(section => {
+                    const hasActive = section.querySelector('.admin-nav-link.active');
+                    if (hasActive) {
+                        section.classList.add('expanded');
+                        const header = section.querySelector('.admin-nav-section-header');
+                        if (header) header.setAttribute('aria-expanded', 'true');
                     }
                 });
 

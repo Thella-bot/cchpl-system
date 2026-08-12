@@ -85,15 +85,27 @@ class DocumentReview extends Model
         return $this->status === self::STATUS_CANCELLED;
     }
 
-    public function typeLabel(): string
+    public static function typeLabel(string $type): string
     {
-        return match ($this->type) {
+        return match ($type) {
             self::TYPE_AGM_NOTICE => 'AGM Notice',
             self::TYPE_EC_MINUTES => 'EC Minutes',
             self::TYPE_CERTIFICATE => 'Membership Certificate',
             self::TYPE_RECEIPT => 'Official Receipt',
             self::TYPE_WELCOME_PACK => 'Welcome Pack',
-            default => ucfirst(str_replace('_', ' ', $this->type)),
+            default => ucfirst(str_replace('_', ' ', $type)),
+        };
+    }
+
+    public static function typeRef(string $type): string
+    {
+        return match ($type) {
+            self::TYPE_AGM_NOTICE => 'AGM',
+            self::TYPE_EC_MINUTES => 'ECM',
+            self::TYPE_CERTIFICATE => 'CERT',
+            self::TYPE_RECEIPT => 'RCPT',
+            self::TYPE_WELCOME_PACK => 'WEL',
+            default => strtoupper(substr($type, 0, 4)),
         };
     }
 }

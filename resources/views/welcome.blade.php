@@ -211,7 +211,7 @@
                         For any inquiries, please feel free to contact us. We are here to assist you with any questions you may have about the council and our activities.
                     </p>
                     <div class="d-flex flex-column gap-2 mt-4">
-                        <div><i class="fas fa-envelope me-2 text-brand-green"></i>admin@cchpl.org.ls</div>
+                        <div><i class="fas fa-envelope me-2 text-brand-green"></i>secretary@cchpl.org.ls</div>
                         <div><i class="fas fa-location-dot me-2 text-brand-green"></i>Maseru, Lesotho</div>
                         <div><i class="fas fa-users-gear me-2 text-brand-green"></i>Culinary and Hospitality Professional Council</div>
                     </div>

@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Council for Culinary and Hospitality Professionals Lesotho - Professional membership portal">
     <title>@yield('title', 'CCHPL System')</title>
+    <link rel="icon" type="image/png" href="{{ asset('images/logo/cchpl-official-logo.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('images/logo/cchpl-official-logo.png') }}">
     @livewireStyles
 
     {{-- Core CSS (Bootstrap) + Icons (Font Awesome) --}}
@@ -19,7 +21,7 @@
         <nav class="navbar navbar-expand-lg">
             <div class="container">
                 <a class="navbar-brand d-flex align-items-center" href="{{ url('/') }}">
-                    <img src="{{ asset('images/logo/cchpl-alt-logo.png') }}" alt="CCHPL Logo" height="48" class="header-logo">
+                    <img src="{{ asset('images/logo/cchpl-official-logo.png') }}" alt="CCHPL Logo" height="48" class="header-logo">
                 </a>
 
                 <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -60,7 +62,7 @@
                                 </a>
                                 <ul class="dropdown-menu">
                                     <li><a class="dropdown-item" href="{{ route('member.services.minutes') }}"><i class="fas fa-file-lines me-2 text-muted"></i>Meeting Minutes</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('member.services.events') }}"><i class="fas fa-calendar-star me-2 text-muted"></i>Events</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('member.services.events') }}"><i class="fas fa-calendar me-2 text-muted"></i>Events</a></li>
                                     <li><a class="dropdown-item" href="{{ route('member.services.jobs') }}"><i class="fas fa-briefcase me-2 text-muted"></i>Job Listings</a></li>
                                     <li><a class="dropdown-item" href="{{ route('member.services.scholarships') }}"><i class="fas fa-graduation-cap me-2 text-muted"></i>Scholarships</a></li>
                                     <li><a class="dropdown-item" href="{{ route('member.services.internships') }}"><i class="fas fa-handshake me-2 text-muted"></i>Internships</a></li>
@@ -95,7 +97,10 @@
         </div>
     </main>
 
-    @include('components.site-footer')
+    @yield('footer')
+    @section('footer')
+        @include('components.site-footer')
+    @show
 
     {{-- Bootstrap JS (required for navbar toggling, dropdowns, modals, etc.) --}}
     <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>

@@ -21,11 +21,6 @@ class RoleSeeder extends Seeder
                 'description' => 'Can review and manage membership applications',
             ],
             [
-                'name' => 'payment_admin',
-                'display_name' => 'Payment Administrator',
-                'description' => 'Can verify and process membership payments',
-            ],
-            [
                 'name' => 'reports_admin',
                 'display_name' => 'Reports Administrator',
                 'description' => 'Can view reports and export member data',

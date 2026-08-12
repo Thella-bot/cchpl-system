@@ -8,8 +8,7 @@
     <p class="text-muted mb-0">Update membership fees and category details for the next membership cycle.</p>
 </div>
 
-<div class="card border-0 shadow-sm">
-    <div class="card-body p-0">
+<div class="admin-shell-card">
         <div class="table-responsive">
             <table class="table table-hover align-middle mb-0">
                 <thead class="table-light">
@@ -53,5 +52,4 @@
             </table>
         </div>
     </div>
-</div>
 @endsection

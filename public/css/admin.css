@@ -619,25 +619,86 @@ body::-webkit-scrollbar-thumb:hover {
 }
 
 
-/* Sidebar */
-.admin-nav-heading {
+.admin-nav-section + .admin-nav-section {
+    margin-top: 0.75rem;
+}
+
+.admin-nav-section {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.875rem;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+    transition: box-shadow var(--transition-speed) ease, border-color var(--transition-speed) ease;
+}
+
+.admin-nav-section:hover {
+    border-color: #cbd5e1;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.admin-nav-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0.875rem 1rem;
     font-size: 0.7rem;
     font-weight: 800;
     color: var(--admin-sidebar-heading-color);
     text-transform: uppercase;
     letter-spacing: 0.12em;
-    padding: 0.5rem 1rem;
-    margin-top: 1.25rem;
-    margin-bottom: 0.35rem;
+    background: #f8fafc;
+    border: none;
+    cursor: pointer;
+    transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
 }
+
+.admin-nav-section-header:hover {
+    color: var(--brand-primary);
+    background: #f1f5f9;
+}
+
+.admin-nav-toggle {
+    font-size: 0.65rem;
+    transition: transform var(--transition-speed) ease;
+}
+
+.admin-nav-section.expanded .admin-nav-toggle {
+    transform: rotate(180deg);
+}
+
+.admin-nav-collapse {
+    overflow: hidden;
+    max-height: 1000px;
+    opacity: 1;
+    transition: max-height 0.35s ease, opacity 0.25s ease;
+    background: #ffffff;
+}
+
+.admin-nav-section:not(.expanded) .admin-nav-collapse {
+    max-height: 0;
+    opacity: 0;
+}
+
+.admin-nav-link {
+    border-radius: 0;
+    margin: 0;
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.admin-nav-link:last-child {
+    border-bottom: none;
+}
+
+
+/* Modern Page Scrolling */
 
 .admin-nav-link {
     display: flex;
     align-items: center;
     gap: 0.875rem;
-    padding: 0.8rem 0.95rem;
-    margin: 0.25rem 0.35rem;
-    border-radius: 0.85rem;
     color: var(--admin-sidebar-link-color);
     text-decoration: none;
     font-weight: 600;
@@ -702,6 +763,6 @@ body::-webkit-scrollbar-thumb:hover {
 /* Main Content */
 .admin-content {
     flex-grow: 1;
-    padding: 2rem;
+    padding: var(--admin-topbar-height) 2rem 2rem 2rem;
     width: 100%;
 }

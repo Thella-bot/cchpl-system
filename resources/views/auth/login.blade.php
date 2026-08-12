@@ -8,7 +8,7 @@
         <div class="card border-0 shadow-sm">
             <div class="card-body p-4 p-lg-5">
                 <div class="text-center mb-4">
-                    <img src="{{ asset('images/logo/cchpl-alt-logo.png') }}" alt="CCHPL Logo" height="60" class="mb-3">
+                    <img src="{{ asset('images/logo/cchpl-official-logo.png') }}" alt="CCHPL Logo" height="60" class="mb-3">
                     <h2 class="fw-bold mb-1">Member Portal Login</h2>
                     <p class="text-muted">Sign in to access your CCHPL account.</p>
                 </div>
@@ -31,14 +31,16 @@
 
                     <div class="password-field">
                         <label for="password" class="form-label fw-semibold small text-muted">Password</label>
-                        <input id="password" type="password"
-                               class="form-control form-control-lg @error('password') is-invalid @enderror"
-                               name="password" required autocomplete="current-password"
-                               placeholder="Enter your password">
-                        <button type="button" class="password-toggle-btn" data-target="password" aria-label="Show password">
-                            <i class="fas fa-eye"></i>
-                            <i class="fas fa-eye-slash"></i>
-                        </button>
+                        <div class="position-relative">
+                            <input id="password" type="password"
+                                   class="form-control form-control-lg @error('password') is-invalid @enderror"
+                                   name="password" required autocomplete="current-password"
+                                   placeholder="Enter your password">
+                            <button type="button" class="password-toggle-btn" data-target="password" aria-label="Show password">
+                                <i class="fas fa-eye"></i>
+                                <i class="fas fa-eye-slash"></i>
+                            </button>
+                        </div>
                         @error('password')
                             <span class="invalid-feedback d-block" role="alert">
                                 <strong>{{ $message }}</strong>

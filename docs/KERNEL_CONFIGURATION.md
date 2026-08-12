@@ -73,8 +73,8 @@ Route::middleware('role:membership_admin')->group(function () {
 });
 
 // In routes - multiple roles (ANY match)
-Route::middleware('role:membership_admin,payment_admin')->group(function () {
-    // Membership Admin OR Payment Admin
+Route::middleware('role:membership_admin,finance_admin')->group(function () {
+    // Membership Admin OR Finance Admin
 });
 
 // In routes - always include super_admin

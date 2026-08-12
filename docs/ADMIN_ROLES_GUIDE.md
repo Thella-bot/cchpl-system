@@ -151,16 +151,16 @@ if ($user->isSuperAdmin()) { ... }
 if ($user->hasRole('membership_admin')) { ... }
 
 // Check if user has ANY of these roles
-if ($user->hasAnyRole(['membership_admin', 'payment_admin'])) { ... }
+if ($user->hasAnyRole(['membership_admin', 'finance_admin'])) { ... }
 ```
 
 ### Assigning Roles
 ```php
 // Add a role
-$user->assignRole('payment_admin');
+$user->assignRole('finance_admin');
 
 // Remove a role
-$user->removeRole('payment_admin');
+$user->removeRole('finance_admin');
 
 // Replace all roles at once
 $user->roles()->sync([2, 3]); // Using role IDs

@@ -1,22 +1,19 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="container-fluid py-4">
-
-<div class="mb-4">
+<div class="admin-shell-card">
+    <div class="mb-4">
         <a href="{{ route('admin.admins.list') }}" class="text-decoration-none text-muted">
             <i class="fas fa-arrow-left"></i> Back to Admin List
         </a>
-        <h2 class="h4 mt-2 mb-0 text-gray-800">Manage Admin: <span class="fw-bold">{{ $user->name }}</span></h2>
+        <h2 class="h4 mt-2 mb-0 fw-bold">Manage Admin: <span class="fw-bold">{{ $user->name }}</span></h2>
     </div>
 
-<div class="row">
-
-<div class="col-lg-4">
-
-<div class="card shadow-sm mb-4">
-                <div class="card-header bg-white">
-                    <h5 class="mb-0"><i class="fas fa-id-card text-muted me-2"></i>Admin Details</h5>
+    <div class="row g-4">
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white fw-semibold">
+                    <i class="fas fa-id-card text-muted me-2"></i>Admin Details
                 </div>
                 <div class="card-body">
                     <p><strong>Email:</strong><br>{{ $user->email }}</p>
@@ -26,10 +23,10 @@
                 </div>
             </div>
 
-@if(Auth::id() !== $user->id)
-            <div class="card shadow-sm border-danger">
-                <div class="card-header bg-danger text-white">
-                    <h5 class="mb-0"><i class="fas fa-exclamation-triangle me-2"></i>Danger Zone</h5>
+            @if(Auth::id() !== $user->id)
+            <div class="card border-danger shadow-sm">
+                <div class="card-header bg-danger text-white fw-semibold">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Danger Zone
                 </div>
                 <div class="card-body">
                     <p class="small">Deactivating an admin removes all their roles and prevents them from accessing any admin panels.</p>
@@ -41,27 +38,27 @@
             @endif
         </div>
 
-<div class="col-lg-8">
-            <div class="card shadow-sm">
-                <div class="card-header bg-white">
-                    <h5 class="mb-0"><i class="fas fa-user-shield text-muted me-2"></i>Manage Roles</h5>
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white fw-semibold">
+                    <i class="fas fa-user-shield text-muted me-2"></i>Manage Roles
                 </div>
                 <form action="{{ route('admin.admins.roles.update', $user) }}" method="POST">
                     @csrf
                     @method('PUT')
                     <div class="card-body">
                         <p class="text-muted small">Select the roles this user should have. The Super Admin role cannot be removed from the primary super admin (ID: 1).</p>
-                        <div class="row">
+                        <div class="row g-3">
                             @foreach($roles as $role)
-                                <div class="col-md-6 mb-3">
-                                    <div class="form-check form-switch fs-5">
+                                <div class="col-md-6">
+                                    <div class="form-check form-switch">
                                         <input class="form-check-input" type="checkbox" name="roles[]" value="{{ $role->id }}" id="role-{{ $role->id }}"
                                             {{ $user->roles->contains($role) ? 'checked' : '' }}
                                             {{ $role->name === 'super_admin' && $user->id === 1 ? 'disabled' : '' }}>
                                         @if($role->name === 'super_admin' && $user->id === 1)
                                             <input type="hidden" name="roles[]" value="{{ $role->id }}">
                                         @endif
-                                        <label class="form-check-label" for="role-{{ $role->id }}">
+                                        <label class="form-check-label fw-semibold" for="role-{{ $role->id }}">
                                             {{ $role->display_name }}
                                         </label>
                                         <div class="form-text text-muted small ps-2">{{ $role->description }}</div>

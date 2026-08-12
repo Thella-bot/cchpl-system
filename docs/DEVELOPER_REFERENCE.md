@@ -178,7 +178,7 @@ $super = AdminService::createSuperAdmin([
 $admins = AdminService::getAllAdmins();
 
 // Get admins by specific role
-$paymentAdmins = AdminService::getAdminsByRole('payment_admin');
+$financeAdmins = AdminService::getAdminsByRole('finance_admin');
 
 // Revoke admin access
 AdminService::revokeAdminAccess($user);
@@ -287,14 +287,14 @@ Route::middleware('role:membership_admin')->group(function () {
 });
 
 // Multiple roles (ANY match)
-Route::middleware('role:membership_admin,payment_admin')->group(function () {
-    // Membership OR Payment Admins
+Route::middleware('role:membership_admin,finance_admin')->group(function () {
+    // Membership OR Finance Admins
 });
 
 // Combined protection
-Route::middleware(['auth', 'admin', 'role:payment_admin,super_admin'])
+Route::middleware(['auth', 'admin', 'role:finance_admin,super_admin'])
     ->group(function () {
-        // Must be: logged in + admin + (payment_admin OR super_admin)
+        // Must be: logged in + admin + (finance_admin OR super_admin)
     });
 ```
 

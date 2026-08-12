@@ -9,7 +9,7 @@
             <div class="d-flex flex-column flex-md-row align-items-center gap-4">
                 <div class="rounded-circle bg-white bg-opacity-25 d-flex align-items-center justify-content-center flex-shrink-0"
                      style="width: 72px; height: 72px;">
-                    <i class="fas fa-calendar-star text-white fs-1"></i>
+                    <i class="fas fa-calendar text-white fs-1"></i>
                 </div>
                 <div class="text-center text-md-start">
                     <h1 class="text-white fw-bold mb-2 fs-2">Upcoming Events</h1>
@@ -41,7 +41,7 @@
         <div class="admin-shell-card">
             @if($events->isEmpty())
                 <div class="text-center text-muted py-5">
-                    <i class="fas fa-calendar-xmark fa-2x mb-3 text-secondary opacity-50"></i>
+                    <i class="fas fa-calendar fa-2x mb-3 text-secondary opacity-50"></i>
                     <p class="mb-0">No upcoming events at the moment.</p>
                 </div>
             @else
@@ -109,4 +109,7 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section('footer')
 @endsection

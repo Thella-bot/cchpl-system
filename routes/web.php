@@ -141,7 +141,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
             Route::post('/{resignation}/reject', [ResignationAdminController::class, 'reject'])->name('reject');
         });
 
-    Route::middleware('role:payment_admin,super_admin')
+    Route::middleware('role:finance_admin,super_admin')
         ->prefix('payments')
         ->name('payments.')
         ->group(function () {

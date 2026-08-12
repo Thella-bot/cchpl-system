@@ -154,7 +154,10 @@
                                         <div class="p-3 bg-white rounded border">
                                             <small class="text-muted d-block mb-1">Reference</small>
                                             <span class="fw-bold font-monospace">{{ $reference }}</span>
-                                        </div>
+</div>
+
+@section('footer')
+@endsection
                                     </div>
                                 </div>
 

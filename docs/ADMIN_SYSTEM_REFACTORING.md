@@ -29,9 +29,7 @@ Stored in the `roles` table:
 |------|------|---------|
 | 1 | super_admin | Full control |
 | 2 | membership_admin | Review applications |
-| 3 | payment_admin | Verify payments |
-| 4 | reports_admin | Generate reports |
-| 5 | finance_admin | Manage fees |
+| 3 | finance_admin | Verify payments & manage fees |
 | 6 | content_admin | Future use |
 
 ### 2. Users (Who the Admins Are)
@@ -146,9 +144,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
         Route::get('/memberships/list/all', ...);
     });
 
-    // Payment Admin + Super Admin
-    Route::middleware('role:payment_admin,super_admin')->group(function () {
+    // Finance Admin + Super Admin
+    Route::middleware('role:finance_admin,super_admin')->group(function () {
         Route::get('/payments/pending', ...);
+        Route::get('/memberships/categories', ...);
     });
 
     // Reports Admin + Super Admin
@@ -173,13 +172,13 @@ $user->isSuperAdmin();               // Returns true/false
 $user->hasRole('membership_admin');  // Returns true/false
 
 // Check for any of multiple roles
-$user->hasAnyRole(['membership_admin', 'payment_admin']); // Returns true/false
+$user->hasAnyRole(['membership_admin', 'finance_admin']); // Returns true/false
 
 // Add a role
-$user->assignRole('payment_admin');
+$user->assignRole('finance_admin');
 
 // Remove a role
-$user->removeRole('payment_admin');
+$user->removeRole('finance_admin');
 
 // Replace all roles
 $user->roles()->sync([2, 3]); // Role IDs
@@ -209,7 +208,7 @@ AdminService::createSuperAdmin([
 $admins = AdminService::getAllAdmins();
 
 // Get admins by role
-$paymentAdmins = AdminService::getAdminsByRole('payment_admin');
+$financeAdmins = AdminService::getAdminsByRole('finance_admin');
 
 // Remove admin access
 AdminService::revokeAdminAccess($user);

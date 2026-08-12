@@ -8,7 +8,7 @@
         <i class="fas fa-arrow-left me-1"></i>Back to Admin List
     </a>
     <h1 class="h3 fw-bold mt-2 mb-0">
-        Manage Admin: <span class="text-primary">{{ $user->name }}</span>
+        Manage Admin: <span class="text-brand-green">{{ $user->name }}</span>
     </h1>
 </div>
 
@@ -100,11 +100,11 @@
                             </div>
                         @endforeach
                     </div>
-                </div>
-                <div class="card-footer bg-light text-end">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save me-1"></i>Update Roles
-                    </button>
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i>Update Roles
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>

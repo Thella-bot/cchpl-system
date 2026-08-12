@@ -1,14 +1,17 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="container py-4">
-    <div class="mb-3">
-        <a href="{{ route('admin.resignations.index') }}" class="text-decoration-none"><i class="fas fa-arrow-left"></i> Back to List</a>
-    </div>
+<div class="mb-4">
+    <a href="{{ route('admin.resignations.index') }}" class="text-decoration-none text-muted small">
+        <i class="fas fa-arrow-left me-1"></i>Back to List
+    </a>
+    <h1 class="h3 fw-bold mt-2 mb-0">Resignation Request</h1>
+    <p class="text-muted mb-0">Review and process member resignation requests.</p>
+</div>
 
     <div class="row">
         <div class="col-md-7">
-            <div class="card shadow-sm mb-4">
+            <div class="card border-0 shadow-sm mb-4">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Request Details</h5>
 
@@ -61,7 +64,7 @@
 
         <div class="col-md-5">
             @if($resignation->status === 'pending')
-                <div class="card shadow-sm border-primary mb-4">
+                <div class="card border-0 shadow-sm border-primary mb-4">
                     <div class="card-header bg-primary text-white">
                         <h5 class="mb-0">Acknowledge Resignation</h5>
                     </div>
@@ -102,7 +105,7 @@
                     </div>
                 </div>
 
-                <div class="card shadow-sm border-danger">
+                <div class="card border-0 shadow-sm border-danger">
                     <div class="card-header bg-danger text-white">
                         <h5 class="mb-0">Reject Resignation</h5>
                     </div>
@@ -129,7 +132,7 @@
                     </div>
                 </div>
             @else
-                <div class="card shadow-sm">
+                <div class="card border-0 shadow-sm">
                     <div class="card-header bg-light">
                         <h5 class="mb-0">Processing Info</h5>
                     </div>

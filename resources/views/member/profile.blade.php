@@ -90,35 +90,41 @@
 
                         <div class="password-field">
                             <label for="current_password" class="form-label fw-semibold small text-muted">Current Password</label>
-                            <input id="current_password" type="password" class="form-control form-control-lg @error('current_password') is-invalid @enderror"
-                                   name="current_password" required autocomplete="current-password">
-                            <button type="button" class="password-toggle-btn" data-target="current_password" aria-label="Show password">
-                                <i class="fas fa-eye"></i>
-                                <i class="fas fa-eye-slash"></i>
-                            </button>
+                            <div class="position-relative">
+                                <input id="current_password" type="password" class="form-control form-control-lg @error('current_password') is-invalid @enderror"
+                                       name="current_password" required autocomplete="current-password">
+                                <button type="button" class="password-toggle-btn" data-target="current_password" aria-label="Show password">
+                                    <i class="fas fa-eye"></i>
+                                    <i class="fas fa-eye-slash"></i>
+                                </button>
+                            </div>
                             @error('current_password')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
 
                         <div class="password-field">
                             <label for="password" class="form-label fw-semibold small text-muted">New Password</label>
-                            <input id="password" type="password" class="form-control form-control-lg @error('password') is-invalid @enderror"
-                                   name="password" required autocomplete="new-password">
-                            <button type="button" class="password-toggle-btn" data-target="password" aria-label="Show password">
-                                <i class="fas fa-eye"></i>
-                                <i class="fas fa-eye-slash"></i>
-                            </button>
+                            <div class="position-relative">
+                                <input id="password" type="password" class="form-control form-control-lg @error('password') is-invalid @enderror"
+                                       name="password" required autocomplete="new-password">
+                                <button type="button" class="password-toggle-btn" data-target="password" aria-label="Show password">
+                                    <i class="fas fa-eye"></i>
+                                    <i class="fas fa-eye-slash"></i>
+                                </button>
+                            </div>
                             <div class="form-text">Use at least 8 characters with upper and lowercase letters plus numbers.</div>
                             @error('password')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
 
                         <div class="password-field">
                             <label for="password_confirmation" class="form-label fw-semibold small text-muted">Confirm New Password</label>
-                            <input id="password_confirmation" type="password" class="form-control form-control-lg"
-                                   name="password_confirmation" required autocomplete="new-password">
-                            <button type="button" class="password-toggle-btn" data-target="password_confirmation" aria-label="Show password">
-                                <i class="fas fa-eye"></i>
-                                <i class="fas fa-eye-slash"></i>
-                            </button>
+                            <div class="position-relative">
+                                <input id="password_confirmation" type="password" class="form-control form-control-lg"
+                                       name="password_confirmation" required autocomplete="new-password">
+                                <button type="button" class="password-toggle-btn" data-target="password_confirmation" aria-label="Show password">
+                                    <i class="fas fa-eye"></i>
+                                    <i class="fas fa-eye-slash"></i>
+                                </button>
+                            </div>
                         </div>
 
                         <div class="pt-2">
@@ -196,4 +202,7 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section('footer')
 @endsection

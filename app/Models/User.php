@@ -126,12 +126,8 @@ class User extends Authenticatable implements MustVerifyEmail
             return route('admin.memberships.index');
         }
 
-        if ($this->hasRole('payment_admin')) {
-            return route('admin.payments.index');
-        }
-
         if ($this->hasRole('finance_admin')) {
-            return route('admin.memberships.categories.index');
+            return route('admin.payments.index');
         }
 
         if ($this->hasRole('reports_admin')) {

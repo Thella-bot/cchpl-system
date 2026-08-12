@@ -1,124 +1,112 @@
-
 @extends('layouts.admin')
 @section('title', 'Document Review Queue')
 
 @section('content')
-<div class="container mx-auto px-4 py-8">
-
-<div class="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+<div class="mb-4 d-flex align-items-center justify-content-between flex-wrap gap-3">
     <div>
-      <h1 class="text-3xl font-bold text-gray-800">Document Review Queue</h1>
-      <p class="text-gray-600 mt-1">Review, edit, preview, and approve documents before they are sent to recipients.</p>
+        <h1 class="h3 fw-bold mb-1">Document Review Queue</h1>
+        <p class="text-muted mb-0">Review, edit, preview, and approve documents before they are sent to recipients.</p>
     </div>
-    <div class="flex gap-3">
-      <a href="{{ route('admin.documents.compose.agm') }}"
-         class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 text-sm font-medium">
-        + AGM Notice
-      </a>
-      <a href="{{ route('admin.documents.compose.minutes') }}"
-         class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 text-sm font-medium">
-        + EC Minutes
-      </a>
+    <div class="d-flex gap-2">
+        <a href="{{ route('admin.documents.compose.agm') }}" class="btn btn-primary btn-sm">
+            + AGM Notice
+        </a>
+        <a href="{{ route('admin.documents.compose.minutes') }}" class="btn btn-primary btn-sm">
+            + EC Minutes
+        </a>
     </div>
-  </div>
+</div>
 
 @if (session('success'))
-    <div class="mb-6 p-4 bg-green-50 border-l-4 border-green-600 text-green-700 rounded">
-      {{ session('success') }}
+    <div class="alert alert-success">
+        {{ session('success') }}
     </div>
-  @endif
+@endif
 
-{{-- Filters --}}
-  <form method="GET" class="mb-6 flex flex-wrap gap-3 items-end">
-    <div>
-      <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-      <select name="status" class="border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500">
-        <option value="">All statuses</option>
-        <option value="pending_review" {{ request('status') === 'pending_review' ? 'selected' : '' }}>Pending review</option>
-        <option value="approved"       {{ request('status') === 'approved'       ? 'selected' : '' }}>Approved</option>
-        <option value="sent"           {{ request('status') === 'sent'           ? 'selected' : '' }}>Sent</option>
-        <option value="cancelled"      {{ request('status') === 'cancelled'      ? 'selected' : '' }}>Cancelled</option>
-      </select>
+<div class="admin-shell-card mb-3">
+    <form method="GET" class="row g-3 align-items-end">
+        <div class="col-md-4">
+            <label for="status" class="form-label fw-semibold small text-muted">Status</label>
+            <select name="status" id="status" class="form-select">
+                <option value="">All statuses</option>
+                <option value="pending_review" {{ request('status') === 'pending_review' ? 'selected' : '' }}>Pending review</option>
+                <option value="approved"       {{ request('status') === 'approved'       ? 'selected' : '' }}>Approved</option>
+                <option value="sent"           {{ request('status') === 'sent'           ? 'selected' : '' }}>Sent</option>
+                <option value="cancelled"      {{ request('status') === 'cancelled'      ? 'selected' : '' }}>Cancelled</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label for="type" class="form-label fw-semibold small text-muted">Document type</label>
+            <select name="type" id="type" class="form-select">
+                <option value="">All types</option>
+                @foreach (['receipt','welcome_pack','certificate','agm_notice','ec_minutes'] as $t)
+                    <option value="{{ $t }}" {{ request('type') === $t ? 'selected' : '' }}>
+                        {{ \App\Models\DocumentReview::typeLabel($t) }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+        <div class="col-md-4">
+            <button type="submit" class="btn btn-primary me-2">Filter</button>
+            <a href="{{ route('admin.documents.queue') }}" class="btn btn-outline-secondary">Clear</a>
+        </div>
+    </form>
+</div>
+
+@if ($pendingCount > 0)
+    <div class="alert alert-warning d-flex align-items-center gap-3">
+        <span class="badge bg-warning text-dark">{{ $pendingCount }}</span>
+        <span class="fw-medium">document(s) are waiting for review before they can be sent.</span>
     </div>
-    <div>
-      <label class="block text-sm font-medium text-gray-700 mb-1">Document type</label>
-      <select name="type" class="border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500">
-        <option value="">All types</option>
-        @foreach (['receipt','welcome_pack','certificate','agm_notice','ec_minutes'] as $t)
-          <option value="{{ $t }}" {{ request('type') === $t ? 'selected' : '' }}>
-            {{ \App\Models\DocumentReview::typeLabel($t) }}
-          </option>
-        @endforeach
-      </select>
+@endif
+
+<div class="admin-shell-card">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th class="ps-4">Document</th>
+                    <th>Recipient</th>
+                    <th>Status</th>
+                    <th>Queued</th>
+                    <th>Sent</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse ($reviews as $review)
+                    <tr class="{{ $review->isPendingReview() ? 'table-warning' : '' }}">
+                        <td class="ps-4 fw-semibold">
+                            <div>{{ \App\Models\DocumentReview::typeLabel($review->type) }}</div>
+                            <div class="small text-muted">{{ \App\Models\DocumentReview::typeRef($review->type) }}</div>
+                        </td>
+                        <td>
+                            <div>{{ $review->recipient_name ?? '—' }}</div>
+                            <div class="small text-muted">{{ $review->recipient_email ?? $review->recipient_type }}</div>
+                        </td>
+                        <td>
+                            <span class="badge {{ $review->statusBadgeClass() }}">
+                                {{ ucwords(str_replace('_', ' ', $review->status)) }}
+                            </span>
+                        </td>
+                        <td class="small text-muted">{{ $review->created_at->format('d M Y H:i') }}</td>
+                        <td class="small text-muted">{{ $review->sent_at ? $review->sent_at->format('d M Y H:i') : '—' }}</td>
+                        <td class="text-end">
+                            <a href="{{ route('admin.documents.show', $review) }}" class="btn btn-sm btn-primary">
+                                @if ($review->isPendingReview()) Review @elseif ($review->isSent()) View @else Open @endif
+                            </a>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="6" class="text-center py-5 text-muted">
+                            No documents in the queue matching your filters.
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
     </div>
-    <button type="submit" class="px-4 py-2 bg-gray-100 border border-gray-300 rounded text-sm hover:bg-gray-200">Filter</button>
-    <a href="{{ route('admin.documents.queue') }}" class="px-4 py-2 text-sm text-gray-500 hover:text-gray-700">Clear</a>
-  </form>
-
-{{-- Queue stats --}}
-  @if ($pendingCount > 0)
-    <div class="mb-5 p-4 bg-yellow-50 border-l-4 border-yellow-500 rounded flex items-center gap-3">
-      <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-yellow-500 text-white text-sm font-bold">
-        {{ $pendingCount }}
-      </span>
-      <span class="text-yellow-800 font-medium">document(s) are waiting for review before they can be sent.</span>
-    </div>
-  @endif
-
-{{-- Table --}}
-  <div class="bg-white rounded shadow overflow-x-auto">
-    <table class="min-w-full divide-y divide-gray-200 text-sm">
-      <thead class="bg-gray-50">
-        <tr>
-          <th class="px-5 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Document</th>
-          <th class="px-5 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Recipient</th>
-          <th class="px-5 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Status</th>
-          <th class="px-5 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Queued</th>
-          <th class="px-5 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Sent</th>
-          <th class="px-5 py-3"></th>
-        </tr>
-      </thead>
-      <tbody class="bg-white divide-y divide-gray-100">
-        @forelse ($reviews as $review)
-          <tr class="{{ $review->isPendingReview() ? 'bg-yellow-50' : '' }} hover:bg-gray-50">
-            <td class="px-5 py-4">
-              <div class="font-semibold text-gray-800">{{ $review->typeLabel() }}</div>
-              <div class="text-xs text-gray-400">{{ \App\Models\DocumentReview::typeRef($review->type) }}</div>
-            </td>
-            <td class="px-5 py-4">
-              <div class="text-gray-800">{{ $review->recipient_name ?? '—' }}</div>
-              <div class="text-xs text-gray-400">{{ $review->recipient_email ?? $review->recipient_type }}</div>
-            </td>
-            <td class="px-5 py-4">
-              <span class="inline-block px-2 py-1 text-xs rounded font-medium {{ $review->statusBadgeClass() }}">
-                {{ ucwords(str_replace('_', ' ', $review->status)) }}
-              </span>
-            </td>
-            <td class="px-5 py-4 text-gray-500 whitespace-nowrap">
-              {{ $review->created_at->format('d M Y H:i') }}
-            </td>
-            <td class="px-5 py-4 text-gray-500 whitespace-nowrap">
-              {{ $review->sent_at ? $review->sent_at->format('d M Y H:i') : '—' }}
-            </td>
-            <td class="px-5 py-4 text-right">
-              <a href="{{ route('admin.documents.show', $review) }}"
-                 class="inline-flex items-center px-3 py-1.5 text-sm bg-blue-600 text-white rounded hover:bg-blue-700">
-                @if ($review->isPendingReview()) Review @elseif ($review->isSent()) View @else Open @endif
-              </a>
-            </td>
-          </tr>
-        @empty
-          <tr>
-            <td colspan="6" class="px-5 py-10 text-center text-gray-400">
-              No documents in the queue matching your filters.
-            </td>
-          </tr>
-        @endforelse
-      </tbody>
-    </table>
-  </div>
-
-<div class="mt-4">{{ $reviews->withQueryString()->links() }}</div>
-
+    <div class="mt-3">{{ $reviews->withQueryString()->links() }}</div>
 </div>
 @endsection

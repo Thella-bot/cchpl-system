@@ -80,10 +80,9 @@ App\Services\AdminService::createAdmin([
 |----|-----------|
 | 1 | super_admin |
 | 2 | membership_admin |
-| 3 | payment_admin |
-| 4 | reports_admin |
-| 5 | finance_admin |
-| 6 | content_admin |
+| 3 | reports_admin |
+| 4 | finance_admin | Verify payments & manage fees |
+| 5 | content_admin |
 
 **Create Multi-Role Admin:**
 ```php
@@ -106,7 +105,7 @@ $user = App\Models\User::find(5);
 $user->assignRole('reports_admin');
 
 // Remove a role
-$user->removeRole('payment_admin');
+$user->removeRole('finance_admin');
 
 // Replace all roles
 $user->roles()->sync([2, 4]); // membership_admin + reports_admin
@@ -199,7 +198,7 @@ Route::middleware('super-admin')->group(function () { ... });
 Route::middleware('role:membership_admin')->group(function () { ... });
 
 // Any of multiple roles
-Route::middleware('role:membership_admin,payment_admin')->group(function () { ... });
+Route::middleware('role:membership_admin,finance_admin')->group(function () { ... });
 ```
 
 ---

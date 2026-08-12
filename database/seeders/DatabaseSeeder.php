@@ -13,7 +13,6 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             MembershipCategorySeeder::class,
             UserSeeder::class,
-            ResignationSeeder::class,
 
         ]);
     }

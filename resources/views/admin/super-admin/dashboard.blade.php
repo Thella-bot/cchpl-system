@@ -167,7 +167,7 @@
         <div class="admin-shell-card">
             <div class="d-flex align-items-center justify-content-between mb-3">
                 <h5 class="fw-semibold mb-0">
-                    <i class="fas fa-concierge-bell text-muted me-2"></i>Services Overview
+                    <i class="fas fa-list text-muted me-2"></i>Services Overview
                 </h5>
                 <a href="{{ route('admin.services.index', 'minutes') }}" class="btn btn-sm btn-primary">
                     <i class="fas fa-plus me-1"></i>Manage Services
@@ -176,7 +176,7 @@
             <div class="row g-3">
                 <div class="col-sm-6 col-md-4 col-lg-2">
                     <div class="p-3 bg-light rounded text-center h-100">
-                        <i class="fas fa-file-lines text-primary mb-2"></i>
+                        <i class="fas fa-file-lines text-brand-green mb-2"></i>
                         <div class="fw-bold fs-5">{{ $stats['total_meeting_minutes'] ?? 0 }}</div>
                         <small class="text-muted">Meeting Minutes</small>
                         <div class="small text-success fw-semibold">{{ $stats['published_meeting_minutes'] ?? 0 }} published</div>
@@ -184,7 +184,7 @@
                 </div>
                 <div class="col-sm-6 col-md-4 col-lg-2">
                     <div class="p-3 bg-light rounded text-center h-100">
-                        <i class="fas fa-calendar-star text-pink mb-2"></i>
+                        <i class="fas fa-calendar text-pink mb-2"></i>
                         <div class="fw-bold fs-5">{{ $stats['total_events'] ?? 0 }}</div>
                         <small class="text-muted">Events</small>
                         <div class="small text-success fw-semibold">{{ $stats['published_events'] ?? 0 }} published</div>

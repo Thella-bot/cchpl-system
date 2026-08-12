@@ -8,7 +8,7 @@
         <div class="card border-0 shadow-sm">
             <div class="card-body p-4 p-lg-5">
                 <div class="text-center mb-4">
-                    <img src="{{ asset('images/logo/cchpl-alt-logo.png') }}" alt="CCHPL Logo" height="60" class="mb-3">
+                    <img src="{{ asset('images/logo/cchpl-official-logo.png') }}" alt="CCHPL Logo" height="60" class="mb-3">
                     <h2 class="fw-bold mb-1">Create Your Account</h2>
                     <p class="text-muted">Join the CCHPL community by creating your member account.</p>
                 </div>
@@ -40,14 +40,16 @@
 
                     <div class="password-field">
                         <label for="password" class="form-label fw-semibold small text-muted">Password</label>
-                        <input id="password" type="password"
-                               class="form-control form-control-lg @error('password') is-invalid @enderror"
-                               name="password" required autocomplete="new-password"
-                               placeholder="Create a secure password">
-                        <button type="button" class="password-toggle-btn" data-target="password" aria-label="Show password">
-                            <i class="fas fa-eye"></i>
-                            <i class="fas fa-eye-slash"></i>
-                        </button>
+                        <div class="position-relative">
+                            <input id="password" type="password"
+                                   class="form-control form-control-lg @error('password') is-invalid @enderror"
+                                   name="password" required autocomplete="new-password"
+                                   placeholder="Create a secure password">
+                            <button type="button" class="password-toggle-btn" data-target="password" aria-label="Show password">
+                                <i class="fas fa-eye"></i>
+                                <i class="fas fa-eye-slash"></i>
+                            </button>
+                        </div>
                         @error('password')
                             <span class="invalid-feedback d-block" role="alert"><strong>{{ $message }}</strong></span>
                         @enderror
@@ -55,14 +57,16 @@
 
                     <div class="password-field">
                         <label for="password-confirm" class="form-label fw-semibold small text-muted">Confirm Password</label>
-                        <input id="password-confirm" type="password"
-                               class="form-control form-control-lg"
-                               name="password_confirmation" required autocomplete="new-password"
-                               placeholder="Repeat your password">
-                        <button type="button" class="password-toggle-btn" data-target="password-confirm" aria-label="Show password">
-                            <i class="fas fa-eye"></i>
-                            <i class="fas fa-eye-slash"></i>
-                        </button>
+                        <div class="position-relative">
+                            <input id="password-confirm" type="password"
+                                   class="form-control form-control-lg"
+                                   name="password_confirmation" required autocomplete="new-password"
+                                   placeholder="Repeat your password">
+                            <button type="button" class="password-toggle-btn" data-target="password-confirm" aria-label="Show password">
+                                <i class="fas fa-eye"></i>
+                                <i class="fas fa-eye-slash"></i>
+                            </button>
+                        </div>
                     </div>
 
                     <div class="d-grid pt-2">

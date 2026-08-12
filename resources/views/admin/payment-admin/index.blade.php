@@ -100,7 +100,7 @@
                     <div class="mb-3">
                         <small class="text-muted">Payment Proof:</small><br>
                         <a href="{{ asset('storage/' . $payment->proof_file) }}" target="_blank"
-                           class="small text-primary">
+                            class="small text-brand-green">
                             <i class="fas fa-external-link-alt me-1"></i>View Full Image
                         </a>
                         <div class="mt-2">

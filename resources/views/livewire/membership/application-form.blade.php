@@ -98,7 +98,10 @@
                         @if($categories->isEmpty())
                             <div class="form-text text-danger">
                                 Membership categories have not been seeded yet.
-                            </div>
+</div>
+
+@section('footer')
+@endsection
                         @endif
                     </div>
 

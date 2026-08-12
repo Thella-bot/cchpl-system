@@ -26,7 +26,7 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('v1/admin')->name('api.admi
             Route::get('/{membership}', [AdminMembershipApiController::class, 'show'])->name('show');
         });
 
-    Route::middleware('role:payment_admin,reports_admin,super_admin')
+    Route::middleware('role:finance_admin,reports_admin,super_admin')
         ->prefix('payments')
         ->name('payments.')
         ->group(function () {

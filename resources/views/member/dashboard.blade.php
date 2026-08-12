@@ -178,7 +178,7 @@
                 <div class="d-flex align-items-center justify-content-between mb-3">
                     <div class="d-flex align-items-center gap-2">
                         <div class="stat-icon" style="background: linear-gradient(135deg, #10b981, #059669); box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);">
-                            <i class="fas fa-concierge-bell"></i>
+                            <i class="fas fa-list"></i>
                         </div>
                         <h5 class="fw-semibold mb-0">Available Services</h5>
                     </div>
@@ -194,7 +194,7 @@
                     </div>
                     <div class="col-sm-6 col-md-4 col-lg-2">
                         <a href="{{ route('member.services.events') }}" class="card text-center border text-decoration-none h-100 p-3 stat-card">
-                            <i class="fas fa-calendar-star text-pink mb-2"></i>
+                            <i class="fas fa-calendar text-pink mb-2"></i>
                             <div class="fw-bold fs-5">{{ $serviceStats['events'] }}</div>
                             <small class="text-muted">Events</small>
                         </a>
@@ -286,7 +286,7 @@
                         <a href="{{ route('member.services.events') }}"
                            class="card text-center border text-decoration-none h-100 p-3 stat-card">
                             <div class="stat-icon mx-auto mb-2" style="background: linear-gradient(135deg, #ec4899, #db2777); box-shadow: 0 4px 12px rgba(236, 72, 153, 0.3);">
-                                <i class="fas fa-calendar-star"></i>
+                                 <i class="fas fa-calendar"></i>
                             </div>
                             <small class="fw-semibold">Events</small>
                         </a>
@@ -356,4 +356,7 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section('footer')
 @endsection

@@ -25,7 +25,7 @@ class DocumentController extends Controller
 
     public function receipt(Payment $payment)
     {
-        if (! auth()->user()->hasAnyRole(['super_admin', 'payment_admin', 'reports_admin'])) {
+        if (! auth()->user()->hasAnyRole(['super_admin', 'finance_admin', 'reports_admin'])) {
             abort_unless(
                 $payment->membership->user_id === auth()->id(),
                 403

@@ -50,8 +50,8 @@ class DocumentUploadController extends Controller
 
         $payment->loadMissing(['membership.user']);
 
-        // Allowed: payment_admin/reports_admin/super_admin, or the owner member.
-        $canAccess = $user->hasAnyRole(['super_admin', 'payment_admin', 'reports_admin']) ||
+        // Allowed: finance_admin/reports_admin/super_admin, or the owner member.
+        $canAccess = $user->hasAnyRole(['super_admin', 'finance_admin', 'reports_admin']) ||
             ($payment->membership && $payment->membership->user_id === $user->id);
 
         abort_unless($canAccess, 403);

@@ -5,14 +5,14 @@
             {{-- Brand & Mission --}}
             <div class="col-lg-4">
                 <a href="{{ url('/') }}" class="d-inline-flex align-items-center gap-2 text-decoration-none mb-3">
-                    <img src="{{ asset('images/logo/cchpl-alt-logo.png') }}" alt="CCHPL Logo" height="40">
+                    <img src="{{ asset('images/logo/cchpl-official-logo.png') }}" alt="CCHPL Logo" height="40">
                     <span class="site-footer-brand">CCHPL</span>
                 </a>
                 <p class="site-footer-text mb-4">
                     The professional home for culinary and hospitality practitioners, students, and institutions in Lesotho — fostering standards, growth, and service excellence.
                 </p>
                 <div class="d-flex gap-2">
-                    <a href="mailto:admin@cchpl.org.ls" class="site-footer-social" aria-label="Email us">
+                    <a href="mailto:secretary@cchpl.org.ls" class="site-footer-social" aria-label="Email us">
                         <i class="fas fa-envelope"></i>
                     </a>
                     <a href="{{ route('register') }}" class="site-footer-social" aria-label="Join the Council">
@@ -57,7 +57,7 @@
                 <ul class="list-unstyled site-footer-contact mb-0">
                     <li>
                         <i class="fas fa-envelope me-2"></i>
-                        <a href="mailto:admin@cchpl.org.ls">admin@cchpl.org.ls</a>
+                        <a href="mailto:secretary@cchpl.org.ls">secretary@cchpl.org.ls</a>
                     </li>
                     <li>
                         <i class="fas fa-location-dot me-2"></i>

@@ -2,119 +2,154 @@
 @section('title', 'Payment Report')
 
 @section('content')
-<div class="container mx-auto px-4 py-8">
-
-<div class="mb-8 flex items-center justify-between">
+<div class="admin-shell-card">
+    <div class="mb-4 d-flex flex-column flex-sm-row align-items-sm-center justify-content-sm-between gap-3">
         <div>
-            <a href="{{ route('admin.reports.index') }}" class="text-sm text-blue-600 hover:underline">&larr; Reports dashboard</a>
-            <h1 class="text-3xl font-bold text-gray-800 mt-1">Payment Report</h1>
-            <p class="text-gray-500 text-sm mt-1">Generated: {{ now()->format('d F Y, H:i') }}</p>
+            <a href="{{ route('admin.reports.index') }}" class="text-decoration-none text-muted">&larr; Reports dashboard</a>
+            <h1 class="h3 fw-bold mb-1">Payment Report</h1>
+            <p class="text-muted mb-0">Generated: {{ now()->format('d F Y, H:i') }}</p>
         </div>
-        <a href="{{ route('admin.reports.export.payments') }}"
-           class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded text-sm text-gray-700 font-medium">
+        <a href="{{ route('admin.reports.export.payments') }}" class="btn btn-primary">
             Export CSV
         </a>
     </div>
 
-{{-- ── Revenue summary ── --}}
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
-        <div class="bg-white rounded shadow p-5">
-            <p class="text-sm text-gray-500">Total revenue (all time)</p>
-            <p class="text-2xl font-bold text-gray-800 mt-1">M{{ number_format($totalRevenue, 2) }}</p>
+    {{-- Revenue summary --}}
+    <div class="row g-3 mb-4">
+        <div class="col-sm-6 col-lg-3">
+            <div class="stat-card">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #3b82f6, #2563eb); box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                    <div>
+                        <div class="stat-label">Total revenue (all time)</div>
+                        <div class="stat-value">M{{ number_format($totalRevenue, 2) }}</div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="bg-white rounded shadow p-5">
-            <p class="text-sm text-gray-500">M-Pesa revenue</p>
-            <p class="text-2xl font-bold text-green-700 mt-1">M{{ number_format($mpesaTotal, 2) }}</p>
-            @if($totalRevenue > 0)
-                <p class="text-xs text-gray-400 mt-1">{{ round(($mpesaTotal / $totalRevenue) * 100, 1) }}% of total</p>
-            @endif
+        <div class="col-sm-6 col-lg-3">
+            <div class="stat-card">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #10b981, #059669); box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <div>
+                        <div class="stat-label">M-Pesa revenue</div>
+                        <div class="stat-value">M{{ number_format($mpesaTotal, 2) }}</div>
+                        @if($totalRevenue > 0)
+                            <small class="text-muted">{{ round(($mpesaTotal / $totalRevenue) * 100, 1) }}% of total</small>
+                        @endif
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="bg-white rounded shadow p-5">
-            <p class="text-sm text-gray-500">EcoCash revenue</p>
-            <p class="text-2xl font-bold text-blue-700 mt-1">M{{ number_format($ecocashTotal, 2) }}</p>
-            @if($totalRevenue > 0)
-                <p class="text-xs text-gray-400 mt-1">{{ round(($ecocashTotal / $totalRevenue) * 100, 1) }}% of total</p>
-            @endif
+        <div class="col-sm-6 col-lg-3">
+            <div class="stat-card">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #0ea5e9, #0284c7); box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                    <div>
+                        <div class="stat-label">EcoCash revenue</div>
+                        <div class="stat-value">M{{ number_format($ecocashTotal, 2) }}</div>
+                        @if($totalRevenue > 0)
+                            <small class="text-muted">{{ round(($ecocashTotal / $totalRevenue) * 100, 1) }}% of total</small>
+                        @endif
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="bg-white rounded shadow p-5">
-            <p class="text-sm text-gray-500">Pending verification</p>
-            <p class="text-2xl font-bold text-yellow-600 mt-1">{{ number_format($pendingCount) }}</p>
-            <a href="{{ route('admin.payments.index') }}" class="text-xs text-blue-600 hover:underline">Review →</a>
+        <div class="col-sm-6 col-lg-3">
+            <div class="stat-card">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706); box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);">
+                        <i class="fas fa-hourglass-half"></i>
+                    </div>
+                    <div>
+                        <div class="stat-label">Pending verification</div>
+                        <div class="stat-value">{{ number_format($pendingCount) }}</div>
+                        <a href="{{ route('admin.payments.index') }}" class="text-decoration-none text-brand-green small">Review &rarr;</a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-{{-- ── Payment issues ── --}}
+    {{-- Payment issues --}}
     @if ($rejectedCount > 0 || $voidedCount > 0)
-    <div class="grid grid-cols-2 gap-5 mb-8">
-        <div class="bg-white rounded shadow p-5 border-l-4 border-red-300">
-            <p class="text-sm text-gray-500">Rejected payments</p>
-            <p class="text-2xl font-bold text-red-600 mt-1">{{ number_format($rejectedCount) }}</p>
-            <p class="text-xs text-gray-400 mt-1">Member submitted invalid proof</p>
+    <div class="row g-3 mb-4">
+        <div class="col-sm-6">
+            <div class="stat-card">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #ef4444, #dc2626); box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);">
+                        <i class="fas fa-times-circle"></i>
+                    </div>
+                    <div>
+                        <div class="stat-label">Rejected payments</div>
+                        <div class="stat-value text-danger">{{ number_format($rejectedCount) }}</div>
+                        <small class="text-muted">Member submitted invalid proof</small>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="bg-white rounded shadow p-5 border-l-4 border-gray-300">
-            <p class="text-sm text-gray-500">Voided (abandoned references)</p>
-            <p class="text-2xl font-bold text-gray-500 mt-1">{{ number_format($voidedCount) }}</p>
-            <p class="text-xs text-gray-400 mt-1">No proof uploaded within 48 hours</p>
+        <div class="col-sm-6">
+            <div class="stat-card">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #6b7280, #4b5563); box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);">
+                        <i class="fas fa-void"></i>
+                    </div>
+                    <div>
+                        <div class="stat-label">Voided (abandoned references)</div>
+                        <div class="stat-value">{{ number_format($voidedCount) }}</div>
+                        <small class="text-muted">No proof uploaded within 48 hours</small>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     @endif
 
-{{-- ── Monthly revenue table ── --}}
-    <div class="bg-white rounded shadow mb-8">
-        <div class="px-6 py-4 border-b border-gray-100">
-            <h2 class="text-lg font-semibold text-gray-800">Monthly revenue (last 12 months)</h2>
-        </div>
+    {{-- Monthly revenue table --}}
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white fw-semibold">Monthly revenue (last 12 months)</div>
         @if ($monthlyRevenue->isEmpty())
-            <div class="px-6 py-8 text-center text-gray-400 text-sm">No verified payments on record.</div>
+            <div class="text-center py-5 text-muted">No verified payments on record.</div>
         @else
-            <div class="overflow-x-auto">
-                <table class="min-w-full text-sm">
-                    <thead class="bg-gray-50">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
                         <tr>
-                            <th class="px-6 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Month</th>
-                            <th class="px-6 py-3 text-right font-medium text-gray-500 uppercase tracking-wider">Transactions</th>
-                            <th class="px-6 py-3 text-right font-medium text-gray-500 uppercase tracking-wider">M-Pesa (M)</th>
-                            <th class="px-6 py-3 text-right font-medium text-gray-500 uppercase tracking-wider">EcoCash (M)</th>
-                            <th class="px-6 py-3 text-right font-medium text-gray-500 uppercase tracking-wider">Total (M)</th>
+                            <th>Month</th>
+                            <th class="text-end">Transactions</th>
+                            <th class="text-end">M-Pesa (M)</th>
+                            <th class="text-end">EcoCash (M)</th>
+                            <th class="text-end">Total (M)</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-100">
+                    <tbody>
                         @foreach ($monthlyRevenue as $row)
-                        <tr class="hover:bg-gray-50">
-                            <td class="px-6 py-3 font-medium text-gray-800">
-                                {{ \Carbon\Carbon::createFromFormat('Y-m', $row->month)->format('F Y') }}
-                            </td>
-                            <td class="px-6 py-3 text-right text-gray-600">{{ number_format($row->count) }}</td>
-                            <td class="px-6 py-3 text-right text-gray-600">
-                                M{{ number_format($mpesaMonthly[$row->month]->total ?? 0, 2) }}
-                            </td>
-                            <td class="px-6 py-3 text-right text-gray-600">
-                                M{{ number_format($ecocashMonthly[$row->month]->total ?? 0, 2) }}
-                            </td>
-                            <td class="px-6 py-3 text-right font-semibold text-gray-800">
-                                M{{ number_format($row->total, 2) }}
-                            </td>
+                        <tr>
+                            <td class="fw-semibold">{{ \Carbon\Carbon::createFromFormat('Y-m', $row->month)->format('F Y') }}</td>
+                            <td class="text-end">{{ number_format($row->count) }}</td>
+                            <td class="text-end">M{{ number_format($mpesaMonthly[$row->month]->total ?? 0, 2) }}</td>
+                            <td class="text-end">M{{ number_format($ecocashMonthly[$row->month]->total ?? 0, 2) }}</td>
+                            <td class="text-end fw-bold">M{{ number_format($row->total, 2) }}</td>
                         </tr>
                         @endforeach
                     </tbody>
-                    <tfoot class="bg-gray-50 border-t-2 border-gray-200">
+                    <tfoot class="table-light">
                         <tr>
-                            <td class="px-6 py-3 font-bold text-gray-700" colspan="2">12-month total</td>
-                            <td class="px-6 py-3 text-right font-bold text-gray-700">
-                                M{{ number_format($mpesaMonthly->sum('total'), 2) }}
-                            </td>
-                            <td class="px-6 py-3 text-right font-bold text-gray-700">
-                                M{{ number_format($ecocashMonthly->sum('total'), 2) }}
-                            </td>
-                            <td class="px-6 py-3 text-right font-bold text-gray-800">
-                                M{{ number_format($monthlyRevenue->sum('total'), 2) }}
-                            </td>
+                            <td class="fw-bold" colspan="2">12-month total</td>
+                            <td class="text-end fw-bold">M{{ number_format($mpesaMonthly->sum('total'), 2) }}</td>
+                            <td class="text-end fw-bold">M{{ number_format($ecocashMonthly->sum('total'), 2) }}</td>
+                            <td class="text-end fw-bold">M{{ number_format($monthlyRevenue->sum('total'), 2) }}</td>
                         </tr>
                     </tfoot>
                 </table>
             </div>
         @endif
     </div>
-
 </div>
 @endsection

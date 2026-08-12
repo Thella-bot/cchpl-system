@@ -1,152 +1,118 @@
-
 @extends('layouts.admin')
 @section('title', 'Compose AGM Notice & Agenda')
 
 @section('content')
-<div class="container mx-auto px-4 py-8 max-w-3xl">
-
-<a href="{{ route('admin.documents.queue') }}" class="text-sm text-blue-600 hover:underline">&larr; Back to queue</a>
-
-<h1 class="text-3xl font-bold text-gray-800 mt-2 mb-2">Compose AGM Notice & Agenda</h1>
-  <p class="text-gray-500 text-sm mb-6">
-    Fill in all details below. Use <strong>Preview</strong> to check the PDF before saving.
-    After saving, you can edit further in the review screen before sending.
-    <br>Reference: CCHPL-OPS-001 &nbsp;|&nbsp; Per Constitution Clause 9.1 &amp; 9.3 and Bylaws Clause 3.
-  </p>
-
-@if ($errors->any())
-    <div class="mb-5 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 rounded text-sm">
-      <strong>Please fix the following errors:</strong>
-      <ul class="mt-1 list-disc list-inside">
-        @foreach ($errors->all() as $error)
-          <li>{{ $error }}</li>
-        @endforeach
-      </ul>
-    </div>
-  @endif
-
-<form method="POST" action="{{ route('admin.documents.store.agm') }}" id="agm-form">
-    @csrf
-    <div class="bg-white rounded shadow p-6 space-y-5">
-
-<h2 class="text-base font-semibold text-gray-700 border-b pb-2">Meeting details</h2>
-
-<div class="grid sm:grid-cols-2 gap-5">
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">AGM Year *</label>
-          <input type="number" name="agm_year" value="{{ old('agm_year', date('Y')) }}" required
-            class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
-            placeholder="{{ date('Y') }}">
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Date of AGM *</label>
-          <input type="text" name="date" value="{{ old('date') }}" required
-            class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
-            placeholder="e.g. Saturday, 27 September 2025">
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Time *</label>
-          <input type="text" name="time" value="{{ old('time') }}" required
-            class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
-            placeholder="e.g. 09:00 AM (Registration from 08:30 AM)">
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Format *</label>
-          <select name="format" required
-            class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500">
-            <option value="in-person"  {{ old('format') === 'in-person'  ? 'selected' : '' }}>In-person</option>
-            <option value="hybrid"     {{ old('format') === 'hybrid'     ? 'selected' : '' }}>Hybrid (in-person + online)</option>
-            <option value="online"     {{ old('format') === 'online'     ? 'selected' : '' }}>Online only</option>
-          </select>
-        </div>
-      </div>
-
-<div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Venue (full name and address) *</label>
-        <input type="text" name="venue" value="{{ old('venue') }}" required
-          class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
-          placeholder="e.g. LNDC Conference Centre, Kingsway, Maseru 100, Lesotho">
-      </div>
-
-<div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Online link (if applicable)</label>
-        <input type="text" name="online_link" value="{{ old('online_link') }}"
-          class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
-          placeholder="Zoom / Teams / Google Meet link and access code">
-      </div>
-
-<h2 class="text-base font-semibold text-gray-700 border-b pb-2 pt-2">Notice details</h2>
-
-<div class="grid sm:grid-cols-2 gap-5">
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Notice issued date *</label>
-          <input type="text" name="notice_date" value="{{ old('notice_date', now()->format('d F Y')) }}" required
-            class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500">
-          <p class="text-xs text-gray-400 mt-1">Must be at least 21 days before AGM date</p>
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Issued by (Secretary name) *</label>
-          <input type="text" name="issued_by" value="{{ old('issued_by', auth()->user()->name) }}" required
-            class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500">
-        </div>
-      </div>
-
-<h2 class="text-base font-semibold text-gray-700 border-b pb-2 pt-2">Contact & deadlines</h2>
-
-<div class="grid sm:grid-cols-3 gap-5">
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Contact name *</label>
-          <input type="text" name="contact_name" value="{{ old('contact_name', auth()->user()->name) }}" required
-            class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500">
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Contact email *</label>
-          <input type="email" name="contact_email" value="{{ old('contact_email', 'secretary@cchpl.org.ls') }}" required
-            class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500">
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Contact phone *</label>
-          <input type="text" name="contact_phone" value="{{ old('contact_phone') }}" required
-            class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
-            placeholder="+266 ...">
-        </div>
-      </div>
-
-<div class="grid sm:grid-cols-3 gap-5">
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Paid-up deadline (voting eligibility) *</label>
-          <input type="text" name="paid_up_deadline" value="{{ old('paid_up_deadline', '31 March ' . date('Y')) }}" required
-            class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500">
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Proxy submission deadline *</label>
-          <input type="text" name="proxy_deadline" value="{{ old('proxy_deadline') }}" required
-            class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
-            placeholder="e.g. 48 hours before the AGM">
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Nomination deadline *</label>
-          <input type="text" name="nomination_deadline" value="{{ old('nomination_deadline') }}" required
-            class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
-            placeholder="e.g. 7 days before AGM">
-        </div>
-      </div>
-
+<div class="mb-4">
+    <a href="{{ route('admin.documents.queue') }}" class="text-decoration-none text-muted small">&larr; Back to queue</a>
+    <h1 class="h3 fw-bold mb-1">Compose AGM Notice & Agenda</h1>
+    <p class="text-muted mb-0">
+        Fill in all details below. Use <strong>Preview</strong> to check the PDF before saving.
+        After saving, you can edit further in the review screen before sending.
+        <br>Reference: CCHPL-OPS-001 &nbsp;|&nbsp; Per Constitution Clause 9.1 &amp; 9.3 and Bylaws Clause 3.
+    </p>
 </div>
 
-<div class="mt-6 flex flex-wrap gap-3 items-center">
-      <button type="button" onclick="previewDraft()"
-        class="px-6 py-2.5 bg-blue-600 text-white rounded hover:bg-blue-700 font-medium">
-        Preview PDF
-      </button>
-      <button type="submit"
-        class="px-6 py-2.5 bg-green-600 text-white rounded hover:bg-green-700 font-medium">
-        Save to review queue
-      </button>
-      <a href="{{ route('admin.documents.queue') }}" class="text-sm text-gray-500 hover:underline">Cancel</a>
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <strong>Please fix the following errors:</strong>
+        <ul class="mt-1 list-disc list-inside">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
     </div>
-  </form>
+@endif
 
+<div class="admin-shell-card">
+    <div class="card-body">
+        <form method="POST" action="{{ route('admin.documents.store.agm') }}" id="agm-form">
+            @csrf
+
+            <h5 class="fw-semibold mb-3 border-bottom pb-2">Meeting details</h5>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label for="agm_year" class="form-label fw-semibold small text-muted">AGM Year *</label>
+                    <input type="number" name="agm_year" id="agm_year" value="{{ old('agm_year', date('Y')) }}" required class="form-control" placeholder="{{ date('Y') }}">
+                </div>
+                <div class="col-md-6">
+                    <label for="date" class="form-label fw-semibold small text-muted">Date of AGM *</label>
+                    <input type="text" name="date" id="date" value="{{ old('date') }}" required class="form-control" placeholder="e.g. Saturday, 27 September 2025">
+                </div>
+                <div class="col-md-6">
+                    <label for="time" class="form-label fw-semibold small text-muted">Time *</label>
+                    <input type="text" name="time" id="time" value="{{ old('time') }}" required class="form-control" placeholder="e.g. 09:00 AM (Registration from 08:30 AM)">
+                </div>
+                <div class="col-md-6">
+                    <label for="format" class="form-label fw-semibold small text-muted">Format *</label>
+                    <select name="format" id="format" required class="form-select">
+                        <option value="in-person"  {{ old('format') === 'in-person'  ? 'selected' : '' }}>In-person</option>
+                        <option value="hybrid"     {{ old('format') === 'hybrid'     ? 'selected' : '' }}>Hybrid (in-person + online)</option>
+                        <option value="online"     {{ old('format') === 'online'     ? 'selected' : '' }}>Online only</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row g-3 mt-2">
+                <div class="col-12">
+                    <label for="venue" class="form-label fw-semibold small text-muted">Venue (full name and address) *</label>
+                    <input type="text" name="venue" id="venue" value="{{ old('venue') }}" required class="form-control" placeholder="e.g. LNDC Conference Centre, Kingsway, Maseru 100, Lesotho">
+                </div>
+                <div class="col-12">
+                    <label for="online_link" class="form-label fw-semibold small text-muted">Online link (if applicable)</label>
+                    <input type="text" name="online_link" id="online_link" value="{{ old('online_link') }}" class="form-control" placeholder="Zoom / Teams / Google Meet link and access code">
+                </div>
+            </div>
+
+            <h5 class="fw-semibold mb-3 mt-4 border-bottom pb-2">Notice details</h5>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label for="notice_date" class="form-label fw-semibold small text-muted">Notice issued date *</label>
+                    <input type="text" name="notice_date" id="notice_date" value="{{ old('notice_date', now()->format('d F Y')) }}" required class="form-control">
+                    <p class="text-muted small mt-1">Must be at least 21 days before AGM date</p>
+                </div>
+                <div class="col-md-6">
+                    <label for="issued_by" class="form-label fw-semibold small text-muted">Issued by (Secretary name) *</label>
+                    <input type="text" name="issued_by" id="issued_by" value="{{ old('issued_by', auth()->user()->name) }}" required class="form-control">
+                </div>
+            </div>
+
+            <h5 class="fw-semibold mb-3 mt-4 border-bottom pb-2">Contact & deadlines</h5>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label for="contact_name" class="form-label fw-semibold small text-muted">Contact name *</label>
+                    <input type="text" name="contact_name" id="contact_name" value="{{ old('contact_name', auth()->user()->name) }}" required class="form-control">
+                </div>
+                <div class="col-md-4">
+                    <label for="contact_email" class="form-label fw-semibold small text-muted">Contact email *</label>
+                    <input type="email" name="contact_email" id="contact_email" value="{{ old('contact_email', 'secretary@cchpl.org.ls') }}" required class="form-control">
+                </div>
+                <div class="col-md-4">
+                    <label for="contact_phone" class="form-label fw-semibold small text-muted">Contact phone *</label>
+                    <input type="text" name="contact_phone" id="contact_phone" value="{{ old('contact_phone') }}" required class="form-control" placeholder="+266 ...">
+                </div>
+            </div>
+            <div class="row g-3 mt-2">
+                <div class="col-md-4">
+                    <label for="paid_up_deadline" class="form-label fw-semibold small text-muted">Paid-up deadline (voting eligibility) *</label>
+                    <input type="text" name="paid_up_deadline" id="paid_up_deadline" value="{{ old('paid_up_deadline', '31 March ' . date('Y')) }}" required class="form-control">
+                </div>
+                <div class="col-md-4">
+                    <label for="proxy_deadline" class="form-label fw-semibold small text-muted">Proxy submission deadline *</label>
+                    <input type="text" name="proxy_deadline" id="proxy_deadline" value="{{ old('proxy_deadline') }}" required class="form-control" placeholder="e.g. 48 hours before the AGM">
+                </div>
+                <div class="col-md-4">
+                    <label for="nomination_deadline" class="form-label fw-semibold small text-muted">Nomination deadline *</label>
+                    <input type="text" name="nomination_deadline" id="nomination_deadline" value="{{ old('nomination_deadline') }}" required class="form-control" placeholder="e.g. 7 days before AGM">
+                </div>
+            </div>
+
+            <div class="mt-4 d-flex flex-wrap gap-2">
+                <button type="button" onclick="previewDraft()" class="btn btn-primary">Preview PDF</button>
+                <button type="submit" class="btn btn-success">Save to review queue</button>
+                <a href="{{ route('admin.documents.queue') }}" class="text-decoration-none text-muted small">Cancel</a>
+            </div>
+        </form>
+    </div>
 </div>
 
 {{-- Preview modal --}}
@@ -191,30 +157,30 @@ function previewDraft() {
     }
   };
 
-const form = document.createElement('form');
+  const form = document.createElement('form');
   form.method = 'POST';
   form.action = '{{ route("admin.documents.preview-draft") }}';
   form.target = 'preview-frame';
 
-const csrf = document.createElement('input');
+  const csrf = document.createElement('input');
   csrf.type = 'hidden'; csrf.name = '_token'; csrf.value = '{{ csrf_token() }}';
   form.appendChild(csrf);
 
-const typeInput = document.createElement('input');
+  const typeInput = document.createElement('input');
   typeInput.type = 'hidden'; typeInput.name = 'type'; typeInput.value = payload.type;
   form.appendChild(typeInput);
 
-Object.entries(payload.data).forEach(([k, v]) => {
-    const i = document.createElement('input');
-    i.type = 'hidden'; i.name = 'data[' + k + ']'; i.value = v ?? '';
-    form.appendChild(i);
-  });
+  Object.entries(payload.data).forEach(([k, v]) => {
+      const i = document.createElement('input');
+      i.type = 'hidden'; i.name = 'data[' + k + ']'; i.value = v ?? '';
+      form.appendChild(i);
+    });
 
-document.body.appendChild(form);
+  document.body.appendChild(form);
   form.submit();
   document.body.removeChild(form);
 
-document.getElementById('preview-modal').style.display = 'flex';
+  document.getElementById('preview-modal').style.display = 'flex';
 }
 
 function closePreview() {
