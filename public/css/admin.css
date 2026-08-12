@@ -10,8 +10,8 @@
     --admin-sidebar-bg: #ffffff;
     --admin-sidebar-link-color: #475569;
     --admin-sidebar-link-hover-bg: #f1f5f9;
-    --admin-sidebar-link-active-bg: rgba(26, 107, 60, 0.12);
-    --admin-sidebar-link-active-color: #14532d;
+    --admin-sidebar-link-active-bg: rgba(27, 20, 100, 0.12);
+    --admin-sidebar-link-active-color: #1B1464;
     --admin-sidebar-heading-color: #6b7280;
     --admin-sidebar-border-color: #e2e8f0;
     --admin-topbar-height: 64px;
@@ -19,9 +19,9 @@
     --admin-topbar-border-color: #e2e8f0;
     --admin-content-bg: #f8fafc;
     --transition-speed: 0.25s;
-    --brand-primary: #1a6b3c;
-    --brand-light: #2d9b5a;
-    --brand-primary-600: #155a32;
+    --brand-primary: #1B1464;
+    --brand-light: #22B573;
+    --brand-primary-600: #140F4B;
 }
 
 
@@ -88,12 +88,12 @@ body {
     border-radius: 10px;
     padding: 0.625rem 0.875rem;
     transition: all 0.2s ease;
-    box-shadow: 0 4px 12px rgba(26, 107, 60, 0.3);
+    box-shadow: 0 4px 12px rgba(27, 20, 100, 0.3);
 }
 
 #admin-menu-toggle:hover {
     transform: translateY(-1px);
-    box-shadow: 0 6px 16px rgba(26, 107, 60, 0.4);
+    box-shadow: 0 6px 16px rgba(27, 20, 100, 0.4);
 }
 
 .admin-topbar-action {
@@ -310,7 +310,7 @@ body.admin-sidebar-open .admin-sidebar-backdrop {
     right: 0;
     width: 100px;
     height: 100px;
-    background: linear-gradient(135deg, rgba(26, 107, 60, 0.05) 0%, rgba(45, 155, 90, 0.05) 100%);
+    background: linear-gradient(135deg, rgba(27, 20, 100, 0.05) 0%, rgba(34, 181, 115, 0.05) 100%);
     border-radius: 50%;
     transform: translate(30%, -30%);
 }
@@ -325,7 +325,7 @@ body.admin-sidebar-open .admin-sidebar-backdrop {
     justify-content: center;
     color: white;
     font-size: 1.25rem;
-    box-shadow: 0 4px 12px rgba(26, 107, 60, 0.3);
+    box-shadow: 0 4px 12px rgba(27, 20, 100, 0.3);
 }
 
 .stat-card .stat-value {
@@ -432,12 +432,12 @@ body.admin-sidebar-open .admin-sidebar-backdrop {
 .btn-primary {
     background: linear-gradient(135deg, var(--brand-primary), var(--brand-light));
     border: none;
-    box-shadow: 0 4px 12px rgba(26, 107, 60, 0.3);
+    box-shadow: 0 4px 12px rgba(27, 20, 100, 0.3);
 }
 
 .btn-primary:hover {
-    background: linear-gradient(135deg, #155a32, #1a6b3c);
-    box-shadow: 0 6px 16px rgba(26, 107, 60, 0.4);
+    background: linear-gradient(135deg, #140F4B, #1B1464);
+    box-shadow: 0 6px 16px rgba(27, 20, 100, 0.4);
 }
 
 .btn::after {
@@ -470,7 +470,7 @@ body.admin-sidebar-open .admin-sidebar-backdrop {
 
 .form-control:focus {
     border-color: var(--brand-light);
-    box-shadow: 0 0 0 0.25rem rgba(45, 155, 90, 0.15);
+    box-shadow: 0 0 0 0.25rem rgba(34, 181, 115, 0.15);
     background-color: #ffffff;
     outline: none;
 }
@@ -529,7 +529,7 @@ body::-webkit-scrollbar-thumb {
 }
 
 body::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(180deg, #155a32, #1a6b3c);
+    background: linear-gradient(180deg, #140F4B, #1B1464);
 }
 
 /* Page Load Animations */
@@ -656,7 +656,7 @@ body::-webkit-scrollbar-thumb:hover {
     transform: translateY(-50%);
     width: 6px;
     height: 0;
-    background: rgba(26, 107, 60, 0.9);
+    background: rgba(27, 20, 100, 0.9);
     border-radius: 999px;
     transition: height 0.2s ease;
 }
@@ -681,7 +681,7 @@ body::-webkit-scrollbar-thumb:hover {
 }
 
 .admin-nav-link:focus-visible {
-    box-shadow: 0 0 0 3px rgba(26, 107, 60, 0.2);
+    box-shadow: 0 0 0 3px rgba(27, 20, 100, 0.2);
 }
 
 .admin-nav-link.active {

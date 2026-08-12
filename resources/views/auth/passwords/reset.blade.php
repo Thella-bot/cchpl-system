@@ -5,7 +5,7 @@
 @section('content')
 <div class="row g-4 justify-content-center">
     <div class="col-12 col-lg-10">
-        <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #1a6b3c 0%, #2d9b5a 100%);">
+        <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #1B1464 0%, #22B573 100%);">
             <div class="card-body py-4 px-4">
                 <div class="d-flex align-items-center gap-3">
                     <div class="rounded-circle bg-white bg-opacity-25 d-flex align-items-center justify-content-center"

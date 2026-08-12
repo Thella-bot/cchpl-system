@@ -7,7 +7,7 @@
 
     {{-- Welcome Header --}}
     <div class="col-12">
-        <div class="stat-card animate-fade-in" style="background: linear-gradient(135deg, #1a6b3c 0%, #2d9b5a 100%); border: none;">
+        <div class="stat-card animate-fade-in" style="background: linear-gradient(135deg, #1B1464 0%, #22B573 100%); border: none;">
             <div class="d-flex flex-column flex-md-row align-items-center gap-4">
                 <div class="rounded-circle bg-white bg-opacity-25 d-flex align-items-center justify-content-center flex-shrink-0"
                      style="width: 72px; height: 72px;">
@@ -159,7 +159,7 @@
         <div class="col-12">
             <div class="stat-card text-center py-5 animate-fade-in" style="background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%); border: 2px dashed #e2e8f0;">
                 <div class="d-flex align-items-center justify-content-center mx-auto mb-3"
-                     style="width: 80px; height: 80px; border-radius: 50%; background: rgba(26, 107, 60, 0.1);">
+                     style="width: 80px; height: 80px; border-radius: 50%; background: rgba(27, 20, 100, 0.1);">
                     <i class="fas fa-user-plus fs-2" style="color: var(--brand-primary);"></i>
                 </div>
                 <h4 class="fw-bold mb-2">Begin Your Membership Journey</h4>

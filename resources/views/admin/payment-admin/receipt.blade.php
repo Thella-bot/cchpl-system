@@ -22,7 +22,7 @@ use App\Presenters\StatusPresenter;
 
 <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4 pb-3 border-bottom">
             <div>
-                <h2 class="h4 fw-bold mb-1" style="color: #1a6b3c;">CCHPL</h2>
+                <h2 class="h4 fw-bold mb-1" style="color: #1B1464;">CCHPL</h2>
                 <p class="text-muted small mb-0">Council for Culinary and Hospitality Professionals Lesotho</p>
             </div>
             <div class="text-end">

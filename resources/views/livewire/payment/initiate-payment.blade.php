@@ -1,7 +1,7 @@
 <div class="row g-4">
     {{-- Page Header --}}
     <div class="col-12">
-        <div class="stat-card animate-fade-in" style="background: linear-gradient(135deg, #1a6b3c 0%, #2d9b5a 100%); border: none;">
+        <div class="stat-card animate-fade-in" style="background: linear-gradient(135deg, #1B1464 0%, #22B573 100%); border: none;">
             <div class="d-flex flex-column flex-md-row align-items-center gap-4">
                 <div class="rounded-circle bg-white bg-opacity-25 d-flex align-items-center justify-content-center"
                      style="width: 72px; height: 72px; flex-shrink: 0;">
